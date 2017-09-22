@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+  version="2.0">
+    
+  <description>app functions library</description>
+  <display-name>app functions</display-name>
+  <tlib-version>1.0</tlib-version>
+  <short-name>appfn</short-name>
+  <uri>http://wja.com/jsp/app/functions</uri>
+
+  <function>
+    <description>
+      获取当日的工作开始时间字符串
+    </description>
+    <name>todayWorkStartTime</name>
+    <function-class>com.wja.base.util.DateUtil</function-class>
+    <function-signature>java.lang.String getTodayWorkStartTimeStr()</function-signature>
+    <example>
+      ${appfn:todayWorkStartTime()}
+    </example>
+  </function>
+  
+</taglib>

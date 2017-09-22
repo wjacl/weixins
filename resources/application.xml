@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+			http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+			http://www.springframework.org/schema/context
+			http://www.springframework.org/schema/context/spring-context-4.1.xsd 
+			http://www.springframework.org/schema/tx 
+			http://www.springframework.org/schema/tx/spring-tx-4.1.xsd
+			http://www.springframework.org/schema/aop 
+			http://www.springframework.org/schema/aop/spring-aop-4.1.xsd
+			http://www.springframework.org/schema/data/jpa
+			http://www.springframework.org/schema/data/jpa/spring-jpa-1.8.xsd">
+	
+		
+	<!-- 加载配置文件 -->
+	<context:property-placeholder location="classpath:jdbc.properties"/>
+	
+	<!-- 配置注解支持  -->
+	<context:annotation-config />
+	<!-- bean 扫描配置  --> 
+	<context:component-scan base-package="com">
+		<context:exclude-filter type="annotation" 
+			expression="org.springframework.stereotype.Controller" />
+	</context:component-scan>
+	
+	
+	<!-- 启用aspectj自动代理，注解方式写的aspects就有效了 -->
+	<aop:aspectj-autoproxy />
+	
+	<!-- 数据源配置 -->
+	<bean id="dataSource"
+   			class="com.mchange.v2.c3p0.ComboPooledDataSource"
+   			destroy-method="close">
+   		<!-- 配置驱动 -->
+   		<property name="driverClass" value="${driverClassName}" />
+   		<!-- url -->
+   		<property name="jdbcUrl" value="${url}" />
+   		<!-- username -->
+   		<property name="user" value="${jdbc.username}" />
+   		<!-- password -->
+   		<property name="password" value="${jdbc.password}" />
+   		<!-- 连接池中保留的最小的连接数   -->
+   		<property name="minPoolSize" value="3" />
+   		<!-- 连接池中保留的最大的连接数 默认15个   -->
+   		<property name="maxPoolSize" value="10"  />
+   		<!-- 连接池中一开始就得到整个数量的连接数   -->
+   		<property name="initialPoolSize" value="3" />
+   		<!--  连接池中的连接耗尽的时候 c3p0 一次同时生成几个连接  -->
+   		<property name="acquireIncrement" value="3" />
+   		<!-- 最大空间时间  120秒内没有使用的连接 给我关掉  -->
+   		<property name="maxIdleTime" value="120" />
+   </bean>
+   
+   <!-- 定义实体管理器工厂
+         Jpa配置   LocalContainerEntityManagerFactoryBean这个选项Spring扮演了容器的角色。完全掌管JPA -->
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+          <!-- 指定数据源 -->
+        <property name="dataSource" ref="dataSource"/>
+        <!-- 指定Jpa持久化实现厂商类,这里以Hibernate为例 -->
+        <property name="jpaVendorAdapter" ref="hibernateJpaVendorAdapter"/>
+        <!-- 指定Entity实体类包路径 -->
+        <property name="packagesToScan" >
+            <array>
+                <value>com.**.entity</value>
+            </array>
+        </property>
+        <!-- 指定JPA属性；如Hibernate中指定是否显示SQL的是否显示、方言等 -->
+        <property name="jpaProperties">
+        	<props> 
+				<!-- 指定方言(数据库) -->
+				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
+				<!-- 是否日志输出sql -->
+				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+				<!-- sql输出格式 -->
+				<prop key="hibernate.format_sql">${hibernate.format_sql}</prop>
+				<!-- 是否开启自动建表 -->
+				<prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
+				<!-- 当前会话上下文类型 -->
+				<prop key="current_session_context_class">thread</prop>
+				<!-- 公共字段处理拦截器 -->
+                <prop key="hibernate.ejb.interceptor">com.wja.base.hibernate.CommAttrSetInterceptor</prop>
+				    
+                <prop key="hibernate.cache.use_second_level_cache">true</prop>      
+                <prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</prop> 
+				<prop key="hibernate.cache.use_query_cache">true</prop>    
+                
+			</props>
+		</property>
+	</bean>
+   	
+    <!-- Hibernate对Jpa的实现 -->
+    <bean id="hibernateJpaVendorAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>
+   	
+   	<!-- 重要配置：启用扫描并自动创建代理的功能  -->
+    <jpa:repositories base-package="com.**.dao"  
+    	transaction-manager-ref="transactionManager" 
+    	entity-manager-factory-ref="entityManagerFactory"
+    	repository-impl-postfix="PlusImpl" />
+    
+    <!-- Jpa 事务管理器  -->
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+    </bean>
+	
+	<!-- 配置注解事务支持 -->
+	<tx:annotation-driven transaction-manager="transactionManager"/>
+	
+	<!-- 配置事务增强处理Bean，指定事务管理器 -->
+	<tx:advice id="transactionAdvice" transaction-manager="transactionManager">
+		<!-- 配置详细事务处理语义 -->
+		<tx:attributes>
+			<tx:method name="insert*" propagation="REQUIRED" />
+			<tx:method name="save*" propagation="REQUIRED" />
+			<tx:method name="update*" propagation="REQUIRED" />
+			<tx:method name="delete*" propagation="REQUIRED" />
+
+			<tx:method name="get*" propagation="REQUIRED" read-only="true" />
+			<tx:method name="find*" propagation="REQUIRED" read-only="true" />
+			<tx:method name="select*" propagation="REQUIRED" read-only="true" />
+			<tx:method name="load*" propagation="REQUIRED" read-only="true" />
+			<!-- 其他采用默认事务方式 -->
+			<tx:method name="*"  propagation="SUPPORTS"/>
+		</tx:attributes>
+	</tx:advice>
+
+	<!-- Spring aop事务管理 -->
+	<aop:config proxy-target-class="true">
+		<!-- 配置切入点 -->
+		<aop:pointcut id="transactionPointcut"
+			expression="execution(* com..service.*.*(..))" />
+		<!-- 指定在txAdvice切入点应用txAdvice事务增强处理 -->
+		<aop:advisor pointcut-ref="transactionPointcut"
+			advice-ref="transactionAdvice" />
+	</aop:config>
+</beans>
+
