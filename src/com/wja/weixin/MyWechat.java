@@ -5,6 +5,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.sword.wechat4j.WechatSupport;
+import org.sword.wechat4j.user.User;
+import org.sword.wechat4j.user.UserManager;
 
 /**
  * 微信服务桩
@@ -201,7 +203,10 @@ public class MyWechat extends WechatSupport
         // 用户未关注时扫描二维码事件,会多一个EventKey和Ticket节点
         String Ticket = wechatRequest.getTicket();
         
-        String result = "订阅事件FromUserName:" + FromUserName;
+        UserManager um = new UserManager();
+        User u = um.getUserInfo(FromUserName);
+        
+        String result = "订阅事件FromUserName:" + u.getNickName();
         if (StringUtils.isNotBlank(Ticket))
         {
             result = "扫描带场景值二维码事件FromUserName:" + FromUserName + ", Ticket:" + Ticket;
