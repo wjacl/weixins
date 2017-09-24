@@ -10,6 +10,9 @@
     <param-value>zh_CN</param-value>
   </context-param>
   <listener>
+	<listener-class>org.sword.wechat4j.token.TokenListener</listener-class>
+  </listener>
+  <listener>
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
   </listener>
   <!-- 应用上下文工具类，它需要通过监听来获得上下文 -->
@@ -50,7 +53,7 @@
     <!-- 不需进行认证过滤的uri地址正则模式，多个以;间隔 -->
     <init-param>
       <param-name>except-uri-patterns</param-name>
-      <param-value>/js/.*;/css/.*;/images/.*;/html/.*;/user/regist;/dict/get;/user/unameCheck</param-value>
+      <param-value>/js/.*;/css/.*;/images/.*;/html/.*;/user/regist;/dict/get;/user/unameCheck;/weixin/mess;/weixin/.*</param-value>
     </init-param>
   </filter>
  <filter-mapping>
@@ -70,7 +73,7 @@
     <!-- 不需进行鉴权的uri地址正则模式，多个以;间隔 -->
     <init-param>
       <param-name>except-uri-patterns</param-name> 
-      <param-value>/index;/logout;/jsp/form.jsp;/login;/js/.*;/css/.*;/images/.*;/html/.*</param-value>
+      <param-value>/index;/logout;/jsp/form.jsp;/login;/js/.*;/css/.*;/images/.*;/html/.*;/weixin/mess;/weixin/.*</param-value>
     </init-param>
   </filter>
   <filter-mapping>
@@ -86,6 +89,17 @@
     <filter-name>SpringOpenEntityManagerInViewFilter</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
+  
+  <servlet>
+    <description></description>
+    <display-name>WechatServlet</display-name>
+    <servlet-name>WechatServlet</servlet-name>
+    <servlet-class>com.wja.weixin.WechatServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>WechatServlet</servlet-name>
+    <url-pattern>/weixin/mess</url-pattern>
+  </servlet-mapping>
   <servlet>
   	<!-- springmvc 的dispatchServlet 名必须配置为 dispatcher。AppContext工具类中使用了这个名字 -->
     <servlet-name>dispatcher</servlet-name>
