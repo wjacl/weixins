@@ -8,6 +8,10 @@ import org.sword.wechat4j.WechatSupport;
 import org.sword.wechat4j.user.User;
 import org.sword.wechat4j.user.UserManager;
 
+import com.wja.base.web.AppContext;
+import com.wja.weixin.entity.Follwer;
+import com.wja.weixin.service.FollwerService;
+
 /**
  * 微信服务桩
  * 
@@ -200,19 +204,36 @@ public class MyWechat extends WechatSupport
     protected void subscribe()
     {
         String FromUserName = wechatRequest.getFromUserName();
-        // 用户未关注时扫描二维码事件,会多一个EventKey和Ticket节点
-        String Ticket = wechatRequest.getTicket();
         
         UserManager um = new UserManager();
         User u = um.getUserInfo(FromUserName);
-        
-        String result = "订阅事件FromUserName:" + u.getNickName();
-        if (StringUtils.isNotBlank(Ticket))
+        // 如果是订阅
+        if (u.getSubscribe() == Follwer.SUBSCRIBE)
         {
-            result = "扫描带场景值二维码事件FromUserName:" + FromUserName + ", Ticket:" + Ticket;
+            AppContext.getBean(FollwerService.class).subscribe(u);
+            // 判断关注者是否完成了注册
+            // 如未完成，则响应注册图文消息
+            this.responseNew(u.getNickName() + ",您好！ \n感谢关注，请点我完成注册，使用更多服务！",
+                "感谢关注，请点我完成注册，使用更多服务！",
+                null,
+                "https://www.baidu.com");
+            // 如已完成则响应文本：xxx您好，感谢再次关注！
+            
         }
-        logger.info(result);
-        responseText(result);
+        else
+        {
+            
+            String result = "success";
+            // 用户未关注时扫描二维码事件,会多一个EventKey和Ticket节点
+            String Ticket = wechatRequest.getTicket();
+            if (StringUtils.isNotBlank(Ticket))
+            {
+                result = "扫描带场景值二维码事件FromUserName:" + FromUserName + ", Ticket:" + Ticket;
+            }
+            
+            logger.info(result);
+            responseText(result);
+        }
     }
     
     /**
@@ -222,7 +243,8 @@ public class MyWechat extends WechatSupport
     protected void unSubscribe()
     {
         String FromUserName = wechatRequest.getFromUserName();
-        String result = "取消订阅事件FromUserName:" + FromUserName;
+        AppContext.getBean(FollwerService.class).unSubscribe(FromUserName);
+        String result = "感谢您的关注，欢迎下次关注！";
         logger.info(result);
         responseText(result);
     }

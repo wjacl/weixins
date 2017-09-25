@@ -44,6 +44,17 @@ public class AppContext implements ServletContextListener
         springContext = WebApplicationContextUtils.getWebApplicationContext(event.getServletContext());
     }
     
+    public static <T> T getBean(Class<T> c)
+    {
+        T b = AppContext.springContext.getBean(c);
+        if (b == null)
+        {
+            b = AppContext.getSpringMvcContext().getBean(c);
+        }
+        
+        return b;
+    }
+    
     public static WebApplicationContext getWebApplicationContext()
     {
         return springContext;
