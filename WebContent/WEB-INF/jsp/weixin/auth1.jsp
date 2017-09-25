@@ -3,11 +3,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>认证</title>
+	<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+	<title>认证</title>
 	<!-- 引入 WeUI -->
 	<link rel="stylesheet" href="${ctx }/css/weui.min.css"/>
-	<link rel="stylesheet" href="${ctx }/css/weui-example.css"/>
 </head>
 <body>
 
@@ -219,20 +219,6 @@
         <a href="javascript:home()"><img src="./images/icon_footer_link.png" /></a>
     </div>
 </div>
-<script type="text/javascript">
-    $(function(){
-        var $tooltips = $('.js_tooltips');
-        $('#showTooltips').on('click', function(){
-            if ($tooltips.css('display') != 'none') return;
-            // toptips的fixed, 如果有`animation`, `position: fixed`不生效
-            $('.page.cell').removeClass('slideIn');
-            $tooltips.css('display', 'block');
-            setTimeout(function () {
-                $tooltips.css('display', 'none');
-            }, 2000);
-        });
-    });
-</script>
 <script type="text/javascript" src="${ctx }/js/zepto.min.js"></script>
 <script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
 <script type="text/javascript" src="https://res.wx.qq.com/open/libs/weuijs/1.0.0/weui.min.js"></script>
