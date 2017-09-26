@@ -118,9 +118,9 @@
 		</div>
     </div>
 </div>
-    <script type="text/javascript" src="${ctx }/js/jquery-easyui/jquery.min.js"></script>
-<script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+</body>
+<script type="text/javascript" src="${ctx }/js/jquery-easyui/jquery.min.js"></script>
 <script type="text/javascript" src="https://res.wx.qq.com/open/libs/weuijs/1.1.2/weui.min.js"></script>
 <script type="text/javascript" src="${ctx }/js/app/weixin/auth1.js"></script>
-</body>
+<%@ include file="/WEB-INF/jsp/weixin/js_sdk_config.jsp" %>
 </html>
