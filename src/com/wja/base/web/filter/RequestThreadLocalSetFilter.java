@@ -18,6 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.wja.base.common.CommConstants;
 import com.wja.base.system.entity.User;
+import com.wja.base.util.DateUtil;
 import com.wja.base.web.RequestThreadLocal;
 
 /**
@@ -62,6 +63,7 @@ public class RequestThreadLocalSetFilter implements Filter
         
         // 设置引用上下文属性
         httpRequest.setAttribute("ctx", httpRequest.getContextPath());
+        httpRequest.setAttribute("copyRightYear", DateUtil.getCurrYear());
         
         // 设置语言属性
         if (httpRequest.getSession().getAttribute(CommConstants.SESSION_LANG) == null)

@@ -14,7 +14,7 @@ import org.sword.wechat4j.oauth.protocol.get_access_token.GetAccessTokenResponse
 import com.wja.base.util.Log;
 
 @Controller
-@RequestMapping("/weixin/my")
+@RequestMapping("/wx/web/my")
 public class AuthController
 {
     

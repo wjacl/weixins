@@ -16,6 +16,9 @@ document.querySelector('#formSubmitBtn').addEventListener('click', function () {
         console.log(error);
         if (!error) {
             var loading = weui.loading('提交中...');
+            uploadList.forEach(function(file){
+                file.upload();
+            });
             setTimeout(function () {
                 loading.hide();
                 weui.toast('提交成功', 3000);
@@ -24,11 +27,11 @@ document.querySelector('#formSubmitBtn').addEventListener('click', function () {
     }, regexp);
 });
 
-/* 图片自动上传 */
+/* 图片上传 */
 var uploadCount = 0, uploadList = [];
 var uploadCountDom = document.getElementById("uploadCount");
 weui.uploader('#uploader', {
-    url: 'http://' + location.hostname + ':8002/upload',
+    url: ctx + '/wx/web/upload/auth',
     auto: false,
     type: 'file',
     compress: {

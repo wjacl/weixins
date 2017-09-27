@@ -92,7 +92,7 @@
                             <ul class="weui-uploader__files" id="uploaderFiles">
                             </ul>
                             <div class="weui-uploader__input-box">
-                                <input id="uploaderInput" class="weui-uploader__input" type="file" accept="image/*" multiple/>
+                                <input id="uploaderInput" class="weui-uploader__input" type="file" accept="image/*" capture="camera" multiple/>
                             </div>
                         </div>
                     </div>
@@ -112,15 +112,11 @@
             </div>
 		</div>
     </div>
-    <div class="page__ft">
-        <div class="weui-footer">
-            <p class="weui-footer__text">Copyright &copy; 2008-2017 weui.io</p>
-		</div>
-    </div>
+	<%@ include file="/WEB-INF/jsp/weixin/footer.jsp" %>
 </div>
 </body>
 <script type="text/javascript" src="${ctx }/js/jquery-easyui/jquery.min.js"></script>
 <script type="text/javascript" src="https://res.wx.qq.com/open/libs/weuijs/1.1.2/weui.min.js"></script>
-<script type="text/javascript" src="${ctx }/js/app/weixin/auth1.js"></script>
 <%@ include file="/WEB-INF/jsp/weixin/js_sdk_config.jsp" %>
+<script type="text/javascript" src="${ctx }/js/app/weixin/auth1.js"></script>
 </html>

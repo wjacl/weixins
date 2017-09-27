@@ -6,46 +6,46 @@
 				{
 					"name" : "我的信息",
 					"type" : "view",
-					"url" : "http://18494w50i7.51mypc.cn/weixins/weixin/message/my"
+					"url" : "http://18494w50i7.51mypc.cn/weixins/wx/web/message/my"
 				},
 				{
 					"name" : "发布信息",
 					"type" : "view",
-					"url" : "http://18494w50i7.51mypc.cn/weixins/weixin/message/publish"
+					"url" : "http://18494w50i7.51mypc.cn/weixins/wx/web/message/publish"
 				},
 				{
 					"name" : "发布产品",
 					"type" : "view",
-					"url" : "http://18494w50i7.51mypc.cn/weixins/weixin/product/publish"
+					"url" : "http://18494w50i7.51mypc.cn/weixins/wx/web/product/publish"
 				},
 				{
 					"name" : "派单",
 					"type" : "view",
-					"url" : "http://18494w50i7.51mypc.cn/weixins/weixin/order/publish"
+					"url" : "http://18494w50i7.51mypc.cn/weixins/wx/web/order/publish"
 				},
 				{
 					"name" : "历史发布",
 					"type" : "view",
-					"url" : "http://18494w50i7.51mypc.cn/weixins/weixin/history/publish"
+					"url" : "http://18494w50i7.51mypc.cn/weixins/wx/web/history/publish"
 				}
 			]
 		},
 		{
 			"name" : "发现",
 			"type" : "view",
-			"url" : "http://18494w50i7.51mypc.cn/weixins/weixin/discovery"},
+			"url" : "http://18494w50i7.51mypc.cn/weixins/wx/web/discovery"},
 		{
 			"name":"我",
 			"sub_button" : [
 				{
 					"name" : "认证",
 					"type" : "view",
-					"url" : "http://18494w50i7.51mypc.cn/weixins/weixin/my/auth"
+					"url" : "http://18494w50i7.51mypc.cn/weixins/wx/web/my/auth"
 				},
 				{
 					"name" : "费用",
 					"type" : "view",
-					"url" : "http://18494w50i7.51mypc.cn/weixins/weixin/my/expense"
+					"url" : "http://18494w50i7.51mypc.cn/weixins/wx/web/my/expense"
 				}
 			]	
 		}

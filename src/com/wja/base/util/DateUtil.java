@@ -30,6 +30,17 @@ public class DateUtil
     public static final DateFormat DATE_MINUTE_DF = new SimpleDateFormat(DATE_MINUTE);
     
     /**
+     * 获取当前年份
+     * 
+     * @return
+     * @see [类、类#方法、类#成员]
+     */
+    public static final int getCurrYear()
+    {
+        return Calendar.getInstance().get(Calendar.YEAR);
+    }
+    
+    /**
      * 
      * 获得当前日期的标准格式 yyyy-MM-dd字符串
      * 
