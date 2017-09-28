@@ -40,12 +40,17 @@
 				{
 					"name" : "认证",
 					"type" : "view",
-					"url" : "http://18494w50i7.51mypc.cn/weixins/wx/web/my/auth"
+					"url" : "http://18494w50i7.51mypc.cn/weixins/wx/web/auth/auth"
 				},
 				{
 					"name" : "费用",
 					"type" : "view",
-					"url" : "http://18494w50i7.51mypc.cn/weixins/wx/web/my/expense"
+					"url" : "http://18494w50i7.51mypc.cn/weixins/wx/web/expense/my"
+				},
+				{
+					"name" : "足迹",
+					"type" : "view",
+					"url" : "http://18494w50i7.51mypc.cn/weixins/wx/web/view/my"
 				}
 			]	
 		}

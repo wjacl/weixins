@@ -65,7 +65,12 @@
             <div class="weui-cell">
                 <div class="weui-cell__hd"><label for="" class="weui-label">联系地址：</label></div>
                 <div class="weui-cell__bd">
-                    <input class="weui-input" name="location" type="text" value=""/>
+                    <input class="weui-input" name="address" type="text" readOnly/>
+                </div>
+                <div class="weui-cell__ft">
+                	<input name="lat" type="hidden"/>
+                	<input name="lng" type="hidden"/>
+                    <a class="weui-vcode-btn" id="location-btn" href="javascript:;">地图选址</a>
                 </div>
             </div>
             <div class="weui-cell" id="uploader">
@@ -95,8 +100,36 @@
 	
 	<%@ include file="/WEB-INF/jsp/weixin/footer.jsp" %>
 </div>
+<iframe id="mapPage" width="100%" height="100%" frameborder=0 
+    src="http://apis.map.qq.com/tools/locpicker?search=1&type=1&key=OB4BZ-D4W3U-B7VVO-4PJWW-6TKDJ-WPB77&referer=myapp">
+</iframe> 
 </body>
 <%@ include file="/WEB-INF/jsp/weixin/comm_js.jsp" %>
 <%@ include file="/WEB-INF/jsp/weixin/js_sdk_config.jsp" %>
 <script type="text/javascript" src="${ctx }/js/app/weixin/auth1.js"></script>
+<script>
+	var formData = {};
+	$("#cc2Pre").on("click",function(){
+		location.href = ctx + "/wx/web/auth/toCategory?category=" + formData.category;
+	});
+	
+	$("#mapPage").hide();
+	$("#location-btn").on("click",function(){
+		$("#mapPage").show();
+		$(".page").hide();
+	});
+
+    window.addEventListener('message', function(event) {
+        // 接收位置信息，用户选择确认位置点后选点组件会触发该事件，回传用户的位置信息
+        var loc = event.data;
+        if (loc && loc.module == 'locationPicker') {//防止其他应用也会向该页面post信息，需判断module是否为'locationPicker'
+          console.log('location', loc); 
+			$("input[name='address']").val(loc.poiaddress + "-" + loc.poiname);
+			$("input[name='lat']").val(loc.latlng.lat);
+			$("input[name='lng']").val(loc.latlng.lng);
+          	$("#mapPage").hide();
+  			$(".page").show();
+        }                                
+    }, false);
+</script>
 </html>

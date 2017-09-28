@@ -23,9 +23,12 @@ public class MyWechat extends WechatSupport
     
     private static Logger logger = Logger.getLogger(MyWechat.class);
     
+    private HttpServletRequest request;
+    
     public MyWechat(HttpServletRequest request)
     {
         super(request);
+        this.request = request;
     }
     
     /**
@@ -203,20 +206,21 @@ public class MyWechat extends WechatSupport
     @Override
     protected void subscribe()
     {
-        String FromUserName = wechatRequest.getFromUserName();
+        String fromUserName = wechatRequest.getFromUserName();
         
         UserManager um = new UserManager();
-        User u = um.getUserInfo(FromUserName);
+        User u = um.getUserInfo(fromUserName);
         // 如果是订阅
         if (u.getSubscribe() == Follwer.SUBSCRIBE)
         {
             AppContext.getBean(FollwerService.class).subscribe(u);
             // 判断关注者是否完成了注册
             // 如未完成，则响应注册图文消息
-            this.responseNew(u.getNickName() + ",您好！ \n感谢关注，请点我完成注册，使用更多服务！",
-                "感谢关注，请点我完成注册，使用更多服务！",
+            this.responseNew(u.getNickName() + ",您好！ \n感谢关注，请点我完成认证，方便我们为您提供更多服务！",
+                "感谢关注，请点我完成认证，方便我们为您提供更多服务！",
                 null,
-                "https://www.baidu.com");
+                request.getScheme() + "://" + request.getServerName() + request.getContextPath()
+                    + "/wx/web/auth/auth?openId=" + fromUserName);
             // 如已完成则响应文本：xxx您好，感谢再次关注！
             
         }
@@ -228,7 +232,7 @@ public class MyWechat extends WechatSupport
             String Ticket = wechatRequest.getTicket();
             if (StringUtils.isNotBlank(Ticket))
             {
-                result = "扫描带场景值二维码事件FromUserName:" + FromUserName + ", Ticket:" + Ticket;
+                result = "扫描带场景值二维码事件FromUserName:" + fromUserName + ", Ticket:" + Ticket;
             }
             
             logger.info(result);

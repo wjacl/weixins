@@ -44,7 +44,7 @@ var jsApiConfig = {
 		}
 		var currUrl = location.href.split('#')[0];
 		
-		$.ajax({url:ctx + "/weixin/comm/getJsApiSignature",
+		$.ajax({url:ctx + "/wx/web/comm/getJsApiSignature",
 			type:"POST",
 			data:{url:currUrl},
 			dataType:"json",

@@ -13,7 +13,7 @@ import org.sword.wechat4j.menu.MenuManager;
 import com.alibaba.fastjson.JSON;
 
 @Controller
-@RequestMapping("/weixin/menu")
+@RequestMapping("/wx/menu")
 public class GenerateMenu
 {
     @RequestMapping("create")
