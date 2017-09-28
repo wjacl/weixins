@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.sword.wechat4j.jsapi.JsApiManager;
 
 @Controller
-@RequestMapping("/weixin/comm")
+@RequestMapping("/wx/web/comm")
 public class CommonController
 {
     

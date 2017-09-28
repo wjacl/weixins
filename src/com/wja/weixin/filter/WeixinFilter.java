@@ -19,6 +19,7 @@ import org.sword.wechat4j.oauth.protocol.get_access_token.GetAccessTokenRequest;
 import org.sword.wechat4j.oauth.protocol.get_access_token.GetAccessTokenResponse;
 
 import com.wja.base.util.Log;
+import com.wja.base.web.RequestThreadLocal;
 
 /**
  * Servlet Filter implementation class WeixinFilter
@@ -56,6 +57,7 @@ public class WeixinFilter implements Filter
         String openId = (String)request.getSession().getAttribute("openId");
         if (openId != null)
         {
+            RequestThreadLocal.openId.set(openId);
             chain.doFilter(request, response);
         }
         else
@@ -65,6 +67,7 @@ public class WeixinFilter implements Filter
             if (StringUtils.isNotBlank(openId))
             {
                 request.getSession().setAttribute("openId", openId);
+                RequestThreadLocal.openId.set(openId);
                 chain.doFilter(request, response);
             }
             else
@@ -78,6 +81,7 @@ public class WeixinFilter implements Filter
                         GetAccessTokenResponse tr = OAuthManager.getAccessToken(new GetAccessTokenRequest(code));
                         openId = tr.getOpenid();
                         request.getSession().setAttribute("openId", openId);
+                        RequestThreadLocal.openId.set(openId);
                         chain.doFilter(request, response);
                     }
                     catch (OAuthException e)

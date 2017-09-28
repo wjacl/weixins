@@ -1,52 +1,44 @@
 package com.wja.weixin.controller;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.sword.wechat4j.oauth.OAuthException;
-import org.sword.wechat4j.oauth.OAuthManager;
-import org.sword.wechat4j.oauth.protocol.get_access_token.GetAccessTokenRequest;
-import org.sword.wechat4j.oauth.protocol.get_access_token.GetAccessTokenResponse;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.wja.base.util.Log;
+import com.wja.base.common.OpResult;
+import com.wja.base.web.RequestThreadLocal;
 
 @Controller
-@RequestMapping("/wx/web/my")
+@RequestMapping("/wx/web/auth")
 public class AuthController
 {
     
-    @RequestMapping("auth")
-    public String auth(HttpServletRequest request, HttpSession session, String code)
+    @RequestMapping(value = {"auth", "toCategory"})
+    public String auth()
     {
-        String openId = (String)session.getAttribute("openId");
+        String openId = RequestThreadLocal.openId.get();
         
-        if (StringUtils.isBlank(openId))
-        {
-            if (StringUtils.isBlank(code))
-            {
-                String redUrl = OAuthManager.generateRedirectURI(request.getScheme() + "://" + request.getServerName()
-                    + request.getContextPath() + "/weixin/my/auth", "snsapi_base", "aa");
-                Log.LOGGER.info(redUrl);
-                return "redirect:" + redUrl;
-            }
-            else
-            {
-                try
-                {
-                    GetAccessTokenResponse tr = OAuthManager.getAccessToken(new GetAccessTokenRequest(code));
-                    openId = tr.getOpenid();
-                    session.setAttribute("openId", openId);
-                }
-                catch (OAuthException e)
-                {
-                    Log.LOGGER.error("网页获取用户的openId异常!", e);
-                    return "weixin/error";
-                }
-            }
-        }
-        return "weixin/auth1";
+        // 获得用户的category
+        
+        return "weixin/auth/auth1";
     }
+    
+    @RequestMapping("saveCategory")
+    @ResponseBody
+    public Object saveCategory(String openId, String category)
+    {
+        // 保存用户的经营类别
+        
+        // 跳转到对应的信息填写页
+        return OpResult.ok();
+    }
+    
+    @RequestMapping("toInfo")
+    public String toInfo(String openId, String category)
+    {
+        // 保存用户的经营类别
+        
+        // 跳转到对应的信息填写页
+        return "weixin/auth/info" + category;
+    }
+    
 }

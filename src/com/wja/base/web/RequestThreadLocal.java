@@ -12,4 +12,6 @@ public class RequestThreadLocal
     public static ThreadLocal<HttpServletResponse> response = new ThreadLocal<>();
     
     public static ThreadLocal<User> currUser = new ThreadLocal<>();
+    
+    public static ThreadLocal<String> openId = new ThreadLocal<>();
 }
