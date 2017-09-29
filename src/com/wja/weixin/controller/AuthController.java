@@ -41,4 +41,20 @@ public class AuthController
         return "weixin/auth/info" + category;
     }
     
+    @RequestMapping("saveInfo")
+    public String saveInfo()
+    {
+        
+        return "redirect:setBrand";
+    }
+    
+    @RequestMapping("setBrand")
+    public String setBrand(String openId)
+    {
+        // 保存用户的经营类别
+        
+        // 跳转到对应的信息填写页
+        return "weixin/auth/brand";
+    }
+    
 }

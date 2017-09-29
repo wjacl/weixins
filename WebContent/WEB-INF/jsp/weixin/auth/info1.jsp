@@ -15,7 +15,7 @@
     </div>	
 	<!-- 工厂信息填写  -->
     <div class="page__bd">
-      <form action="" method="post" id="form">
+      <form action="saveInfo" method="post" id="form">
 		<div class="weui-cells weui-cells_form" style="margin-top:5px">    	
             <div class="weui-cell">
                 <div class="weui-cell__hd"><label class="weui-label">厂名：</label></div>
@@ -49,7 +49,7 @@
                 	<input class="weui-input" type="tel" name="mphone" required pattern="^\d{11}$" maxlength="11" placeholder="请输入你的手机号" emptyTips="请输入手机号" notMatchTips="请输入正确的手机号">
                 </div>
                 <div class="weui-cell__ft">
-                    <button class="weui-vcode-btn">获取验证码</button>
+                    <a class="weui-vcode-btn" href="javascript:;" id="getVcode">获取验证码</a>
                 </div>
             </div>
             <div class="weui-cell">
@@ -96,7 +96,8 @@
 			</div>
         <div class="weui-btn-area_inline">
             <a class="weui-btn weui-btn_primary" href="toCategory" id="cc2Pre">上一步</a>
-            <a class="weui-btn weui-btn_primary" href="javascript:" id="formSubmitBtn">确 定</a>
+            <a class="weui-btn weui-btn_primary" href="javascript:" id="toBrand">下一步</a>
+            <!-- <a class="weui-btn weui-btn_primary" href="javascript:" id="formSubmitBtn">下一步</a> -->
         </div>
     </div>
     </form>
@@ -109,12 +110,48 @@
 </body>
 <%@ include file="/WEB-INF/jsp/weixin/comm_js.jsp" %>
 <%@ include file="/WEB-INF/jsp/weixin/js_sdk_config.jsp" %>
-<script type="text/javascript" src="${ctx }/js/app/weixin/auth1.js"></script>
+<script type="text/javascript" src="${ctx }/js/app/weixin/form.js"></script>
+<script type="text/javascript" src="${ctx }/js/app/weixin/img_upload.js"></script>
 <script>
 	var formData = {};
 	$("#cc2Pre").on("click",function(){
 		location.href = ctx + "/wx/web/auth/toCategory?category=" + formData.category;
 	});
+	
+	$("#toBrand").on("click",function(){
+
+		$('#form').submit();
+	});
+	
+	var uploadCountDom = document.getElementById("uploadCount");
+
+	var imgUploader = new ImgUploader('uploader',ctx + '/wx/web/upload/auth',false,3,1,'uploadCount','uploaderFiles');
+	
+	function doFormSubmit(){
+		var re = imgUploader.upload();
+		if(re){
+			var xx = 1;
+			function ccck(){
+				if(imgUploader.uploadedFileNames.length < imgUploader.uploadList.length && xx < 10){
+					xx++;
+					setTimeout(ccck,300);
+				}
+				else{
+					if(imgUploader.uploadedFileNames.length == imgUploader.uploadList.length){
+						console.log(imgUploader.uploadedFileNames);
+						//将文件加入到表单中提交
+						$('#form').submit();
+					}
+					else {
+						loading.hide();
+						weui.alert('请检查一下图片是否都已上传，待都完成上传后，再点击 下一步');
+					}
+				}
+			}
+			setTimeout(ccck,300);
+		}
+	}
+	
 	
 	$("#mapPage").hide();
 	$("#location-btn").on("click",function(){
