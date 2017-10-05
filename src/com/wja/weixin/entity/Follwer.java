@@ -5,10 +5,13 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Where;
+
 import com.wja.base.common.CommConstants;
 
 @Entity
 @Table(name = "t_wx_follwers")
+@Where(clause = " valid = " + CommConstants.DATA_VALID)
 public class Follwer
 {
     public static final int SUBSCRIBE = 1;

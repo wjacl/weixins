@@ -131,6 +131,15 @@ function ImgUploader(domId,url,auto,max,min,countDomId,uploaderFilesDomId,filePa
          });
 		 
 		 return true;
+	};
+	
+	this.getUploadedFileNameStr = function(){
+		var fns = [];
+		for(var i in this.uploadedFileNames){
+			fns[this.uploadedFileNames[i].order - 1] = this.uploadedFileNames[i].fileName;
+		}
+		
+		return fns.join(";");
 	}
 }
 

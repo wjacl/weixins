@@ -20,7 +20,7 @@
                     <p>厂家 (有实体店、有工厂等)</p>
                 </div>
                 <div class="weui-cell__ft">
-                    <input type="radio" class="weui-check" name="category" value="1" id="x11"/>
+                    <input type="radio" class="weui-check" name="category" value="1" id="x11" ${fi.category eq "1" ? "checked":"" }/>
                     <span class="weui-icon-checked"></span>
                 </div>
             </label>
@@ -29,7 +29,7 @@
                     <p>商家 (有店铺、附有小型工厂等)</p>
                 </div>
                 <div class="weui-cell__ft">
-                    <input type="radio" class="weui-check" name="category" value="2" id="x12"/>
+                    <input type="radio" class="weui-check" name="category" value="2" id="x12" ${fi.category eq "2" ? "checked":"" }/>
                     <span class="weui-icon-checked"></span>
                 </div>
             </label>
@@ -38,7 +38,7 @@
                     <p>专家 (行业专家)</p>
                 </div>
                 <div class="weui-cell__ft">
-                    <input type="radio" class="weui-check" name="category" value="3" id="x13"/>
+                    <input type="radio" class="weui-check" name="category" value="3" id="x13"  ${fi.category eq "3" ? "checked":"" }/>
                     <span class="weui-icon-checked"></span>
                 </div>
             </label>
@@ -47,7 +47,7 @@
                     <p>安装工 (有专业技能等)</p>
                 </div>
                 <div class="weui-cell__ft">
-                    <input type="radio" class="weui-check" name="category" value="4" id="x14"/>
+                    <input type="radio" class="weui-check" name="category" value="4" id="x14"  ${fi.category eq "4" ? "checked":"" }/>
                     <span class="weui-icon-checked"></span>
                 </div>
             </label>
@@ -56,7 +56,7 @@
                     <p>个人 (以自然人身份)</p>
                 </div>
                 <div class="weui-cell__ft">
-                    <input type="radio" class="weui-check" name="category" value="5" id="x15"/>
+                    <input type="radio" class="weui-check" name="category" value="5" id="x15"  ${fi.category eq "5" ? "checked":"" }/>
                     <span class="weui-icon-checked"></span>
                 </div>
             </label>
@@ -65,7 +65,7 @@
                     <p>其他</p>
                 </div>
                 <div class="weui-cell__ft">
-                    <input type="radio" class="weui-check" name="category" value="6" id="x16"/>
+                    <input type="radio" class="weui-check" name="category" value="6" id="x16"  ${fi.category eq "6" ? "checked":"" }/>
                     <span class="weui-icon-checked"></span>
                 </div>
             </label>
@@ -79,8 +79,12 @@
 </body>
 <%@ include file="/WEB-INF/jsp/weixin/comm_js.jsp" %>
 <script>
-	var formData = {category : '${category}',openId:'${openId}'};
+	var formData = {category : '${fi.category}',openId:'${fi.openId}'};
+	if(!formData.category){
+		$("#cc1Pre").hide();
+	}
 	$("input[name='category']").on("click",function(){
+		$("#cc1Pre").hide();
 		var cval = $(this).val();
 		if(formData.category != cval){
 			formData.category = cval;
@@ -91,18 +95,18 @@
 				async: false,
 				success:function(data){
 					if(data.status == 200){
-						location.href = ctx + "/wx/web/auth/toInfo?category=" + formData.category;
+						location.href = ctx + "/wx/web/auth/toInfo?openId=" + formData.openId;
 					}
 				}
 			});
 		}
 		else {
-			location.href = ctx + "/wx/web/auth/toInfo?category=" + formData.category;
+			location.href = ctx + "/wx/web/auth/toInfo?openId=" + formData.openId;
 		}
 	});
 	
 	$("#cc1Pre").on("click",function(){
-		location.href = ctx + "/wx/web/auth/toInfo?category=" + formData.category;
+		location.href = ctx + "/wx/web/auth/toInfo?openId=" + formData.openId;
 	});
 </script>
 </html>

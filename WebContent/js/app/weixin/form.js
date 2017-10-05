@@ -15,12 +15,11 @@ document.querySelector('#formSubmitBtn').addEventListener('click', function () {
     weui.form.validate('#form', function (error) {
         console.log(error);
         if (!error) {
-            var loading = weui.loading('提交中...');
-
             if(doFormSubmit){
             	doFormSubmit();
             }
             else {
+                var loading = weui.loading('提交中...');
             	$('#form').submit();
                 
                 setTimeout(function () {

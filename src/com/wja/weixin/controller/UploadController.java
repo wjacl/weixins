@@ -1,13 +1,20 @@
 package com.wja.weixin.controller;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URLConnection;
 import java.util.Calendar;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -15,7 +22,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.wja.base.util.Log;
 import com.wja.base.web.AppContext;
+import com.wja.weixin.entity.UpFile;
 import com.wja.weixin.service.CommBaseService;
+import com.wja.weixin.service.UpFileService;
 
 @Controller
 @RequestMapping("/wx/web/upload")
@@ -23,10 +32,15 @@ public class UploadController
 {
     private static String rootDir = AppContext.getSysParam("wx.upload.save.rootdir");
     
+    public static final String FILE_BUSI_TYPE_AUTH = "auth";
+    
     private static FileNameGer fileNameGer = new FileNameGer();
     
     @Autowired
     private CommBaseService cbs;
+    
+    @Autowired
+    private UpFileService upFileService;
     
     @RequestMapping("auth")
     @ResponseBody
@@ -49,7 +63,9 @@ public class UploadController
             try
             {
                 myfile.transferTo(new File(dir, fileName));
-                return new Result(path + "/" + fileName, null);
+                UpFile uf = new UpFile(path + "/" + fileName, FILE_BUSI_TYPE_AUTH);
+                uf = this.upFileService.save(uf);
+                return new Result(uf.getId(), null);
             }
             catch (IllegalStateException | IOException e)
             {
@@ -61,6 +77,43 @@ public class UploadController
         {
             return new Result(null, "没有openId,不可上传文件！");
         }
+    }
+    
+    @RequestMapping("get/{id}")
+    public void getById(@PathVariable("id") String id, HttpServletResponse response)
+    {
+        if (StringUtils.isNotBlank(id))
+        {
+            UpFile uf = this.upFileService.get(UpFile.class, id);
+            if (uf != null)
+            {
+                File file = new File(rootDir + uf.getFileName());
+                String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+                if (mimeType != null)
+                {
+                    response.setContentType(mimeType);
+                }
+                
+                if (file.exists())
+                {
+                    try (InputStream in = new FileInputStream(file); OutputStream os = response.getOutputStream();)
+                    {
+                        byte[] bf = new byte[1024 * 8];
+                        int count = 0;
+                        while ((count = in.read(bf)) != -1)
+                        {
+                            os.write(bf, 0, count);
+                            os.flush();
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Log.LOGGER.error("文件获取，读取文件异常", e);
+                    }
+                }
+            }
+        }
+        
     }
     
     @RequestMapping("comm")
