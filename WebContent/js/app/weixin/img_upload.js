@@ -12,7 +12,7 @@ function ImgUploader(domId,url,auto,max,min,countDomId,uploaderFilesDomId,filePa
 		this.min = min;
 	}
 	
-	this.uploadCountDom = document.getElementById(countDomId == undefined ? domId + "Count" : '#' + countDomId);
+	this.uploadCountDom = document.getElementById(countDomId == undefined ? domId + "Count" : countDomId);
 	var uploadObj = this;
 	weui.uploader("#" + domId, {
 	    url: url,
@@ -94,8 +94,8 @@ function ImgUploader(domId,url,auto,max,min,countDomId,uploaderFilesDomId,filePa
 	        className: 'custom-name',
 	        onDelete: function(){
 	            weui.confirm('确定删除该图片？', function(){
-	                --this.uploadCount;
-	                this.uploadCountDom.innerHTML = this.uploadCount;
+	                --uploadObj.uploadCount;
+	                uploadObj.uploadCountDom.innerHTML = uploadObj.uploadCount;
 
 	                var index;
 	                for (var i = 0, len = uploadObj.uploadList.length; i < len; ++i) {
