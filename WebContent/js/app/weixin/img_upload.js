@@ -11,9 +11,17 @@ function ImgUploader(domId,url,auto,max,min,countDomId,uploaderFilesDomId,filePa
 	if(min){
 		this.min = min;
 	}
-	
+
 	this.uploadCountDom = document.getElementById(countDomId == undefined ? domId + "Count" : countDomId);
 	var uploadObj = this;
+	
+	$("#" + uploaderFilesDomId).children("li").each(function(index){
+		uploadObj.uploadedFileNames.push({fileName:$(this).data("id"),old:true});
+	});
+
+	this.uploadCount = this.uploadedFileNames.length;
+	this.uploadCountDom.innerHTML = this.uploadCount;
+	
 	weui.uploader("#" + domId, {
 	    url: url,
 	    auto: auto,
@@ -62,7 +70,7 @@ function ImgUploader(domId,url,auto,max,min,countDomId,uploaderFilesDomId,filePa
 	    },
 	    onSuccess: function (ret) {
 	    	if(ret.fileName){
-	    		uploadObj.uploadedFileNames.push({fileName:ret.fileName,order:this.id});
+	    		uploadObj.uploadedFileNames.push({fileName:ret.fileName,order:this.id,old:false});
 	    		return true;
 	    	}
 	    	else {
@@ -108,6 +116,17 @@ function ImgUploader(domId,url,auto,max,min,countDomId,uploaderFilesDomId,filePa
 	                if(index !== undefined) {
 	                	uploadObj.uploadList.splice(index, 1);
 	                }
+	                else{
+	                	for(var i = 0,len = uploadObj.uploadedFileNames.length; i < len; ++i ){
+	                		if(uploadObj.uploadedFileNames[i].fileName == id){
+	                			index = i;
+	                			break;
+	                		}
+	                	}               	
+	                	if(index !== undefined) {
+	                	uploadObj.uploadedFileNames.splice(index, 1);
+	                	}
+	                }
 	                target.remove();
 	                gallery.hide();
 	            });
@@ -135,8 +154,18 @@ function ImgUploader(domId,url,auto,max,min,countDomId,uploaderFilesDomId,filePa
 	
 	this.getUploadedFileNameStr = function(){
 		var fns = [];
-		for(var i in this.uploadedFileNames){
-			fns[this.uploadedFileNames[i].order - 1] = this.uploadedFileNames[i].fileName;
+		var oldCount = -1;
+		for(var i = 0,len = this.uploadedFileNames.length;i < len;i++){
+			var obj = this.uploadedFileNames[i];
+			if(obj.old){
+				fns[i] = obj.fileName
+			}
+			else {
+				if(oldCount == -1){
+					oldCount = i
+				}
+				fns[obj.order - 1 + oldCount] = obj.fileName
+			}
 		}
 		
 		return fns.join(";");

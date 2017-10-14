@@ -83,7 +83,7 @@
                         <div class="weui-uploader__bd">
                             <ul class="weui-uploader__files" id="uploaderFiles">
                             <c:forTokens items="${fi.certificates }" var="it" delims=";">
-                                <li class="weui-uploader__file" style="background-image:url(${ctx}/wx/web/upload/${it })" data-id="${it }"></li>
+                                <li class="weui-uploader__file" style="background-image:url(${ctx}/wx/web/upload/get/${it })" data-id="${it }"></li>
                             </c:forTokens>
                             </ul>
                             <div class="weui-uploader__input-box">
@@ -138,7 +138,7 @@
 					setTimeout(ccck,300);
 				}
 				else{
-					if(imgUploader.uploadedFileNames.length == imgUploader.uploadList.length){
+					if(imgUploader.uploadedFileNames.length == imgUploader.uploadCount){
 						$("input[name='certificates']").val(imgUploader.getUploadedFileNameStr());
 						var loading = weui.loading('提交中...');
 						//将文件加入到表单中提交
