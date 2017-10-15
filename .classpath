@@ -33,5 +33,7 @@
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/aliyun-java-sdk-core-3.3.1.jar" sourcepath="E:/项目/微信公众号项目/dysms_java/java/api_sdk"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/aliyun-java-sdk-dysmsapi-1.0.0.jar" sourcepath="E:/项目/微信公众号项目/dysms_java/java/api_sdk"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

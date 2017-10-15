@@ -37,42 +37,6 @@
                     <i class="weui-icon-warn"></i>
                 </div>
             </div>
-            <div class="weui-cell">
-                <div class="weui-cell__hd"><label for="" class="weui-label">地址：</label></div>
-                <div class="weui-cell__bd">
-                    <input class="weui-input" name="address" type="text" readOnly required value="${fi.address }" emptyTips="请地图选择地址" />
-                </div>
-                <div class="weui-cell__ft">
-                	<input name="lat" type="hidden" value="${fi.lat }"/>
-                	<input name="lng" type="hidden" value="${fi.lng }"/>
-                    <a class="weui-vcode-btn" id="location-btn" href="javascript:;">地图选址</a>
-                </div>
-            </div>
-            <div class="weui-cell">
-                <div class="weui-cell__hd">
-                    <label class="weui-label">手机号：</label>
-                </div>
-                <div class="weui-cell__bd">
-                	<input class="weui-input" type="tel" name="mphone" value="${fi.mphone }" required pattern="^\d{11}$" maxlength="11" placeholder="请输入你的手机号" emptyTips="请输入手机号" notMatchTips="请输入正确的手机号">
-                </div>
-                <div class="weui-cell__ft">
-                    <a class="weui-vcode-btn" href="javascript:;" id="getVcode">获取验证码</a>
-                </div>
-            </div>
-            <div class="weui-cell">
-                <div class="weui-cell__hd">
-                    <label class="weui-label">短信验证码：</label>
-                </div>
-                <div class="weui-cell__bd">
-                    <input class="weui-input" name="smsAuthCode" type="tel" placeholder="请输入短信验证码" />
-                </div>
-            </div>
-            <div class="weui-cell">
-                <div class="weui-cell__hd"><label for="" class="weui-label">微信号：</label></div>
-                <div class="weui-cell__bd">
-                    <input class="weui-input" name="wechat" type="text" value="${fi.wechat }" required placeholder="请输入你的微信号" emptyTips="请输入你的微信号"/>
-                </div>
-            </div>
             <div class="weui-cell" id="uploader">
                 <div class="weui-cell__bd">
                     <div class="weui-uploader">
@@ -94,6 +58,42 @@
                 </div>
 			</div>
 			<input type="hidden" name="certificates">
+            <div class="weui-cell">
+                <div class="weui-cell__hd"><label for="" class="weui-label">地址：</label></div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" name="address" type="text" readOnly required value="${fi.address }" emptyTips="请地图选择地址" />
+                </div>
+                <div class="weui-cell__ft">
+                	<input name="lat" type="hidden" value="${fi.lat }"/>
+                	<input name="lng" type="hidden" value="${fi.lng }"/>
+                    <a class="weui-vcode-btn" id="location-btn" href="javascript:;">地图选址</a>
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__hd">
+                    <label class="weui-label">手机号：</label>
+                </div>
+                <div class="weui-cell__bd">
+                	<input class="weui-input" type="tel" name="mphone" value="${fi.mphone }" required pattern="^\d{11}$" maxlength="11" placeholder="请输入你的手机号" emptyTips="请输入手机号" notMatchTips="请输入正确的手机号">
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__hd">
+                    <label class="weui-label">短信验证码：</label>
+                </div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" name="smsAuthCode" type="tel" placeholder="请输入短信验证码" />
+                </div>
+                <div class="weui-cell__ft">
+                    <a class="weui-vcode-btn" href="javascript:;" id="getVcode">获取验证码</a>
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__hd"><label for="" class="weui-label">微信号：</label></div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" name="wechat" type="text" value="${fi.wechat }" required placeholder="请输入你的微信号" emptyTips="请输入你的微信号"/>
+                </div>
+            </div>
 			<input type="hidden" name="openId" value="${fi.openId }">
         <div class="weui-btn-area_inline">
             <a class="weui-btn weui-btn_primary" href="toCategory" id="cc2Pre">上一步</a>
@@ -118,6 +118,51 @@
 	$("#cc2Pre").on("click",function(){
 		location.href = ctx + "/wx/web/auth/toCategory?category=" + formData.category;
 	});
+	
+	$("input[name='smsAuthCode']").on("change",function(){
+		var vCode = $(this).val();
+		if(vCode.length == 4){
+			clearInterval(vcodeInterval);
+		}
+	})
+	
+	var vcodeInterval;
+	
+	function phoneAuth(){
+		var phoneNumbers = $("input[name='mphone']").val();
+		if(phoneNumbers.length != 11){
+			weui.alert('请先输入正确的手机号！');
+		}
+		else{
+			$.getJSON(ctx + "/wx/web/auth/phoneAuth",{phoneNumbers:phoneNumbers},function(data){
+				if(Constants.ResultStatus_Ok == data.status){
+					$("#getVcode").off("click");
+					$("input[name='smsAuthCode']").removeAttr("readOnly");
+					$("input[name='smsAuthCode']").focus();
+					var tt = 120;
+					function tf(){
+						tt--;
+						if(tt > 0) {
+							$("#getVcode").html(tt+"秒");
+						}
+						else {
+							clearInterval(vcodeInterval);
+							$("#getVcode").html("重新获取");
+							$("#getVcode").on("click",phoneAuth);
+						}
+					};
+					vcodeInterval = setInterval(tf(),1000);
+				}
+				else{
+					if(data.mess){
+						weui.alert(data.mess);
+					}
+				}
+			});
+		}
+	}
+	
+	$("#getVcode").on("click",phoneAuth);
 	
 	/* $("#toBrand").on("click",function(){
 

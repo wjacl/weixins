@@ -1,5 +1,7 @@
 package com.wja.weixin.controller;
 
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -8,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.wja.base.common.OpResult;
+import com.wja.base.common.service.SmsService;
 import com.wja.base.util.BeanUtil;
 import com.wja.base.web.RequestThreadLocal;
 import com.wja.weixin.entity.FollwerInfo;
@@ -19,6 +22,9 @@ public class AuthController
 {
     @Autowired
     private FollwerInfoService follwerInfoService;
+    
+    @Autowired
+    private SmsService smsService;
     
     @RequestMapping(value = {"auth", "toCategory"})
     public String auth(Model model)
@@ -35,6 +41,23 @@ public class AuthController
         model.addAttribute("fi", fi);
         
         return "weixin/auth/auth1";
+    }
+    
+    @RequestMapping("phoneAuth")
+    @ResponseBody
+    public Object sendPhoneNumbersAuthCode(String phoneNumbers, HttpSession session)
+    {
+        String code = this.smsService.sendPhoneNumberAuthSms(phoneNumbers);
+        if (code != null)
+        {
+            session.setAttribute("phoneAuthCode", code);
+            session.setAttribute("phoneAuthNumbers", phoneNumbers);
+            session.setAttribute("phoneAuthStartTime", System.currentTimeMillis());
+            
+            return OpResult.ok();
+        }
+        
+        return OpResult.error("验证码发送失败，请检查手机号是否正确，然后重试!", null);
     }
     
     @RequestMapping("saveCategory")
@@ -81,9 +104,10 @@ public class AuthController
     }
     
     @RequestMapping("saveInfo")
-    public String saveInfo(FollwerInfo fi)
+    public String saveInfo(FollwerInfo fi, HttpSession session)
     {
         FollwerInfo dfi = this.follwerInfoService.get(FollwerInfo.class, fi.getOpenId());
+        
         BeanUtil.copyPropertiesIgnoreNull(fi, dfi);
         this.follwerInfoService.update(dfi);
         return "redirect:setBrand";

@@ -6,4 +6,5 @@
 	//-->
 	</script>
 	<script type="text/javascript" src="${ctx }/js/jquery-easyui/jquery.min.js"></script>
+	<script type="text/javascript" src="${ctx }/js/constants.js"></script>
 	<script type="text/javascript" src="https://res.wx.qq.com/open/libs/weuijs/1.1.2/weui.min.js"></script>
