@@ -82,7 +82,7 @@
                     <label class="weui-label">短信验证码：</label>
                 </div>
                 <div class="weui-cell__bd">
-                    <input class="weui-input" name="smsAuthCode" type="tel" placeholder="请输入短信验证码" />
+                    <input class="weui-input" name="smsAuthCode" type="tel" placeholder="请输入短信验证码" required/>
                 </div>
                 <div class="weui-cell__ft">
                     <a class="weui-vcode-btn" href="javascript:;" id="getVcode">获取验证码</a>
@@ -119,12 +119,52 @@
 		location.href = ctx + "/wx/web/auth/toCategory?category=" + formData.category;
 	});
 	
+	$("input[name='mphone']").on("change",function(){
+		var phoneNumbers = $(this).val();
+		if(phoneNumbers.length == 11){
+			var oldPhone = $("input[name='smsAuthCode']").attr("checkOk");
+			if(phoneNumbers != oldPhone){
+				$("#getVcode").html("获取验证码");
+				$("#getVcode").on("click",phoneAuth);
+				$("input[name='smsAuthCode']").val("");
+				$("input[name='smsAuthCode']").removeAttr("readOnly");
+			}
+		}
+	});
+	
 	$("input[name='smsAuthCode']").on("change",function(){
 		var vCode = $(this).val();
 		if(vCode.length == 4){
-			clearInterval(vcodeInterval);
+			//clearInterval(vcodeInterval);
+			var phoneNumbers = $("input[name='mphone']").val();
+			
+			if(phoneNumbers.length != 11){
+				weui.alert('请先输入正确的手机号！');
+			}
+			else{
+				$.getJSON(ctx + "/wx/web/auth/checkVcode",{phoneNumbers:phoneNumbers,vcode:vCode},function(data){
+					if(Constants.ResultStatus_Ok == data.status){
+						$("#getVcode").off("click");
+						clearInterval(vcodeInterval);
+						$("input[name='smsAuthCode']").attr("readOnly","readOnly");
+						$("input[name='smsAuthCode']").attr("checkOk",phoneNumbers);
+						$("#getVcode").html("验证通过");
+					}
+					else{
+						weui.alert(data.mess);
+						if(data.data == "again"){
+							clearInterval(vcodeInterval);
+							$("#getVcode").html("重新获取");							
+							$("input[name='smsAuthCode']").val("");							
+						}
+						else if(data.data == "reinput"){
+							$("input[name='smsAuthCode']").focus();							
+						}
+					}
+				});	
+			}
 		}
-	})
+	});
 	
 	var vcodeInterval;
 	
@@ -139,7 +179,7 @@
 					$("#getVcode").off("click");
 					$("input[name='smsAuthCode']").removeAttr("readOnly");
 					$("input[name='smsAuthCode']").focus();
-					var tt = 120;
+					var tt = data.data * 60;
 					function tf(){
 						tt--;
 						if(tt > 0) {
@@ -151,7 +191,7 @@
 							$("#getVcode").on("click",phoneAuth);
 						}
 					};
-					vcodeInterval = setInterval(tf(),1000);
+					vcodeInterval = setInterval(tf,1000);
 				}
 				else{
 					if(data.mess){
@@ -174,6 +214,11 @@
 	var imgUploader = new ImgUploader('uploader',ctx + '/wx/web/upload/auth',false,3,2,'uploadCount','uploaderFiles');
 	
 	function doFormSubmit(){
+		if($("input[name='smsAuthCode']").attr("checkOk") != $("input[name='mphone']").val()){
+			weui.alert("请获取验证码，验证手机号！");
+			return;
+		}
+		
 		var re = imgUploader.upload();
 		if(re){
 			var xx = 1;

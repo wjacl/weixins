@@ -54,10 +54,43 @@ public class AuthController
             session.setAttribute("phoneAuthNumbers", phoneNumbers);
             session.setAttribute("phoneAuthStartTime", System.currentTimeMillis());
             
-            return OpResult.ok();
+            return OpResult.ok().setData(this.smsService.getAuthTimeoutMinute());
         }
         
         return OpResult.error("验证码发送失败，请检查手机号是否正确，然后重试!", null);
+    }
+    
+    @RequestMapping("checkVcode")
+    @ResponseBody
+    public Object checkPhoneNumber(String phoneNumbers, String vcode, HttpSession session)
+    {
+        if (StringUtils.isBlank(phoneNumbers) || StringUtils.isBlank(vcode))
+        {
+            return OpResult.error("请输入手机号和验证码", null);
+        }
+        
+        String phoneAuthNumbers = (String)session.getAttribute("phoneAuthNumbers");
+        String phoneAuthCode = (String)session.getAttribute("phoneAuthCode");
+        Long startTime = (Long)session.getAttribute("phoneAuthStartTime");
+        
+        if (StringUtils.isBlank(phoneAuthNumbers) || StringUtils.isBlank(phoneAuthCode) || startTime == null)
+        {
+            return OpResult.error("请先获取验证码！", null);
+        }
+        
+        if (System.currentTimeMillis() - startTime > Long.parseLong(this.smsService.getAuthTimeoutMinute()) * 60 * 1000)
+        {
+            return OpResult.error("请重新获取验证码", "again");
+        }
+        
+        if (phoneAuthNumbers.equals(phoneNumbers) && phoneAuthCode.equals(vcode))
+        {
+            return OpResult.ok();
+        }
+        else
+        {
+            return OpResult.error("验证码错误，请重新输入！如还是不正确，请重新获取验证码！", "reinput");
+        }
     }
     
     @RequestMapping("saveCategory")

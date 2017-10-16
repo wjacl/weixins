@@ -34,6 +34,14 @@ public class SmsService
     @Value("${sms.auth.template.code}")
     private String authTemplateCode;
     
+    @Value("${sms.auth.timeout.minute}")
+    private String authTimeoutMinute;
+    
+    public String getAuthTimeoutMinute()
+    {
+        return authTimeoutMinute;
+    }
+    
     private Random random = new Random();
     
     /**
