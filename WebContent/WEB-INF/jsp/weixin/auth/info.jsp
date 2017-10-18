@@ -77,12 +77,12 @@
                 	<input class="weui-input" type="tel" name="mphone" value="${fi.mphone }" required pattern="^\d{11}$" maxlength="11" placeholder="请输入你的手机号" emptyTips="请输入手机号" notMatchTips="请输入正确的手机号">
                 </div>
             </div>
-            <div class="weui-cell">
+            <div class="weui-cell" id="vcodeCell">
                 <div class="weui-cell__hd">
                     <label class="weui-label">短信验证码：</label>
                 </div>
                 <div class="weui-cell__bd">
-                    <input class="weui-input" name="smsAuthCode" type="tel" placeholder="请输入短信验证码" required/>
+                    <input class="weui-input" name="smsAuthCode" checkOk="${fi.mphone }" type="tel" placeholder="请输入短信验证码"/>
                 </div>
                 <div class="weui-cell__ft">
                     <a class="weui-vcode-btn" href="javascript:;" id="getVcode">获取验证码</a>
@@ -119,11 +119,19 @@
 		location.href = ctx + "/wx/web/auth/toCategory?category=" + formData.category;
 	});
 	
+	$(document).ready(function(){
+		var oldPhone = $("input[name='smsAuthCode']").attr("checkOk");
+		if(oldPhone != "" && oldPhone == $("input[name='mphone']").val()){
+			$("#vcodeCell").hide();
+		}	
+	});
+	
 	$("input[name='mphone']").on("change",function(){
 		var phoneNumbers = $(this).val();
 		if(phoneNumbers.length == 11){
 			var oldPhone = $("input[name='smsAuthCode']").attr("checkOk");
 			if(phoneNumbers != oldPhone){
+				$("#vcodeCell").show();
 				$("#getVcode").html("获取验证码");
 				$("#getVcode").on("click",phoneAuth);
 				$("input[name='smsAuthCode']").val("");
