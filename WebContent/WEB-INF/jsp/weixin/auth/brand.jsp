@@ -8,6 +8,13 @@
     <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
 	<title>认证</title>
 	<%@ include file="/WEB-INF/jsp/weixin/comm_css.jsp" %>
+	<!-- Include external CSS. -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/codemirror.min.css">
+ 
+    <!-- Include Editor style. -->
+    <link href="${ctx }/js/froala-editor/css/froala_editor.pkgd.min.css" rel="stylesheet" type="text/css" />
+    <link href="${ctx }/js/froala-editor/css/froala_style.min.css" rel="stylesheet" type="text/css" />
 </head>
 <body ontouchstart>
 <div class="page">
@@ -84,7 +91,8 @@
 			</div>
         </div>
         <div class="weui-btn-area_inline" style="margin-top: 10px;">
-            <a class="weui-btn weui-btn_primary" href="javascript:" id="cc1Pre">下一步</a>
+            <a class="weui-btn weui-btn_primary" href="javascript:" id="preStep">上一步</a>
+            <a class="weui-btn weui-btn_primary" href="javascript:" id="nextStep">下一步</a>
         </div>
     </form>
 	</div>
@@ -94,19 +102,29 @@
     <div class="weui-mask"></div>
     <div class="weui-dialog" style="text-align:left;padding:0 5px;">  
     	<h4 style="text-align:center;margin:5px 0">品牌选择</h4>
-    	<div class="weui-search-bar" id="searchBar">
-            <form class="weui-search-bar__form">
-                <div class="weui-search-bar__box">
-                    <i class="weui-icon-search"></i>
-                    <input type="search" class="weui-search-bar__input" id="searchInput" placeholder="搜索" required/>
-                    <a href="javascript:" class="weui-icon-clear" id="searchClear"></a>
-                </div>
-                <label class="weui-search-bar__label" id="searchText">
-                    <i class="weui-icon-search"></i>
-                    <span>搜索</span>
-                </label>
-            </form>
-            <a href="javascript:" class="weui-search-bar__cancel-btn" id="searchCancel">新增</a>
+    	<div class="weui-cells">
+    	<div class="weui-cell">
+	    	<div class="weui-cell__bd">
+		    	<div class="weui-search-bar" id="searchBar">
+		            <form class="weui-search-bar__form">
+		                <div class="weui-search-bar__box">
+		                    <i class="weui-icon-search"></i>
+		                    <input type="search" class="weui-search-bar__input" id="searchInput" placeholder="搜索" required/>
+		                    <a href="javascript:" class="weui-icon-clear" id="searchClear"></a>
+		                </div>
+		                <label class="weui-search-bar__label" id="searchText">
+		                    <i class="weui-icon-search"></i>
+		                    <span>搜索</span>
+		                </label>
+		            </form>
+		        </div>
+	        </div>
+        	<div class="weui-cell__ft">
+                	<input name="lat" type="hidden" value="${fi.lat }"/>
+                	<input name="lng" type="hidden" value="${fi.lng }"/>
+                    <a class="weui-vcode-btn" id="brand-add-btn" href="javascript:;">新增</a>
+            </div>
+        </div>
         </div>
         <div class="searchbar-result" id="searchResult" style="height:200px;overflow: auto">
             <div class="weui-cell weui-cell_access">
@@ -196,12 +214,65 @@
         </div>
     </div>
 </div>
+
+<div class="js_dialog" id="dialog2" style="display: none;">
+    <div class="weui-mask"></div>
+    <div class="weui-dialog" style="text-align:left;padding:0 5px;">  
+    	<h4 style="text-align:center;margin:5px 0">新增品牌</h4>
+    	<div class="weui-cells weui-cells_form">    	
+            <div class="weui-cell">
+                <div class="weui-cell__hd"><label class="weui-label">名称：</label></div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" type="text" name="name" required maxlength="30"
+                    	placeholder="请输入品牌名称" emptyTips="请输入品牌名称" 
+                    	notMatchTips="品牌名称长度不能超过30个字符"/>
+                </div>
+            </div>
+            <div class="weui-cell" id="brandLogoUploader">
+                <div class="weui-cell__bd">
+                    <div class="weui-uploader">
+                        <div class="weui-uploader__hd">
+                            <p class="weui-uploader__title">品牌商标/Logo：</p>
+                            <div class="weui-uploader__info"><span id="brandLogoUploadCount">0</span>/1</div>
+                        </div>
+                        <div class="weui-uploader__bd">
+                            <ul class="weui-uploader__files" id="brandLogoUploaderFiles">
+                            <c:forTokens items="${fi.certificates }" var="it" delims=";">
+                                <li class="weui-uploader__file" style="background-image:url(${ctx}/wx/web/upload/get/${it })" data-id="${it }"></li>
+                            </c:forTokens>
+                            </ul>
+                            <div class="weui-uploader__input-box">
+                                <input id="uploaderInput" class="weui-uploader__input" type="file" accept="image/*" capture="camera" multiple/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+			</div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                	<p><label class="weui-label">品牌简介</label></p>
+                    <textarea name="introduce"></textarea>
+                </div>
+            </div>
+        <div class="weui-btn-area_inline">
+            <a class="weui-btn weui-btn_primary" href="javascript:;" id="brand-add-cancle">取消</a>
+            <a class="weui-btn weui-btn_primary" href="javascript:" id="formSubmitBtn">提交</a>
+        </div>
+    </div>
+    </div>
+</div>
+
 </body>
 <%@ include file="/WEB-INF/jsp/weixin/comm_js.jsp" %>
 <script type="text/javascript" src="${ctx }/js/app/weixin/img_upload.js"></script>
-<script>
-	var openId = '${openId}';
+<!-- Include Editor JS files. -->
+<script type="text/javascript" src="${ctx }/js/froala-editor/js/froala_editor.pkgd.min.js"></script>
+<script type="text/javascript" src="${ctx }/js/froala-editor/js/languages/zh_cn.js"></script>
 
+<!-- Initialize the editor. -->
+<script> $(function() { $('textarea').froalaEditor({toolbarButtons: ['undo', 'redo' , '|', 'bold', 'italic', 'underline', 'strikethrough', 'subscript', 'superscript', 'outdent', 'indent', 'clearFormatting', 'insertTable', 'html'],
+    toolbarButtonsXS: ['undo', 'redo' , '-', 'bold', 'italic', 'underline']}) }); </script>
+<script>
 	var $dialog1 = $("#dialog1");
 	$("input[name='brandType']").on("click",function(){
 		var value = $(this).val();
@@ -217,6 +288,17 @@
 		$dialog1.fadeOut(200);
 	});
 	
+	var $dialog2 = $("#dialog2");
+	$("#brand-add-btn").on("click",function(){
+		$dialog1.fadeOut(200);
+		$dialog2.fadeIn(200);
+	});
+	$("#brand-add-cancle").on("click",function(){
+		$dialog2.fadeOut(200);
+		$dialog1.fadeIn(200);
+	});
+	
+	
 	var imgUploader = new ImgUploader('uploader',ctx + '/wx/web/upload/auth',false,20,0,'uploadCount','uploaderFiles');
 </script>
 
@@ -226,8 +308,7 @@
             $searchResult = $('#searchResult'),
             $searchText = $('#searchText'),
             $searchInput = $('#searchInput'),
-            $searchClear = $('#searchClear'),
-            $searchCancel = $('#searchCancel');
+            $searchClear = $('#searchClear');
         function hideSearchResult(){
             $searchResult.hide();
             $searchInput.val('');
@@ -257,10 +338,7 @@
             hideSearchResult();
             $searchInput.focus();
         });
-        $searchCancel.on('click', function(){
-            cancelSearch();
-            $searchInput.blur();
-        });
+
     });
 </script>
 </html>
