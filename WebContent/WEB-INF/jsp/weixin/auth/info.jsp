@@ -77,7 +77,7 @@
                 	<input class="weui-input" type="tel" name="mphone" value="${fi.mphone }" required pattern="^\d{11}$" maxlength="11" placeholder="请输入你的手机号" emptyTips="请输入手机号" notMatchTips="请输入正确的手机号">
                 </div>
             </div>
-            <div class="weui-cell" id="vcodeCell">
+            <div class="weui-cell" id="vcodeCell" style="display:${not empty fi.mphone ? 'none':'block'}">
                 <div class="weui-cell__hd">
                     <label class="weui-label">短信验证码：</label>
                 </div>
@@ -119,13 +119,6 @@
 		location.href = ctx + "/wx/web/auth/toCategory?category=" + formData.category;
 	});
 	
-	$(document).ready(function(){
-		var oldPhone = $("input[name='smsAuthCode']").attr("checkOk");
-		if(oldPhone != "" && oldPhone == $("input[name='mphone']").val()){
-			$("#vcodeCell").hide();
-		}	
-	});
-	
 	$("input[name='mphone']").on("change",function(){
 		var phoneNumbers = $(this).val();
 		if(phoneNumbers.length == 11){
@@ -136,6 +129,8 @@
 				$("#getVcode").on("click",phoneAuth);
 				$("input[name='smsAuthCode']").val("");
 				$("input[name='smsAuthCode']").removeAttr("readOnly");
+			}else{
+				$("#vcodeCell").hide();
 			}
 		}
 	});
