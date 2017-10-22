@@ -5,16 +5,28 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <meta name="viewport" content="width=device-width, height=device-height,initial-scale=1,user-scalable=0">
 	<title>认证</title>
 	<%@ include file="/WEB-INF/jsp/weixin/comm_css.jsp" %>
-	<!-- Include external CSS. -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/codemirror.min.css">
- 
-    <!-- Include Editor style. -->
-    <link href="${ctx }/js/froala-editor/css/froala_editor.pkgd.min.css" rel="stylesheet" type="text/css" />
-    <link href="${ctx }/js/froala-editor/css/froala_style.min.css" rel="stylesheet" type="text/css" />
+	<%@ include file="/WEB-INF/jsp/weixin/h5_fich_editor_css.jsp" %>
+	<style>
+		.pouple {
+			position: fixed;
+			  z-index: 5000;
+			  width: 90%;
+			  max-height:90%;
+			  top: 50%;
+			  left: 50%;
+			  -webkit-transform: translate(-50%, -50%);
+			          transform: translate(-50%, -50%);
+			  background-color: #FFFFFF;
+			  border-radius: 3px;
+			  overflow: auto;
+		}
+		.mtop5 {
+			margin-top:5px;
+		}
+	</style>
 </head>
 <body ontouchstart>
 <div class="page">
@@ -100,9 +112,9 @@
 </div> 
 <div class="js_dialog" id="dialog1" style="display: none;">
     <div class="weui-mask"></div>
-    <div class="weui-dialog" style="text-align:left;padding:0 5px;">  
+    <div class="pouple" style="text-align:left;padding:0 5px;">  
     	<h4 style="text-align:center;margin:5px 0">品牌选择</h4>
-    	<div class="weui-cells">
+    	<div class="weui-cells mtop5">
     	<div class="weui-cell">
 	    	<div class="weui-cell__bd">
 		    	<div class="weui-search-bar" id="searchBar">
@@ -147,63 +159,10 @@
                     <p>实时搜索文本</p>
                 </div>
             </div>
-            <div class="weui-cell weui-cell_access">
-                <div class="weui-cell__bd weui-cell_primary">
-                    <p>实时搜索文本</p>
-                </div>
-            </div>
-            <div class="weui-cell weui-cell_access">
-                <div class="weui-cell__bd weui-cell_primary">
-                    <p>实时搜索文本</p>
-                </div>
-            </div>
-            <div class="weui-cell weui-cell_access">
-                <div class="weui-cell__bd weui-cell_primary">
-                    <p>实时搜索文本</p>
-                </div>
-            </div>
-            <div class="weui-cell weui-cell_access">
-                <div class="weui-cell__bd weui-cell_primary">
-                    <p>实时搜索文本</p>
-                </div>
-            </div>
-            <div class="weui-cell weui-cell_access">
-                <div class="weui-cell__bd weui-cell_primary">
-                    <p>实时搜索文本</p>
-                </div>
-            </div>
-            <div class="weui-cell weui-cell_access">
-                <div class="weui-cell__bd weui-cell_primary">
-                    <p>实时搜索文本</p>
-                </div>
-            </div>
-            <div class="weui-cell weui-cell_access">
-                <div class="weui-cell__bd weui-cell_primary">
-                    <p>实时搜索文本</p>
-                </div>
-            </div>
-            <div class="weui-cell weui-cell_access">
-                <div class="weui-cell__bd weui-cell_primary">
-                    <p>实时搜索文本</p>
-                </div>
-            </div>
-            <div class="weui-cell weui-cell_access">
-                <div class="weui-cell__bd weui-cell_primary">
-                    <p>实时搜索文本</p>
-                </div>
-            </div>
-            <div class="weui-cell weui-cell_access">
-                <div class="weui-cell__bd weui-cell_primary">
-                    <p>实时搜索文本</p>
-                </div>
-            </div>
         </div>
     	<div class="weui-cells" style="margin-top:10px;">
 	   		<h5 style="margin-top:5px;">已选品牌：</h5>
 	    	<div class="button-sp-area">
-	            <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_primary">按钮</a>
-	            <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_default">按钮</a>
-	            <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_warn">按钮</a>
 	            <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_primary">按钮</a>
 	            <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_default">按钮</a>
 	            <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_warn">按钮</a>
@@ -217,9 +176,9 @@
 
 <div class="js_dialog" id="dialog2" style="display: none;">
     <div class="weui-mask"></div>
-    <div class="weui-dialog" style="text-align:left;padding:0 5px;">  
+    <div class="pouple">  
     	<h4 style="text-align:center;margin:5px 0">新增品牌</h4>
-    	<div class="weui-cells weui-cells_form">    	
+    	<div class="weui-cells weui-cells_form mtop5">    	
             <div class="weui-cell">
                 <div class="weui-cell__hd"><label class="weui-label">名称：</label></div>
                 <div class="weui-cell__bd">
@@ -250,8 +209,10 @@
 			</div>
             <div class="weui-cell">
                 <div class="weui-cell__bd">
-                	<p><label class="weui-label">品牌简介</label></p>
-                    <textarea name="introduce"></textarea>
+                	<p><label class="weui-label">品牌简介：</label></p>
+                	<div >
+                    <textarea name="introduce" id="barndInro"></textarea>
+                    </div>
                 </div>
             </div>
         <div class="weui-btn-area_inline">
@@ -263,15 +224,10 @@
 </div>
 
 </body>
+
 <%@ include file="/WEB-INF/jsp/weixin/comm_js.jsp" %>
 <script type="text/javascript" src="${ctx }/js/app/weixin/img_upload.js"></script>
-<!-- Include Editor JS files. -->
-<script type="text/javascript" src="${ctx }/js/froala-editor/js/froala_editor.pkgd.min.js"></script>
-<script type="text/javascript" src="${ctx }/js/froala-editor/js/languages/zh_cn.js"></script>
-
-<!-- Initialize the editor. -->
-<script> $(function() { $('textarea').froalaEditor({toolbarButtons: ['undo', 'redo' , '|', 'bold', 'italic', 'underline', 'strikethrough', 'subscript', 'superscript', 'outdent', 'indent', 'clearFormatting', 'insertTable', 'html'],
-    toolbarButtonsXS: ['undo', 'redo' , '-', 'bold', 'italic', 'underline']}) }); </script>
+<%@ include file="/WEB-INF/jsp/weixin/h5_fich_editor_js.jsp" %>
 <script>
 	var $dialog1 = $("#dialog1");
 	$("input[name='brandType']").on("click",function(){
@@ -340,5 +296,20 @@
         });
 
     });
+</script>
+<script>
+    $(function(){
+    	h5FichEditorBrandInit("barndInro");
+    })
+    window.onload=function(){
+    var temp = document.getElementsByTagName("a");
+    var i = 0;
+    for(i=0;i<temp.length;i++){
+        //console.log(temp[i].href);
+        if(temp[i].href=="https://www.froala.com/wysiwyg-editor?k=u")
+        {           temp[i].parentNode.removeChild(temp[i].parentNode.childNodes[0]);
+        }
+    }
+	}
 </script>
 </html>

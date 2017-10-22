@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.net.URLConnection;
 import java.util.Calendar;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -65,17 +66,55 @@ public class UploadController
                 myfile.transferTo(new File(dir, fileName));
                 UpFile uf = new UpFile(path + "/" + fileName, FILE_BUSI_TYPE_AUTH);
                 uf = this.upFileService.save(uf);
-                return new Result(uf.getId(), null);
+                return new Result(uf.getId(), null, null);
             }
             catch (IllegalStateException | IOException e)
             {
                 Log.LOGGER.error("上传认证图片保存失败", e);
-                return new Result(null, "上传文件保存失败：" + e);
+                return new Result(null, null, "上传文件保存失败：" + e);
             }
         }
         else
         {
-            return new Result(null, "没有openId,不可上传文件！");
+            return new Result(null, null, "没有openId,不可上传文件！");
+        }
+    }
+    
+    @RequestMapping("pubget/*")
+    public void down(HttpServletRequest request, HttpServletResponse response)
+    {
+        String reqUri = request.getRequestURI();
+        int sindex = (request.getContextPath() + "/wx/web/upload/pubget").length();
+        String filePath = reqUri.substring(sindex);
+        
+        File file = new File(rootDir + filePath);
+        
+        this.responseFile(file, response);
+    }
+    
+    private void responseFile(File file, HttpServletResponse response)
+    {
+        if (file.exists())
+        {
+            String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+            if (mimeType != null)
+            {
+                response.setContentType(mimeType);
+            }
+            try (InputStream in = new FileInputStream(file); OutputStream os = response.getOutputStream();)
+            {
+                byte[] bf = new byte[1024 * 8];
+                int count = 0;
+                while ((count = in.read(bf)) != -1)
+                {
+                    os.write(bf, 0, count);
+                    os.flush();
+                }
+            }
+            catch (Exception e)
+            {
+                Log.LOGGER.error("文件获取，读取文件异常", e);
+            }
         }
     }
     
@@ -88,29 +127,8 @@ public class UploadController
             if (uf != null)
             {
                 File file = new File(rootDir + uf.getFileName());
-                String mimeType = URLConnection.guessContentTypeFromName(file.getName());
-                if (mimeType != null)
-                {
-                    response.setContentType(mimeType);
-                }
                 
-                if (file.exists())
-                {
-                    try (InputStream in = new FileInputStream(file); OutputStream os = response.getOutputStream();)
-                    {
-                        byte[] bf = new byte[1024 * 8];
-                        int count = 0;
-                        while ((count = in.read(bf)) != -1)
-                        {
-                            os.write(bf, 0, count);
-                            os.flush();
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        Log.LOGGER.error("文件获取，读取文件异常", e);
-                    }
-                }
+                this.responseFile(file, response);
             }
         }
         
@@ -118,17 +136,17 @@ public class UploadController
     
     @RequestMapping("comm")
     @ResponseBody
-    public Object commUpload(HttpSession session, @RequestPart("file") MultipartFile myfile)
+    public Object commUpload(HttpSession session, @RequestPart("file") MultipartFile myfile, String type)
     {
         String openId = (String)session.getAttribute("openId");
         if (this.cbs.checkOpenIdAuthOk(openId))
         {
             String[] pns = fileNameGer.getDateDirMillisFileName();
-            String path = "/comm/" + pns[0];
+            String path = "/" + (StringUtils.isBlank(type) ? "comm" : type) + "/" + pns[0];
             File dir = new File(rootDir + path);
             if (!dir.mkdirs())
             {
-                return new Result(null, "创建存放目录失败！");
+                return new Result(null, null, "创建存放目录失败！");
             }
             
             String oriName = myfile.getOriginalFilename();
@@ -142,30 +160,44 @@ public class UploadController
             try
             {
                 myfile.transferTo(new File(dir, fileName));
-                return new Result(path + "/" + fileName, null);
+                return new Result(path + "/" + fileName,
+                    AppContext.getSysParam("wx.download.public.url") + path + "/" + fileName, null);
             }
             catch (IllegalStateException | IOException e)
             {
                 Log.LOGGER.error("上传文件保存失败", e);
-                return new Result(null, "上传文件保存失败：" + e);
+                return new Result(null, null, "上传文件保存失败：" + e);
             }
         }
         else
         {
-            return new Result(null, "没有openId,不可上传文件！");
+            return new Result(null, null, "没有openId,不可上传文件！");
         }
     }
     
     private static class Result
     {
+        private String link;
+        
         private String fileName;
         
         private String errMsg;
         
-        public Result(String fileName, String errMsg)
+        public Result(String fileName, String link, String errMsg)
         {
             this.fileName = fileName;
+            this.link = link;
             this.errMsg = this.errMsg;
+        }
+        
+        public String getLink()
+        {
+            return link;
+        }
+        
+        public void setLink(String link)
+        {
+            this.link = link;
         }
         
         public String getFileName()
