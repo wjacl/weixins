@@ -1,5 +1,5 @@
 /* 图片上传 */
-function ImgUploader(domId,url,auto,max,min,countDomId,uploaderFilesDomId,fileParam){
+function ImgUploader(domId,url,auto,max,min,countDomId,uploaderFilesDomId,params,fileParam){
 	this.uploadCount = 0;
 	this.uploadList = [];
 	this.uploadedFileNames = [];
@@ -60,7 +60,9 @@ function ImgUploader(domId,url,auto,max,min,countDomId,uploaderFilesDomId,filePa
 	    },
 	    onBeforeSend: function(data, headers){
 	        //console.log(this, data, headers);
-	        // $.extend(data, { test: 1 }); // 可以扩展此对象来控制上传参数
+	    	if(params){
+	    		$.extend(data, params); // 可以扩展此对象来控制上传参数
+	    	}
 	        // $.extend(headers, { Origin: 'http://127.0.0.1' }); // 可以扩展此对象来控制上传头部
 
 	        // return false; // 阻止文件上传

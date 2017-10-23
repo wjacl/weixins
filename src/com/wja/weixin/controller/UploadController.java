@@ -8,7 +8,6 @@ import java.io.OutputStream;
 import java.net.URLConnection;
 import java.util.Calendar;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -52,7 +51,13 @@ public class UploadController
         {
             String path = "/auth/" + openId;
             File dir = new File(rootDir + path);
-            dir.mkdirs();
+            if (!dir.exists())
+            {
+                if (!dir.mkdirs())
+                {
+                    return new Result(null, null, "创建存放目录失败！");
+                }
+            }
             String oriName = myfile.getOriginalFilename();
             String suffix = "";
             int index = oriName.lastIndexOf('.');
@@ -78,18 +83,6 @@ public class UploadController
         {
             return new Result(null, null, "没有openId,不可上传文件！");
         }
-    }
-    
-    @RequestMapping("pubget/*")
-    public void down(HttpServletRequest request, HttpServletResponse response)
-    {
-        String reqUri = request.getRequestURI();
-        int sindex = (request.getContextPath() + "/wx/web/upload/pubget").length();
-        String filePath = reqUri.substring(sindex);
-        
-        File file = new File(rootDir + filePath);
-        
-        this.responseFile(file, response);
     }
     
     private void responseFile(File file, HttpServletResponse response)
@@ -144,9 +137,12 @@ public class UploadController
             String[] pns = fileNameGer.getDateDirMillisFileName();
             String path = "/" + (StringUtils.isBlank(type) ? "comm" : type) + "/" + pns[0];
             File dir = new File(rootDir + path);
-            if (!dir.mkdirs())
+            if (!dir.exists())
             {
-                return new Result(null, null, "创建存放目录失败！");
+                if (!dir.mkdirs())
+                {
+                    return new Result(null, null, "创建存放目录失败！");
+                }
             }
             
             String oriName = myfile.getOriginalFilename();
@@ -187,7 +183,7 @@ public class UploadController
         {
             this.fileName = fileName;
             this.link = link;
-            this.errMsg = this.errMsg;
+            this.errMsg = errMsg;
         }
         
         public String getLink()

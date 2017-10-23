@@ -23,4 +23,16 @@
     </example>
   </function>
   
+  <function>
+    <description>
+      	url encode
+    </description>
+    <name>urlEncode</name>
+    <function-class>com.wja.base.util.UrlUtil</function-class>
+    <function-signature>java.lang.String encode(java.lang.String)</function-signature>
+    <example>
+      ${appfn:urlEncode(str)}
+    </example>
+  </function>
+  
 </taglib>

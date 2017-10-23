@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -19,6 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.wja.base.common.CommConstants;
 import com.wja.base.system.entity.User;
 import com.wja.base.util.DateUtil;
+import com.wja.base.web.AppContext;
 import com.wja.base.web.RequestThreadLocal;
 
 /**
@@ -30,6 +32,8 @@ public class RequestThreadLocalSetFilter implements Filter
     private Map<String, String> langResources = new HashMap<>();
     
     private String default_lang = "zh_CN";
+    
+    private boolean servletContextAttributeInited = false;
     
     /**
      * Default constructor.
@@ -64,6 +68,14 @@ public class RequestThreadLocalSetFilter implements Filter
         // 设置引用上下文属性
         httpRequest.setAttribute("ctx", httpRequest.getContextPath());
         httpRequest.setAttribute("copyRightYear", DateUtil.getCurrYear());
+        
+        if (!this.servletContextAttributeInited)
+        {
+            ServletContext sc = httpRequest.getServletContext();
+            sc.setAttribute("publicUploadUrl", AppContext.getSysParam("wx.upload.public.url"));
+            sc.setAttribute("publicDownloadUrl", AppContext.getSysParam("wx.download.public.url"));
+            this.servletContextAttributeInited = true;
+        }
         
         // 设置语言属性
         if (httpRequest.getSession().getAttribute(CommConstants.SESSION_LANG) == null)

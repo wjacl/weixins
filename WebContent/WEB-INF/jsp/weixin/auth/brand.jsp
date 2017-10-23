@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://wja.com/jsp/app/functions" prefix="f" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -110,6 +111,7 @@
 	</div>
 	<%@ include file="/WEB-INF/jsp/weixin/footer.jsp" %>
 </div> 
+
 <div class="js_dialog" id="dialog1" style="display: none;">
     <div class="weui-mask"></div>
     <div class="pouple" style="text-align:left;padding:0 5px;">  
@@ -162,10 +164,7 @@
         </div>
     	<div class="weui-cells" style="margin-top:10px;">
 	   		<h5 style="margin-top:5px;">已选品牌：</h5>
-	    	<div class="button-sp-area">
-	            <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_primary">按钮</a>
-	            <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_default">按钮</a>
-	            <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_warn">按钮</a>
+	    	<div class="button-sp-area" id="choose-choosed" style="padding:10px 5px;">
 	        </div>
 	    	<div class="weui-cell weui-btn-area_inline">
 	        	<a class="weui-btn weui-btn_primary" href="javascript:;" id="brandChooseOk">确定</a>    
@@ -178,6 +177,7 @@
     <div class="weui-mask"></div>
     <div class="pouple">  
     	<h4 style="text-align:center;margin:5px 0">新增品牌</h4>
+    	<form action="${ctx }/wx/web/brand/save" method="post" id="brandForm">
     	<div class="weui-cells weui-cells_form mtop5">    	
             <div class="weui-cell">
                 <div class="weui-cell__hd"><label class="weui-label">名称：</label></div>
@@ -196,9 +196,9 @@
                         </div>
                         <div class="weui-uploader__bd">
                             <ul class="weui-uploader__files" id="brandLogoUploaderFiles">
-                            <c:forTokens items="${fi.certificates }" var="it" delims=";">
-                                <li class="weui-uploader__file" style="background-image:url(${ctx}/wx/web/upload/get/${it })" data-id="${it }"></li>
-                            </c:forTokens>
+                            <%-- <c:if test="${not empty brand.logo }">
+                                <li class="weui-uploader__file" style="background-image:url(${ctx}/wx/pubget/${brand.logo })" data-id="${brand.logo } }"></li>
+                            </c:if> --%>
                             </ul>
                             <div class="weui-uploader__input-box">
                                 <input id="uploaderInput" class="weui-uploader__input" type="file" accept="image/*" capture="camera" multiple/>
@@ -211,22 +211,26 @@
                 <div class="weui-cell__bd">
                 	<p><label class="weui-label">品牌简介：</label></p>
                 	<div >
-                    <textarea name="introduce" id="barndInro"></textarea>
+                    <textarea name="intro" id="barndInro"></textarea>
                     </div>
                 </div>
             </div>
-        <div class="weui-btn-area_inline">
+        <div class="weui-btn-area_inline" style="margin:10px 5px">
             <a class="weui-btn weui-btn_primary" href="javascript:;" id="brand-add-cancle">取消</a>
-            <a class="weui-btn weui-btn_primary" href="javascript:" id="formSubmitBtn">提交</a>
+            <a class="weui-btn weui-btn_primary" href="javascript:" id="brandAddSubmit">提交</a>
         </div>
     </div>
+    	<input type="hidden" name="openId" value="${opendId }">
+    	<input type="hidden" name="logo">
+    </form>
     </div>
 </div>
 
 </body>
-
 <%@ include file="/WEB-INF/jsp/weixin/comm_js.jsp" %>
 <script type="text/javascript" src="${ctx }/js/app/weixin/img_upload.js"></script>
+<script type="text/javascript" src="${ctx }/js/jquery.form.min.js"></script>
+<%-- <script type="text/javascript" src="${ctx }/js/jquery-easyui/plugins/jquery.form.js"></script> --%>
 <%@ include file="/WEB-INF/jsp/weixin/h5_fich_editor_js.jsp" %>
 <script>
 	var $dialog1 = $("#dialog1");
@@ -298,18 +302,83 @@
     });
 </script>
 <script>
+    var brandLogoImgUploader = new ImgUploader('brandLogoUploader',ctx + '/wx/web/upload/comm',false,1,0,'brandLogoUploadCount','brandLogoUploaderFiles',{type:"brand"});
+    var nameOk = false;
+    function checkBrandName(){
+		var name = $('input[name="name"]').val();
+		if(name != ""){
+			$.getJSON(ctx + "/wx/web/brand/checkName",{name:name},function(data){
+				if(data.id){
+					weui.confirm("您输入的品牌名称已存在,是否选择此品牌？",function(){
+						$("#choose-choosed").append('<a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_warn" data-id="' + data.id + '">'+ data.name + '</a>');	
+						$dialog2.fadeOut(200);
+						$dialog1.fadeIn(200);
+					});
+				}
+			});
+		}
+	}
     $(function(){
     	h5FichEditorBrandInit("barndInro");
-    })
+    	$('input[name="name"]').on("blur",checkBrandName);
+    	$("#brandAddSubmit").on("click",function(){
+        	weui.form.validate('#brandForm', function (error) {
+                if (!error) {
+                	var re = brandLogoImgUploader.upload();
+            		if(re){
+            			var xx = 1;
+            			function ccck(){
+            				if(brandLogoImgUploader.uploadedFileNames.length < brandLogoImgUploader.uploadList.length && xx < 10){
+            					xx++;
+            					setTimeout(ccck,300);
+            				}
+            				else{
+            					if(brandLogoImgUploader.uploadedFileNames.length == brandLogoImgUploader.uploadCount){
+            						$("input[name='logo']").val(brandLogoImgUploader.getUploadedFileNameStr());
+            						var loading = weui.loading('提交中...');
+            						//将文件加入到表单中提交
+            						$('#brandForm').ajaxSubmit({dataType:"json",success:function(data){
+            							loading.hide();
+            							if(Constants.ResultStatus_Ok == data.status){
+            								data = data.data;
+	            							$("#choose-choosed").append('<a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_warn" data-id="' + data.id + '">'+ data.name + '</a>');	
+	            							weui.toast('提交成功', 3000);
+	            							$dialog2.fadeOut(200);
+	            							$dialog1.fadeIn(200);
+            							}
+            							else{
+            								if(data.mess){
+            								weui.alert(data.mess);
+            								}
+            								else{
+            									weui.alert("提交失败，请重试！");
+            								}
+            							}
+            						}});
+            					}
+            					else {
+            						weui.alert('请检查一下图片是否都已上传，待都完成上传后，再点击 下一步');
+            					}
+            				}
+            			}
+            			setTimeout(ccck,300);
+            		}                   
+                }
+            });
+        });
+    });
+    
     window.onload=function(){
-    var temp = document.getElementsByTagName("a");
-    var i = 0;
-    for(i=0;i<temp.length;i++){
-        //console.log(temp[i].href);
-        if(temp[i].href=="https://www.froala.com/wysiwyg-editor?k=u")
-        {           temp[i].parentNode.removeChild(temp[i].parentNode.childNodes[0]);
-        }
-    }
+	    var temp = document.getElementsByTagName("a");
+	    var i = 0;
+	    for(i=0;i<temp.length;i++){
+	        //console.log(temp[i].href);
+	        if(temp[i].href=="https://www.froala.com/wysiwyg-editor?k=u")
+	        {           
+	        	temp[i].parentNode.removeChild(temp[i].parentNode.childNodes[0]);
+	        }
+	    }
 	}
+     
 </script>
 </html>
