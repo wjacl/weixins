@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
 	<title>认证</title>
 	<%@ include file="/WEB-INF/jsp/weixin/comm_css.jsp" %>
+	<%@ include file="/WEB-INF/jsp/weixin/h5_fich_editor_css.jsp" %>
 </head>
 <body ontouchstart="">
 <div class="page">
@@ -16,7 +17,7 @@
     </div>	
 	<!-- 工厂信息填写  -->
     <div class="page__bd">
-      <form action="saveInfo" method="post" id="form">
+      <form action="../saveIntro" method="post" id="form">
 		<div class="weui-cells weui-cells_form" style="margin-top:5px">    	
             <div class="weui-cell" id="uploader">
                 <div class="weui-cell__bd">
@@ -28,7 +29,7 @@
                         <div class="weui-uploader__bd">
                             <ul class="weui-uploader__files" id="uploaderFiles">
                             <c:if test="${not empty fi.logo }">
-                                <li class="weui-uploader__file" style="background-image:url(${ctx}/wx/web/upload/get/${fi.logo })" data-id="${fi.logo }"></li>
+                                <li class="weui-uploader__file" style="background-image:url(${ctx}/wx/pubget${fi.logo })" data-id="${fi.logo }"></li>
                             </c:if>
                             </ul>
                             <div class="weui-uploader__input-box">
@@ -42,15 +43,16 @@
                 <div class="weui-cell__bd">
                 	<p>简介</p>
                 	<div>
-                    <textarea name="intro">
+                    <textarea name="intro" id="intro">
                     	${fi.intro }
                     </textarea>
                     </div>
                 </div>
             </div>
 			<input type="hidden" name="openId" value="${fi.openId }">
+			<input type="hidden" name="logo" value="${fi.logo }">
         <div class="weui-btn-area_inline">
-            <a class="weui-btn weui-btn_primary" href="toCategory" id="cc2Pre">上一步</a>
+            <a class="weui-btn weui-btn_primary" href="info" id="cc2Pre">上一步</a>
             <!-- <a class="weui-btn weui-btn_primary" href="javascript:" id="toBrand">下一步</a> -->
             <a class="weui-btn weui-btn_primary" href="javascript:" id="formSubmitBtn">下一步</a>
         </div>
@@ -64,20 +66,12 @@
 <%@ include file="/WEB-INF/jsp/weixin/js_sdk_config.jsp" %>
 <script type="text/javascript" src="${ctx }/js/app/weixin/form.js"></script>
 <script type="text/javascript" src="${ctx }/js/app/weixin/img_upload.js"></script>
+<%@ include file="/WEB-INF/jsp/weixin/h5_fich_editor_js.jsp" %>
 <script>
-	var formData = {};
-	$("#cc2Pre").on("click",function(){
-		location.href = ctx + "/wx/web/auth/toCategory?category=" + formData.category;
-	});
 
-	var imgUploader = new ImgUploader('uploader',ctx + '/wx/web/upload/auth',false,1,0,'uploadCount','uploaderFiles');
+	var imgUploader = new ImgUploader('uploader',ctx + '/wx/web/upload/comm',false,1,0,'uploadCount','uploaderFiles',{type:'logo'});
 	
 	function doFormSubmit(){
-		if($("input[name='smsAuthCode']").attr("checkOk") != $("input[name='mphone']").val()){
-			weui.alert("请获取验证码，验证手机号！");
-			return;
-		}
-		
 		var re = imgUploader.upload();
 		if(re){
 			var xx = 1;
@@ -88,7 +82,7 @@
 				}
 				else{
 					if(imgUploader.uploadedFileNames.length == imgUploader.uploadCount){
-						$("input[name='certificates']").val(imgUploader.getUploadedFileNameStr());
+						$("input[name='logo']").val(imgUploader.getUploadedFileNameStr());
 						var loading = weui.loading('提交中...');
 						//将文件加入到表单中提交
 						$('#form').submit();
@@ -101,5 +95,9 @@
 			setTimeout(ccck,300);
 		}
 	}
+	
+	$(function(){
+		h5FichEditorAuthInroInit("intro");
+	});
 </script>
 </html>

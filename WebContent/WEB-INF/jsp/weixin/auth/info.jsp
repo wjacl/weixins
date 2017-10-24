@@ -16,7 +16,7 @@
     </div>	
 	<!-- 工厂信息填写  -->
     <div class="page__bd">
-      <form action="saveInfo" method="post" id="form">
+      <form action="../saveInfo" method="post" id="form">
 		<div class="weui-cells weui-cells_form" style="margin-top:5px">    	
             <div class="weui-cell">
                 <div class="weui-cell__hd"><label class="weui-label">名称：</label></div>
@@ -96,7 +96,7 @@
             </div>
 			<input type="hidden" name="openId" value="${fi.openId }">
         <div class="weui-btn-area_inline">
-            <a class="weui-btn weui-btn_primary" href="toCategory" id="cc2Pre">上一步</a>
+            <a class="weui-btn weui-btn_primary" href="category" id="cc2Pre">上一步</a>
             <!-- <a class="weui-btn weui-btn_primary" href="javascript:" id="toBrand">下一步</a> -->
             <a class="weui-btn weui-btn_primary" href="javascript:" id="formSubmitBtn">下一步</a>
         </div>
@@ -114,11 +114,6 @@
 <script type="text/javascript" src="${ctx }/js/app/weixin/form.js"></script>
 <script type="text/javascript" src="${ctx }/js/app/weixin/img_upload.js"></script>
 <script>
-	var formData = {};
-	$("#cc2Pre").on("click",function(){
-		location.href = ctx + "/wx/web/auth/toCategory?category=" + formData.category;
-	});
-	
 	$("input[name='mphone']").on("change",function(){
 		var phoneNumbers = $(this).val();
 		if(phoneNumbers.length == 11){

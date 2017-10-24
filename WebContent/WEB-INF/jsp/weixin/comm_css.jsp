@@ -3,3 +3,4 @@
 	<!-- 引入 WeUI -->
 	<link rel="stylesheet" href="${ctx }/css/weui.min.css"/>
 	<link rel="stylesheet" href="${ctx }/css/weui.web.css"/>
+	<link rel="stylesheet" href="${ctx }/js/dropload/dropload.css"/>

@@ -70,7 +70,7 @@
                 </div>
             </label>
 	        <div class="weui-btn-area_inline">
-	            <a class="weui-btn weui-btn_primary" href="javascript:" id="cc1Pre">下一步</a>
+	            <a class="weui-btn weui-btn_primary" href="info" id="cc1Pre">下一步</a>
 	        </div>
         </div>
 	</div>	
@@ -95,18 +95,15 @@
 				async: false,
 				success:function(data){
 					if(data.status == 200){
-						location.href = ctx + "/wx/web/auth/toInfo?openId=" + formData.openId;
+						location.href = ctx + "/wx/web/auth/to/info";
 					}
 				}
 			});
 		}
 		else {
-			location.href = ctx + "/wx/web/auth/toInfo?openId=" + formData.openId;
+			location.href = ctx + "/wx/web/auth/to/info";
 		}
 	});
 	
-	$("#cc1Pre").on("click",function(){
-		location.href = ctx + "/wx/web/auth/toInfo?openId=" + formData.openId;
-	});
 </script>
 </html>

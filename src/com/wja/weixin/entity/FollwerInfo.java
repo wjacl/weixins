@@ -86,15 +86,17 @@ public class FollwerInfo
     @Column(length = 500)
     private String certificates;
     
-    // 简介信息
-    @Column(length = 1000)
+    /**
+     * 简介
+     */
+    @Column(length = 10000)
     private String intro;
     
     /**
-     * 介绍图片
+     * logo头像
      */
-    @Column(length = 1000)
-    private String introImages;
+    @Column(length = 200)
+    private String logo;
     
     // 品牌信息
     /**
@@ -229,6 +231,16 @@ public class FollwerInfo
         this.certificates = certificates;
     }
     
+    public String getLogo()
+    {
+        return logo;
+    }
+    
+    public void setLogo(String logo)
+    {
+        this.logo = logo;
+    }
+    
     public String getIntro()
     {
         return intro;
@@ -237,16 +249,6 @@ public class FollwerInfo
     public void setIntro(String intro)
     {
         this.intro = intro;
-    }
-    
-    public String getIntroImages()
-    {
-        return introImages;
-    }
-    
-    public void setIntroImages(String introImages)
-    {
-        this.introImages = introImages;
     }
     
     public String getBrandType()

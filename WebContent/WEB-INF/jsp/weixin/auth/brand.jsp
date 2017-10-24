@@ -36,7 +36,7 @@
     </div>	
 	<!-- 工厂信息填写  -->
     <div class="page__bd">
-      <form action="" method="post" id="form">
+      <form action="../saveBrand" method="post" id="form">
 		<div class="weui-cells weui-cells_radio" style="margin-top:5px">
             <label class="weui-cell weui-check__label" for="x11">
                 <div class="weui-cell__bd">
@@ -66,24 +66,24 @@
                 </div>
             </label>
         </div>
-    	<div style="margin-top:10px;padding:0 10px;">
-    		<div style="margin-top:5px;">
-		   		<h5 style="float: left;width:50%;height:25px">已选品牌(点击可删除)：</h5>
-		   		<a herf="javascript:;" id="chooseBranda" style="float: right;width:50%;text-align: right;color:green;">选择品牌</a>
-	   		</div>
-	    	<div class="button-sp-area">
-	            <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_primary">按钮</a>
-	            <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_default">按钮</a>
-	            <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_warn">按钮</a>
-	            <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_primary">按钮</a>
-	            <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_default">按钮</a>
-	            <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_warn">按钮</a>
+        
+    	<h5 style="margin-top:10px;padding-left:10px;">已选品牌(点击可删除)：</h5>
+    	<div class="weui-cells" style="margin-top:5px">
+	    	<div class="button-sp-area" id="finalChoosedBrand" style="padding:0px 5px;">
+	    		<a href="javascript:;" onclick="delBrand(this)" class="weui-btn weui-btn_mini weui-btn_warn">sss</a>
+	    		<c:forTokens items="${fi.brands }" var="it" delims=";">
+	    			<a href="javascript:;" onclick="delBrand(this)" class="weui-btn weui-btn_mini weui-btn_warn">${it }</a>
+	    		</c:forTokens>
+	    		<a href="javascript:;" onclick="toBrandChoose()" class="weui-btn weui-btn_mini weui-btn_primary">+</a>
 	        </div>
-            <div id="uploader">
+	     </div>
+	     
+ 		<h5 style="margin-top:10px;padding-left:10px;">品牌授权书拍照上传</h5>
+	     <div class="weui-cells" style="margin-top:5px">
+            <div class="weui-cell" id="uploader">
                 <div class="weui-cell__bd">
                     <div class="weui-uploader">
                         <div class="weui-uploader__hd">
-                            <h5 class="weui-uploader__title">品牌授权书拍照上传</h5>
                             <div class="weui-uploader__info"><span id="uploadCount">0</span>/20</div>
                         </div>
                         <div class="weui-uploader__bd">
@@ -100,13 +100,14 @@
                 </div>
 			</div>
 			<div>
-				<a href="" style="font-size: 12px;color:blue;">点我，下载品牌授权书模板</a>
+				<h5>下载品牌授权书模板 <a href="" style="color:blue;">请点我</a></h5>
 			</div>
         </div>
         <div class="weui-btn-area_inline" style="margin-top: 10px;">
-            <a class="weui-btn weui-btn_primary" href="javascript:" id="preStep">上一步</a>
+            <a class="weui-btn weui-btn_primary" href="intro">上一步</a>
             <a class="weui-btn weui-btn_primary" href="javascript:" id="nextStep">下一步</a>
         </div>
+	    <input type="hidden" name="brands" value="${fi.brands }" />
     </form>
 	</div>
 	<%@ include file="/WEB-INF/jsp/weixin/footer.jsp" %>
@@ -133,11 +134,6 @@
 		            </form>
 		        </div>
 	        </div>
-        	<div class="weui-cell__ft">
-                	<input name="lat" type="hidden" value="${fi.lat }"/>
-                	<input name="lng" type="hidden" value="${fi.lng }"/>
-                    <a class="weui-vcode-btn" id="brand-add-btn" href="javascript:;">新增</a>
-            </div>
         </div>
         </div>
         <div class="searchbar-result" id="searchResult" style="height:200px;overflow: auto">
@@ -230,29 +226,43 @@
 <%@ include file="/WEB-INF/jsp/weixin/comm_js.jsp" %>
 <script type="text/javascript" src="${ctx }/js/app/weixin/img_upload.js"></script>
 <script type="text/javascript" src="${ctx }/js/jquery.form.min.js"></script>
-<%-- <script type="text/javascript" src="${ctx }/js/jquery-easyui/plugins/jquery.form.js"></script> --%>
 <%@ include file="/WEB-INF/jsp/weixin/h5_fich_editor_js.jsp" %>
 <script>
 	var $dialog1 = $("#dialog1");
+
+	function toBrandChoose(){
+		$("#choose-choosed").empty();
+		$("#choose-choosed").append($("#finalChoosedBrand").html());
+		var ad = $("#choose-choosed").children().last();
+		$(ad).on("click",toAddBrand);
+		$(ad).html("新增");
+		$dialog1.fadeIn(200);
+	}
+	
 	$("input[name='brandType']").on("click",function(){
 		var value = $(this).val();
 		if(value == 1 || value == 2){
-			 $dialog1.fadeIn(200);
+			toBrandChoose();
 		}
 	});
-	$("#chooseBranda").on("click",function(){
-		$dialog1.fadeIn(200);
-	});
+	$("#chooseBranda").on("click",toBrandChoose);
 	
 	$("#brandChooseOk").on("click",function(){
+		$("#finalChoosedBrand").empty();
+		$("#finalChoosedBrand").append($("#choose-choosed").html());
+		var ad = $("#finalChoosedBrand").children().last();
+		$(ad).on("click",toBrandChoose);
+		$(ad).html("+");
 		$dialog1.fadeOut(200);
 	});
 	
 	var $dialog2 = $("#dialog2");
-	$("#brand-add-btn").on("click",function(){
+	
+	function toAddBrand(){
 		$dialog1.fadeOut(200);
 		$dialog2.fadeIn(200);
-	});
+	};
+	
 	$("#brand-add-cancle").on("click",function(){
 		$dialog2.fadeOut(200);
 		$dialog1.fadeIn(200);
@@ -300,6 +310,20 @@
         });
 
     });
+    
+    function delBrand(obj){
+    	weui.confirm("您要删除该品牌吗？",function(){$(obj).remove()});
+    }
+    
+    function checkChoosed(name){
+    	var cnames = $("#choose-choosed").children();
+    	for(var i=0;i < cnames.length;i++){
+    		if($(cnames[i]).text() == name){
+    			return true;
+    		}
+    	}
+    	return false;
+    }
 </script>
 <script>
     var brandLogoImgUploader = new ImgUploader('brandLogoUploader',ctx + '/wx/web/upload/comm',false,1,0,'brandLogoUploadCount','brandLogoUploaderFiles',{type:"brand"});
@@ -310,7 +334,9 @@
 			$.getJSON(ctx + "/wx/web/brand/checkName",{name:name},function(data){
 				if(data.id){
 					weui.confirm("您输入的品牌名称已存在,是否选择此品牌？",function(){
-						$("#choose-choosed").append('<a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_warn" data-id="' + data.id + '">'+ data.name + '</a>');	
+						if(!checkChoosed(data.name)){
+							$("#choose-choosed").append('<a href="javascript:;" onclick="delBrand(this)" class="weui-btn weui-btn_mini weui-btn_warn">'+ data.name + '</a>');	
+						}
 						$dialog2.fadeOut(200);
 						$dialog1.fadeIn(200);
 					});
@@ -341,7 +367,9 @@
             							loading.hide();
             							if(Constants.ResultStatus_Ok == data.status){
             								data = data.data;
-	            							$("#choose-choosed").append('<a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_warn" data-id="' + data.id + '">'+ data.name + '</a>');	
+            								if(!checkChoosed(data.name)){
+            									$("#choose-choosed").append('<a href="javascript:;" onclick="delBrand(this)" class="weui-btn weui-btn_mini weui-btn_warn">'+ data.name + '</a>');	
+            								}
 	            							weui.toast('提交成功', 3000);
 	            							$dialog2.fadeOut(200);
 	            							$dialog1.fadeIn(200);
@@ -368,17 +396,7 @@
         });
     });
     
-    window.onload=function(){
-	    var temp = document.getElementsByTagName("a");
-	    var i = 0;
-	    for(i=0;i<temp.length;i++){
-	        //console.log(temp[i].href);
-	        if(temp[i].href=="https://www.froala.com/wysiwyg-editor?k=u")
-	        {           
-	        	temp[i].parentNode.removeChild(temp[i].parentNode.childNodes[0]);
-	        }
-	    }
-	}
+
      
 </script>
 </html>

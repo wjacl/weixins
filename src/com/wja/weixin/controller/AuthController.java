@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -26,11 +27,10 @@ public class AuthController
     @Autowired
     private SmsService smsService;
     
-    @RequestMapping(value = {"auth", "toCategory"})
-    public String auth(Model model)
+    @RequestMapping("to/{page}")
+    public String to(Model model, @PathVariable("page") String page)
     {
         String openId = RequestThreadLocal.openId.get();
-        
         // 获得用户的category
         FollwerInfo fi = this.follwerInfoService.get(FollwerInfo.class, openId);
         if (fi == null)
@@ -40,7 +40,7 @@ public class AuthController
         }
         model.addAttribute("fi", fi);
         
-        return "weixin/auth/auth1";
+        return "weixin/auth/" + page;
     }
     
     @RequestMapping("phoneAuth")
@@ -125,47 +125,35 @@ public class AuthController
         return OpResult.error("param invalid", null);
     }
     
-    @RequestMapping("toInfo")
-    public String toInfo(String openId, Model model)
-    {
-        // 获得用户的category
-        FollwerInfo fi = this.follwerInfoService.get(FollwerInfo.class, openId);
-        model.addAttribute("fi", fi);
-        
-        // 跳转到对应的信息填写页
-        return "weixin/auth/info";
-    }
-    
     @RequestMapping("saveInfo")
-    public String saveInfo(FollwerInfo fi, HttpSession session)
+    public String saveInfo(FollwerInfo fi)
     {
-        FollwerInfo dfi = this.follwerInfoService.get(FollwerInfo.class, fi.getOpenId());
-        
-        BeanUtil.copyPropertiesIgnoreNull(fi, dfi);
-        this.follwerInfoService.update(dfi);
-        return "redirect:setBrand";
+        fi.setStatus(FollwerInfo.STATUS_INFO_OK);
+        this.doSave(fi);
+        return "redirect:to/intro";
     }
     
-    @RequestMapping("setBrand")
-    public String setBrand()
+    @RequestMapping("saveIntro")
+    public String saveIntro(FollwerInfo fi)
     {
-        // 跳转到对应的信息填写页
-        return "weixin/auth/brand";
+        fi.setStatus(FollwerInfo.STATUS_INFO_OK);
+        this.doSave(fi);
+        return "redirect:to/brand";
     }
     
     @RequestMapping("saveBrand")
     public String saveBrand(FollwerInfo fi)
     {
+        fi.setStatus(FollwerInfo.STATUS_BRAND_OK);
+        this.doSave(fi);
+        return "redirect:to/payment";
+    }
+    
+    private void doSave(FollwerInfo fi)
+    {
         FollwerInfo dfi = this.follwerInfoService.get(FollwerInfo.class, fi.getOpenId());
         BeanUtil.copyPropertiesIgnoreNull(fi, dfi);
         this.follwerInfoService.update(dfi);
-        return "redirect:toPayment";
-    }
-    
-    @RequestMapping("toPayment")
-    public String toPayment(FollwerInfo fi)
-    {
-        return "weixin/auth/payment";
     }
     
 }

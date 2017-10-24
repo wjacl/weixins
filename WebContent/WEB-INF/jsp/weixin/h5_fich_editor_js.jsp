@@ -29,4 +29,16 @@
 	function h5FichEditorCommonInit(id){
 		h5FichEditorInit(id,publicUploadUrl);
 	} 
+	
+    window.onload=function(){
+	    var temp = document.getElementsByTagName("a");
+	    var i = 0;
+	    for(i=0;i<temp.length;i++){
+	        //console.log(temp[i].href);
+	        if(temp[i].href=="https://www.froala.com/wysiwyg-editor?k=u")
+	        {           
+	        	temp[i].parentNode.removeChild(temp[i].parentNode.childNodes[0]);
+	        }
+	    }
+	}
 </script>

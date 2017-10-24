@@ -24,6 +24,12 @@ public class Brand extends CommEntity
     private String name;
     
     /**
+     * 名称拼音首字母
+     */
+    @Column(length = 30)
+    private String pinyin;
+    
+    /**
      * logo图标
      */
     @Column(length = 100)
@@ -74,4 +80,15 @@ public class Brand extends CommEntity
     {
         this.intro = intro;
     }
+    
+    public String getPinyin()
+    {
+        return pinyin;
+    }
+    
+    public void setPinyin(String pinyin)
+    {
+        this.pinyin = pinyin;
+    }
+    
 }

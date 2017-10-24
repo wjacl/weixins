@@ -10,3 +10,4 @@
 	<script type="text/javascript" src="${ctx }/js/jquery-easyui/jquery.min.js"></script>
 	<script type="text/javascript" src="${ctx }/js/constants.js"></script>
 	<script type="text/javascript" src="${ctx }/js/weui/weui.min.js"></script>
+	<script type="text/javascript" src="${ctx }/js/dropload/dropload.min.js"></script>
