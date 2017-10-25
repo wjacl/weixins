@@ -24,7 +24,7 @@
                     <div class="weui-uploader">
                         <div class="weui-uploader__hd">
                             <p class="weui-uploader__title">Logo/头像：公司、商家Logo/个人头像</p>
-                            <div class="weui-uploader__info"><span id="uploadCount">0</span>/1</div>
+                            <div class="weui-uploader__info"><span id="uploadCount"></span></div>
                         </div>
                         <div class="weui-uploader__bd">
                             <ul class="weui-uploader__files" id="uploaderFiles">

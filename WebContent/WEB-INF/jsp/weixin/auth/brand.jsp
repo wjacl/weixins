@@ -36,14 +36,14 @@
     </div>	
 	<!-- 工厂信息填写  -->
     <div class="page__bd">
-      <form action="../saveBrand" method="post" id="form">
+      <form action="../saveBrand" method="post" id="xxform">
 		<div class="weui-cells weui-cells_radio" style="margin-top:5px">
             <label class="weui-cell weui-check__label" for="x11">
                 <div class="weui-cell__bd">
                     <p>代理品牌</p>
                 </div>
                 <div class="weui-cell__ft">
-                    <input type="radio" class="weui-check" name="brandType" value="1" id="x11"/>
+                    <input type="radio" class="weui-check" name="brandType" value="1" id="x11" ${fi.brandType eq "1" ? "checked":"" } required emptyTips="请选择品牌类型"/>
                     <span class="weui-icon-checked"></span>
                 </div>
             </label>
@@ -52,7 +52,7 @@
                     <p>自有品牌</p>
                 </div>
                 <div class="weui-cell__ft">
-                    <input type="radio" class="weui-check" name="brandType" value="2" id="x12"/>
+                    <input type="radio" class="weui-check" name="brandType" value="2" id="x12" ${fi.brandType eq "2" ? "checked":"" } required emptyTips="请选择品牌类型"/>
                     <span class="weui-icon-checked"></span>
                 </div>
             </label>
@@ -61,16 +61,16 @@
                     <p>无品牌</p>
                 </div>
                 <div class="weui-cell__ft">
-                    <input type="radio" class="weui-check" name="brandType" value="3" id="x13"/>
+                    <input type="radio" class="weui-check" name="brandType" value="3" id="x13" ${fi.brandType eq "3" ? "checked":"" } required emptyTips="请选择品牌类型"/>
                     <span class="weui-icon-checked"></span>
                 </div>
             </label>
         </div>
         
+       <div id="chooseDiv" style='display:${fi.brandType == "1" || fi.brandType == "2" ? "block":"none"}'>
     	<h5 style="margin-top:10px;padding-left:10px;">已选品牌(点击可删除)：</h5>
     	<div class="weui-cells" style="margin-top:5px">
 	    	<div class="button-sp-area" id="finalChoosedBrand" style="padding:0px 5px;">
-	    		<a href="javascript:;" onclick="delBrand(this)" class="weui-btn weui-btn_mini weui-btn_warn">sss</a>
 	    		<c:forTokens items="${fi.brands }" var="it" delims=";">
 	    			<a href="javascript:;" onclick="delBrand(this)" class="weui-btn weui-btn_mini weui-btn_warn">${it }</a>
 	    		</c:forTokens>
@@ -78,18 +78,19 @@
 	        </div>
 	     </div>
 	     
- 		<h5 style="margin-top:10px;padding-left:10px;">品牌授权书拍照上传</h5>
+	   <div id="authorDiv" style='display:${fi.brandType == "1" ? "block":"none"}'> 
+ 		<h5 style="margin-top:10px;padding-left:10px;">品牌授权书拍照上传（请上传，否则认证审核会通不过）</h5>
 	     <div class="weui-cells" style="margin-top:5px">
             <div class="weui-cell" id="uploader">
                 <div class="weui-cell__bd">
                     <div class="weui-uploader">
-                        <div class="weui-uploader__hd">
-                            <div class="weui-uploader__info"><span id="uploadCount">0</span>/20</div>
-                        </div>
+                        <!-- <div class="weui-uploader__hd">
+                            <div class="weui-uploader__info"><span id="uploadCount">0</span></div>
+                        </div> -->
                         <div class="weui-uploader__bd">
                             <ul class="weui-uploader__files" id="uploaderFiles">
-                            <c:forTokens items="${fi.certificates }" var="it" delims=";">
-                                <li class="weui-uploader__file" style="background-image:url(${ctx}/wx/web/upload/${it })" data-id="${it }"></li>
+                            <c:forTokens items="${fi.brandAuthors }" var="it" delims=";">
+                                <li class="weui-uploader__file" style="background-image:url(${ctx}/wx/web/upload/get/${it })" data-id="${it }"></li>
                             </c:forTokens>
                             </ul>
                             <div class="weui-uploader__input-box">
@@ -100,14 +101,20 @@
                 </div>
 			</div>
 			<div>
-				<h5>下载品牌授权书模板 <a href="" style="color:blue;">请点我</a></h5>
+				<h5 style="margin-bottom:10px;padding-left:10px;">下载品牌授权书模板 <a href="brandAuthTemplate" style="color:blue;">请点我</a></h5>
 			</div>
+        </div>
+        </div>
         </div>
         <div class="weui-btn-area_inline" style="margin-top: 10px;">
             <a class="weui-btn weui-btn_primary" href="intro">上一步</a>
-            <a class="weui-btn weui-btn_primary" href="javascript:" id="nextStep">下一步</a>
+            <a class="weui-btn weui-btn_primary" href="javascript:;" onclick="zancun()">暂 存</a>
+            <a class="weui-btn weui-btn_primary" href="javascript:;" id="nextStep">下一步</a>
         </div>
 	    <input type="hidden" name="brands" value="${fi.brands }" />
+	    <input type="hidden" name="brandAuthors" value="${fi.brandAuthors }" />
+    	<input type="hidden" name="openId" value="${openId }">
+    	<input type="hidden" name="saveType" >
     </form>
 	</div>
 	<%@ include file="/WEB-INF/jsp/weixin/footer.jsp" %>
@@ -188,7 +195,7 @@
                     <div class="weui-uploader">
                         <div class="weui-uploader__hd">
                             <p class="weui-uploader__title">品牌商标/Logo：</p>
-                            <div class="weui-uploader__info"><span id="brandLogoUploadCount">0</span>/1</div>
+                            <div class="weui-uploader__info"><span id="brandLogoUploadCount"></span></div>
                         </div>
                         <div class="weui-uploader__bd">
                             <ul class="weui-uploader__files" id="brandLogoUploaderFiles">
@@ -216,7 +223,7 @@
             <a class="weui-btn weui-btn_primary" href="javascript:" id="brandAddSubmit">提交</a>
         </div>
     </div>
-    	<input type="hidden" name="openId" value="${opendId }">
+    	<input type="hidden" name="openId" value="${openId }">
     	<input type="hidden" name="logo">
     </form>
     </div>
@@ -234,7 +241,7 @@
 		$("#choose-choosed").empty();
 		$("#choose-choosed").append($("#finalChoosedBrand").html());
 		var ad = $("#choose-choosed").children().last();
-		$(ad).on("click",toAddBrand);
+		$(ad).attr("onclick","toAddBrand()");
 		$(ad).html("新增");
 		$dialog1.fadeIn(200);
 	}
@@ -243,6 +250,16 @@
 		var value = $(this).val();
 		if(value == 1 || value == 2){
 			toBrandChoose();
+			$("#chooseDiv").show();
+			if(value == 1){
+				$("#authorDiv").show();
+			}
+			else{
+				$("#authorDiv").hide();
+			}
+		}
+		else{
+			$("#chooseDiv").hide();
 		}
 	});
 	$("#chooseBranda").on("click",toBrandChoose);
@@ -251,7 +268,7 @@
 		$("#finalChoosedBrand").empty();
 		$("#finalChoosedBrand").append($("#choose-choosed").html());
 		var ad = $("#finalChoosedBrand").children().last();
-		$(ad).on("click",toBrandChoose);
+		$(ad).attr("onclick","toBrandChoose()");
 		$(ad).html("+");
 		$dialog1.fadeOut(200);
 	});
@@ -259,6 +276,7 @@
 	var $dialog2 = $("#dialog2");
 	
 	function toAddBrand(){
+		$('#brandForm').clearForm();
 		$dialog1.fadeOut(200);
 		$dialog2.fadeIn(200);
 	};
@@ -269,7 +287,49 @@
 	});
 	
 	
-	var imgUploader = new ImgUploader('uploader',ctx + '/wx/web/upload/auth',false,20,0,'uploadCount','uploaderFiles');
+	var imgUploader = new ImgUploader('uploader',ctx + '/wx/web/upload/auth',false,30,0,'uploadCount','uploaderFiles');
+	
+	function zancun(){
+		$("input[name='saveType']").val("zancun");
+		$("#nextStep").click();
+	}
+	
+	$("#nextStep").on("click",function(){
+		weui.form.validate('#xxform', function (error) {
+            if (!error) {
+            	
+            	var brs = $("#finalChoosedBrand").children();
+            	var brsary = [];
+            	for(var i = 0; i < brs.length - 1; i++){
+            		brsary.push($(brs[i]).text());
+            	}
+            	$("input[name='brands']").val(brsary.join(";"));
+            	
+            	var re = imgUploader.upload();
+        		if(re){
+        			var xx = 1;
+        			function ccck(){
+        				if(imgUploader.uploadedFileNames.length < imgUploader.uploadList.length && xx < 10){
+        					xx++;
+        					setTimeout(ccck,300);
+        				}
+        				else{
+        					if(imgUploader.uploadedFileNames.length == imgUploader.uploadCount){
+        						$("input[name='brandAuthors']").val(imgUploader.getUploadedFileNameStr());
+        						var loading = weui.loading('提交中...');
+        						$('#xxform').submit();
+        					}
+        					else {
+        						weui.alert('请检查一下图片是否都已上传，待都完成上传后，再点击 下一步');
+        					}
+        				}
+        			}
+        			setTimeout(ccck,300);
+        		}                   
+            }
+        });
+	})
+	
 </script>
 
 <script type="text/javascript">
@@ -335,7 +395,7 @@
 				if(data.id){
 					weui.confirm("您输入的品牌名称已存在,是否选择此品牌？",function(){
 						if(!checkChoosed(data.name)){
-							$("#choose-choosed").append('<a href="javascript:;" onclick="delBrand(this)" class="weui-btn weui-btn_mini weui-btn_warn">'+ data.name + '</a>');	
+							$("#choose-choosed").children().last().before('<a href="javascript:;" onclick="delBrand(this)" class="weui-btn weui-btn_mini weui-btn_warn">'+ data.name + '</a> ');	
 						}
 						$dialog2.fadeOut(200);
 						$dialog1.fadeIn(200);
@@ -368,7 +428,7 @@
             							if(Constants.ResultStatus_Ok == data.status){
             								data = data.data;
             								if(!checkChoosed(data.name)){
-            									$("#choose-choosed").append('<a href="javascript:;" onclick="delBrand(this)" class="weui-btn weui-btn_mini weui-btn_warn">'+ data.name + '</a>');	
+            									$("#choose-choosed").children().last().before('<a href="javascript:;" onclick="delBrand(this)" class="weui-btn weui-btn_mini weui-btn_warn">'+ data.name + '</a> ');	
             								}
 	            							weui.toast('提交成功', 3000);
 	            							$dialog2.fadeOut(200);

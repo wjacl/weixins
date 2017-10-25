@@ -142,10 +142,14 @@ public class AuthController
     }
     
     @RequestMapping("saveBrand")
-    public String saveBrand(FollwerInfo fi)
+    public String saveBrand(FollwerInfo fi, String saveType)
     {
         fi.setStatus(FollwerInfo.STATUS_BRAND_OK);
         this.doSave(fi);
+        if ("zancun".equals(saveType))
+        {
+            return "redirect:to/brand";
+        }
         return "redirect:to/payment";
     }
     

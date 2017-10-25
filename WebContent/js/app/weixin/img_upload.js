@@ -12,6 +12,17 @@ function ImgUploader(domId,url,auto,max,min,countDomId,uploaderFilesDomId,params
 		this.min = min;
 	}
 
+	this.clear = function(){
+		this.uploadCount = 0;
+		this.uploadList = [];
+		this.uploadedFileNames = [];
+		$("#" + uploaderFilesDomId).empty();
+
+        if(this.uploadCountDom){
+        	this.uploadCountDom.innerHTML = this.uploadCount + "/" + this.max;
+        }
+	}
+	
 	this.uploadCountDom = document.getElementById(countDomId == undefined ? domId + "Count" : countDomId);
 	var uploadObj = this;
 	
@@ -20,7 +31,10 @@ function ImgUploader(domId,url,auto,max,min,countDomId,uploaderFilesDomId,params
 	});
 
 	this.uploadCount = this.uploadedFileNames.length;
-	this.uploadCountDom.innerHTML = this.uploadCount;
+
+    if(this.uploadCountDom){
+    	this.uploadCountDom.innerHTML = this.uploadCount + "/" + this.max;
+    }
 	
 	weui.uploader("#" + domId, {
 	    url: url,
@@ -51,7 +65,7 @@ function ImgUploader(domId,url,auto,max,min,countDomId,uploaderFilesDomId,params
 
 	        ++uploadObj.uploadCount;
 	        if(uploadObj.uploadCountDom){
-	        	uploadObj.uploadCountDom.innerHTML = uploadObj.uploadCount;
+	        	uploadObj.uploadCountDom.innerHTML = uploadObj.uploadCount + "/" + uploadObj.max;
 	        }
 	    },
 	    onQueued: function(){
@@ -105,8 +119,10 @@ function ImgUploader(domId,url,auto,max,min,countDomId,uploaderFilesDomId,params
 	        onDelete: function(){
 	            weui.confirm('确定删除该图片？', function(){
 	                --uploadObj.uploadCount;
-	                uploadObj.uploadCountDom.innerHTML = uploadObj.uploadCount;
 
+	    	        if(uploadObj.uploadCountDom){
+	    	        	uploadObj.uploadCountDom.innerHTML = uploadObj.uploadCount + "/" + uploadObj.max;
+	    	        }
 	                var index;
 	                for (var i = 0, len = uploadObj.uploadList.length; i < len; ++i) {
 	                    var file = uploadObj.uploadList[i];

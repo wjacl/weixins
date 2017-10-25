@@ -42,7 +42,7 @@
                     <div class="weui-uploader">
                         <div class="weui-uploader__hd">
                             <p class="weui-uploader__title">证件：身份证正反面、营业执照图片上传</p>
-                            <div class="weui-uploader__info"><span id="uploadCount">0</span>/3</div>
+                            <div class="weui-uploader__info"><span id="uploadCount"></span></div>
                         </div>
                         <div class="weui-uploader__bd">
                             <ul class="weui-uploader__files" id="uploaderFiles">
