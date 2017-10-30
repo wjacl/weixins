@@ -53,13 +53,16 @@ public class CommSpecification<T> implements Specification<T>
     @Override
     public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query, CriteriaBuilder builder)
     {
+        
+        Predicate p = null;
+        
         if (this.params != null && this.params.size() > 0)
         {
             Path expression = null;
             
-            List<Predicate> predicates = new ArrayList<>();
+            // List<Predicate> predicates = new ArrayList<>();
             Condition con = null;
-            
+            Predicate pr = null;
             for (String key : this.params.keySet())
             {
                 if (StringUtils.isNotBlank(key) && !ignors.contains(key)) // key 的组成 [(or)_]fieldName[_操作符][_数据类型|时间格式]
@@ -99,141 +102,60 @@ public class CommSpecification<T> implements Specification<T>
                     switch (con.op)
                     {
                         case eq:
-                            if (con.or)
-                            {
-                                predicates.add(builder.or(builder.equal(expression, con.value)));
-                            }
-                            else
-                            {
-                                predicates.add(builder.equal(expression, con.value));
-                            }
+                            pr = builder.equal(expression, con.value);
                             break;
                         case ne:
-                            if (con.or)
-                            {
-                                predicates.add(builder.or(builder.notEqual(expression, con.value)));
-                            }
-                            else
-                            {
-                                predicates.add(builder.notEqual(expression, con.value));
-                            }
+                            pr = builder.notEqual(expression, con.value);
                             break;
                         case like:
-                            if (con.or)
-                            {
-                                predicates.add(builder.or(builder.like(expression, "%" + con.value + "%")));
-                            }
-                            else
-                            {
-                                predicates.add(builder.like(expression, "%" + con.value + "%"));
-                            }
+                            pr = builder.like(expression, "%" + con.value + "%");
                             break;
                         case lt:
-                            if (con.or)
-                            {
-                                predicates.add(builder.or(builder.lessThan(expression, (Comparable)con.value)));
-                            }
-                            else
-                            {
-                                predicates.add(builder.lessThan(expression, (Comparable)con.value));
-                            }
+                            pr = builder.lessThan(expression, (Comparable)con.value);
                             break;
                         case gt:
-                            if (con.or)
-                            {
-                                predicates.add(builder.or(builder.greaterThan(expression, (Comparable)con.value)));
-                            }
-                            else
-                            {
-                                predicates.add(builder.greaterThan(expression, (Comparable)con.value));
-                            }
+                            pr = builder.greaterThan(expression, (Comparable)con.value);
                             break;
                         case lte:
-                            if (con.or)
-                            {
-                                predicates
-                                    .add(builder.or(builder.lessThanOrEqualTo(expression, (Comparable)con.value)));
-                            }
-                            else
-                            {
-                                predicates.add(builder.lessThanOrEqualTo(expression, (Comparable)con.value));
-                            }
+                            pr = builder.lessThanOrEqualTo(expression, (Comparable)con.value);
                             break;
                         case gte:
-                            if (con.or)
-                            {
-                                predicates
-                                    .add(builder.or(builder.greaterThanOrEqualTo(expression, (Comparable)con.value)));
-                            }
-                            else
-                            {
-                                predicates.add(builder.greaterThanOrEqualTo(expression, (Comparable)con.value));
-                            }
+                            pr = builder.greaterThanOrEqualTo(expression, (Comparable)con.value);
                             break;
                         case isnull:
-                            if (con.or)
-                            {
-                                predicates.add(builder.or(builder.isNull(expression)));
-                            }
-                            else
-                            {
-                                predicates.add(builder.isNull(expression));
-                            }
+                            pr = builder.isNull(expression);
                             break;
                         case in:
-                            if (con.or)
-                            {
-                                predicates.add(builder.or(builder.in(expression.in((Collection)con.value))));
-                            }
-                            else
-                            {
-                                predicates.add((expression.in((Collection)con.value)));
-                            }
+                            pr = builder.in(expression.in((Collection)con.value));
                             break;
                         case notin:
-                            if (con.or)
-                            {
-                                predicates
-                                    .add(builder.or(builder.not(builder.in(expression.in((Collection)con.value)))));
-                            }
-                            else
-                            {
-                                predicates.add(builder.not(builder.in(expression.in((Collection)con.value))));
-                            }
+                            pr = builder.not(builder.in(expression.in((Collection)con.value)));
                             break;
                         case after:
-                            if (con.or)
-                            {
-                                predicates
-                                    .add(builder.or(builder.greaterThanOrEqualTo(expression, (Comparable)con.value)));
-                            }
-                            else
-                            {
-                                predicates.add(builder.greaterThanOrEqualTo(expression, (Comparable)con.value));
-                            }
+                            pr = builder.greaterThanOrEqualTo(expression, (Comparable)con.value);
                             break;
                         case before:
                             Calendar dv = Calendar.getInstance();
                             dv.setTime((Date)con.value);
                             dv.add(Calendar.DATE, 1);
-                            if (con.or)
-                            {
-                                predicates.add(builder.or(builder.lessThan(expression, dv.getTime())));
-                            }
-                            else
-                            {
-                                predicates.add(builder.lessThan(expression, dv.getTime()));
-                            }
+                            pr = builder.lessThan(expression, dv.getTime());
                             break;
+                    }
+                    if (pr != null)
+                    {
+                        if (con.or)
+                        {
+                            p = p == null ? builder.or(pr) : builder.or(p, pr);
+                        }
+                        else
+                        {
+                            p = p == null ? builder.and(pr) : builder.and(p, pr);
+                        }
                     }
                 }
             }
-            
-            // 将查询条件加到查询中
-            query.where(predicates.toArray(new Predicate[predicates.size()]));
         }
-        // 查询条件已经加到查询中，所以返回null
-        return null;
+        return p;
     }
     
     public enum OP
