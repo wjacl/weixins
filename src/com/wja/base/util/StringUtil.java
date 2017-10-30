@@ -27,7 +27,7 @@ public class StringUtil
                 convert += word;
             }
         }
-        return convert;
+        return convert.toLowerCase(); // 转小写以处理字符串中有大写英文字母（统一为小写）
     }
     
     public static void main(String[] args)

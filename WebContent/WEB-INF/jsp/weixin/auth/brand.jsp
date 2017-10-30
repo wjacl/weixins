@@ -284,8 +284,14 @@
             	for(var i = 0; i < brs.length - 1; i++){
             		brsary.push($(brs[i]).text());
             	}
+            	var brandType = $("input[name='brandType']:checked").val();
+            	if(brandType == 1){//代理需上传授权书
+            		if(brsary.length > imgUploader.uploadCount && $("input[name='saveType']").val() != "zancun"){
+            			weui.alert("代理品牌，请上传品牌授权书图片！每个品牌至少一张图片。")
+            			return;
+            		}
+            	}
             	$("input[name='brands']").val(brsary.join(";"));
-            	
             	var re = imgUploader.upload();
         		if(re){
         			var xx = 1;
@@ -314,6 +320,20 @@
 </script>
 
 <script type="text/javascript">
+
+
+
+var pageQueryData = {
+		pageNum:0,
+		size:5,
+		sort:"pinyin",
+		order:"asc",
+		name_like_string:"",
+		or_pinyin_like_string:""
+	};
+
+var lastLetter;
+
     $(function(){
         var $searchBar = $('#searchBar'),
             $searchResult = $('#searchResult'),
@@ -338,34 +358,28 @@
                 if(!this.value.length) cancelSearch();
             })
             .on('input', function(){
-                if(this.value.length) {
-                    $searchResult.show();
-                } else {
-                    $searchResult.hide();
-                }
+            	pageQueryData.name_like_string = this.value;
+            	pageQueryData.or_pinyin_like_string = this.value;
+                pageQueryData.pageNum = 0;
+                $searchResult.empty();
+                lastLetter = "";
+                initBrandDrop();
             })
         ;
         $searchClear.on('click', function(){
-            hideSearchResult();
+            //hideSearchResult();
             $searchInput.focus();
         });
-
-        var pageQueryData = {
-        		pageNum:0,
-        		size:5,
-        		sort:"pinyin",
-        		order:"asc"
-        	};
-        
-        var lastLetter;
         
         // dropload
-        $('#searchResult').dropload({
+       function initBrandDrop(){
+        	$('#searchResult').dropload({
+        
             //scrollArea : window,
+            isLockUp:true,
+            domUp:"",
             loadDownFn : function(me){
             	pageQueryData.pageNum++;
-                // 拼接HTML
-                var result = '';
                 $.ajax({
                     type: 'GET',
                     url: ctx + "/wx/web/brand/query",
@@ -375,6 +389,8 @@
                         var arrLen = data.rows.length;
                         if(arrLen > 0){
                         	var row;
+                            // 拼接HTML
+                            var result = '';
                             for(var i=0; i<arrLen; i++){
                             	row = data.rows[i];
                                 result += '<label class="weui-cell weui-check__label" for="' + row.id + '">';
@@ -388,7 +404,7 @@
                             	result += '<div class="weui-cell__bd">' +
                                 	'<p>' + nas + '</p></div>' +
                                 	'<div class="weui-cell__ft">' +
-                                    	'<input type="checkbox" class="weui-check" onclick="brandListItemClick(this,"' + row.name + '")" id="' + row.id + '"/>' +
+                                    	'<input type="checkbox" class="weui-check" onclick="brandListItemClick(this,\'' + row.name + '\')" id="' + row.id + '"/>' +
                                     	'<span class="weui-icon-checked"></span>' +
                                 	'</div></label>';
                             }
@@ -412,9 +428,10 @@
                 });
             }
         });
+       }
         
+       initBrandDrop();
     });
-    
 
     
     function brandListItemClick(obj,name){
