@@ -143,27 +143,8 @@
 	        </div>
         </div>
         </div>
-        <div class="searchbar-result" id="searchResult" style="height:200px;overflow: auto">
-            <div class="weui-cell weui-cell_access">
-                <div class="weui-cell__bd weui-cell_primary">
-                    <p>实时搜索文本</p>
-                </div>
-            </div>
-            <div class="weui-cell weui-cell_access">
-                <div class="weui-cell__bd weui-cell_primary">
-                    <p>实时搜索文本</p>
-                </div>
-            </div>
-            <div class="weui-cell weui-cell_access">
-                <div class="weui-cell__bd weui-cell_primary">
-                    <p>实时搜索文本</p>
-                </div>
-            </div>
-            <div class="weui-cell weui-cell_access">
-                <div class="weui-cell__bd weui-cell_primary">
-                    <p>实时搜索文本</p>
-                </div>
-            </div>
+        <div class="searchbar-result  weui-cells_checkbox" id="searchResult" style="height:200px;overflow: auto">
+            
         </div>
     	<div class="weui-cells" style="margin-top:10px;">
 	   		<h5 style="margin-top:5px;">已选品牌：</h5>
@@ -369,7 +350,90 @@
             $searchInput.focus();
         });
 
+        var pageQueryData = {
+        		pageNum:0,
+        		size:5,
+        		sort:"pinyin",
+        		order:"asc"
+        	};
+        
+        var lastLetter;
+        
+        // dropload
+        $('#searchResult').dropload({
+            //scrollArea : window,
+            loadDownFn : function(me){
+            	pageQueryData.pageNum++;
+                // 拼接HTML
+                var result = '';
+                $.ajax({
+                    type: 'GET',
+                    url: ctx + "/wx/web/brand/query",
+                    data:pageQueryData,
+                    dataType: 'json',
+                    success: function(data){
+                        var arrLen = data.rows.length;
+                        if(arrLen > 0){
+                        	var row;
+                            for(var i=0; i<arrLen; i++){
+                            	row = data.rows[i];
+                                result += '<label class="weui-cell weui-check__label" for="' + row.id + '">';
+                                var nas = "&nbsp;&nbsp;" + row.name;
+                            	var fl = row.pinyin.charAt(0);
+                            	if(fl != lastLetter){
+                            		lastLetter = fl;
+                            		nas = lastLetter.toUpperCase() + "&nbsp; " + row.name;
+                            	}
+                            	
+                            	result += '<div class="weui-cell__bd">' +
+                                	'<p>' + nas + '</p></div>' +
+                                	'<div class="weui-cell__ft">' +
+                                    	'<input type="checkbox" class="weui-check" onclick="brandListItemClick(this,"' + row.name + '")" id="' + row.id + '"/>' +
+                                    	'<span class="weui-icon-checked"></span>' +
+                                	'</div></label>';
+                            }
+                            // 插入数据到页面，放到最后面
+                            $('#searchResult').append(result);
+                            // 每次数据插入，必须重置
+                            me.resetload();
+                        
+                        }else{// 如果没有数据
+                            // 锁定
+                            me.lock();
+                            // 无数据
+                            me.noData();
+                        }
+                    },
+                    error: function(xhr, type){
+                        alert('Ajax error!');
+                        // 即使加载出错，也得重置
+                        me.resetload();
+                    }
+                });
+            }
+        });
+        
     });
+    
+
+    
+    function brandListItemClick(obj,name){
+    	if(obj.checked){
+    		if(!checkChoosed(name)){
+    			$("#choose-choosed").children().last().before('<a href="javascript:;" onclick="delBrand(this)" class="weui-btn weui-btn_mini weui-btn_warn">'+ name + '</a> ');
+    		}
+    	}
+    	else{
+    		var cnames = $("#choose-choosed").children();
+        	for(var i=0;i < cnames.length - 1;i++){
+        		if($(cnames[i]).text() == name){
+        			$(cnames[i]).remove();
+        			return;
+        		}
+        	}
+    	}
+    }
+    
     
     function delBrand(obj){
     	weui.confirm("您要删除该品牌吗？",function(){$(obj).remove()});
@@ -377,7 +441,7 @@
     
     function checkChoosed(name){
     	var cnames = $("#choose-choosed").children();
-    	for(var i=0;i < cnames.length;i++){
+    	for(var i=0;i < cnames.length - 1;i++){
     		if($(cnames[i]).text() == name){
     			return true;
     		}
