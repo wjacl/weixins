@@ -340,12 +340,8 @@ var lastLetter;
             $searchText = $('#searchText'),
             $searchInput = $('#searchInput'),
             $searchClear = $('#searchClear');
-        function hideSearchResult(){
-            $searchResult.hide();
-            $searchInput.val('');
-        }
+        
         function cancelSearch(){
-            hideSearchResult();
             $searchBar.removeClass('weui-search-bar_focusing');
             $searchText.show();
         }
@@ -354,30 +350,32 @@ var lastLetter;
             $searchInput.focus();
         });
         $searchInput
-            .on('blur', function () {
-                if(!this.value.length) cancelSearch();
-            })
-            .on('input', function(){
-            	pageQueryData.name_like_string = this.value;
-            	pageQueryData.or_pinyin_like_string = this.value;
-                pageQueryData.pageNum = 0;
-                $searchResult.empty();
-                lastLetter = "";
-                initBrandDrop();
-            })
-        ;
+            .on('input', reInitSearch)
+            .on('blur',function(){
+            	if(this.value.length == 0){
+            		cancelSearch();
+            	}
+            });
+        
+        function reInitSearch(){
+        	var v = $searchInput.val();
+        	pageQueryData.name_like_string = v;
+        	pageQueryData.or_pinyin_like_string = v;
+            pageQueryData.pageNum = 0;
+            $searchResult.empty();
+            lastLetter = "";
+            initBrandDrop();
+        }
         $searchClear.on('click', function(){
             //hideSearchResult();
+            $searchInput.val('');
             $searchInput.focus();
+            reInitSearch();
         });
         
         // dropload
        function initBrandDrop(){
-        	$('#searchResult').dropload({
-        
-            //scrollArea : window,
-            isLockUp:true,
-            domUp:"",
+        	$('#searchResult').dropload({       
             loadDownFn : function(me){
             	pageQueryData.pageNum++;
                 $.ajax({
@@ -386,11 +384,11 @@ var lastLetter;
                     data:pageQueryData,
                     dataType: 'json',
                     success: function(data){
+                        // 拼接HTML
+                        var result = '';
                         var arrLen = data.rows.length;
                         if(arrLen > 0){
                         	var row;
-                            // 拼接HTML
-                            var result = '';
                             for(var i=0; i<arrLen; i++){
                             	row = data.rows[i];
                                 result += '<label class="weui-cell weui-check__label" for="' + row.id + '">';
@@ -410,8 +408,6 @@ var lastLetter;
                             }
                             // 插入数据到页面，放到最后面
                             $('#searchResult').append(result);
-                            // 每次数据插入，必须重置
-                            me.resetload();
                         
                         }else{// 如果没有数据
                             // 锁定
@@ -419,6 +415,13 @@ var lastLetter;
                             // 无数据
                             me.noData();
                         }
+                        // 每次数据插入，必须重置
+                        //me.resetload();
+                     // 为了测试，延迟1秒加载
+                        setTimeout(function(){
+                            // 每次数据插入，必须重置
+                            me.resetload();
+                        },1000);
                     },
                     error: function(xhr, type){
                         alert('Ajax error!');
@@ -426,7 +429,7 @@ var lastLetter;
                         me.resetload();
                     }
                 });
-            }
+            },
         });
        }
         
