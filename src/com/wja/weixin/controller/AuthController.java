@@ -1,5 +1,8 @@
 package com.wja.weixin.controller;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
@@ -12,10 +15,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.wja.base.common.OpResult;
 import com.wja.base.common.service.SmsService;
+import com.wja.base.system.entity.Dict;
+import com.wja.base.system.service.DictService;
 import com.wja.base.util.BeanUtil;
 import com.wja.base.web.RequestThreadLocal;
+import com.wja.weixin.common.WXContants;
+import com.wja.weixin.entity.Account;
 import com.wja.weixin.entity.FollwerInfo;
 import com.wja.weixin.service.FollwerInfoService;
+import com.wja.weixin.service.TradeService;
 
 @Controller
 @RequestMapping("/wx/web/auth")
@@ -27,10 +35,35 @@ public class AuthController
     @Autowired
     private SmsService smsService;
     
+    @Autowired
+    private DictService ds;
+    
+    @Autowired
+    private TradeService tradeService;
+    
     @RequestMapping("to/{page}")
     public String to(Model model, @PathVariable("page") String page)
     {
         String openId = RequestThreadLocal.openId.get();
+        // 去保证金支付
+        if ("payment".equals(page))
+        {
+            // 判断是否已交过
+            Account a = this.tradeService.getAccount(openId);
+            if (a == null || a.getBzj() == null || a.getBzj().compareTo(new BigDecimal(0)) != 1)
+            {
+                List<Dict> list = this.ds.getByPid(WXContants.Dict.PID_BZJ_STANDARD);
+                for (Dict d : list)
+                {
+                    model.addAttribute(d.getId(), d.getValue());
+                }
+            }
+            else
+            {
+                page = "over";
+            }
+        }
+        
         // 获得用户的category
         FollwerInfo fi = this.follwerInfoService.get(FollwerInfo.class, openId);
         if (fi == null)
