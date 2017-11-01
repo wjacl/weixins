@@ -3,6 +3,7 @@ package com.wja.weixin.controller;
 import java.math.BigDecimal;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
@@ -12,12 +13,22 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.sword.wechat4j.pay.PayManager;
+import org.sword.wechat4j.pay.exception.PayApiException;
+import org.sword.wechat4j.pay.exception.PayBusinessException;
+import org.sword.wechat4j.pay.exception.SignatureException;
+import org.sword.wechat4j.pay.protocol.unifiedorder.UnifiedorderRequest;
+import org.sword.wechat4j.pay.protocol.unifiedorder.UnifiedorderResponse;
+import org.sword.wechat4j.util.RandomStringGenerator;
 
 import com.wja.base.common.OpResult;
 import com.wja.base.common.service.SmsService;
 import com.wja.base.system.entity.Dict;
 import com.wja.base.system.service.DictService;
 import com.wja.base.util.BeanUtil;
+import com.wja.base.util.IDGenerater;
+import com.wja.base.util.Log;
+import com.wja.base.web.AppContext;
 import com.wja.base.web.RequestThreadLocal;
 import com.wja.weixin.common.WXContants;
 import com.wja.weixin.entity.Account;
@@ -45,6 +56,16 @@ public class AuthController
     public String to(Model model, @PathVariable("page") String page)
     {
         String openId = RequestThreadLocal.openId.get();
+        
+        // 获得用户的category
+        FollwerInfo fi = this.follwerInfoService.get(FollwerInfo.class, openId);
+        if (fi == null)
+        {
+            fi = new FollwerInfo();
+            fi.setOpenId(openId);
+        }
+        model.addAttribute("fi", fi);
+        
         // 去保证金支付
         if ("payment".equals(page))
         {
@@ -56,6 +77,10 @@ public class AuthController
                 for (Dict d : list)
                 {
                     model.addAttribute(d.getId(), d.getValue());
+                    if (("bzjs" + fi.getCategory()).equals(d.getId()))
+                    {
+                        model.addAttribute("currBzj", d.getValue());
+                    }
                 }
             }
             else
@@ -63,15 +88,6 @@ public class AuthController
                 page = "over";
             }
         }
-        
-        // 获得用户的category
-        FollwerInfo fi = this.follwerInfoService.get(FollwerInfo.class, openId);
-        if (fi == null)
-        {
-            fi = new FollwerInfo();
-            fi.setOpenId(openId);
-        }
-        model.addAttribute("fi", fi);
         
         return "weixin/auth/" + page;
     }
@@ -193,4 +209,28 @@ public class AuthController
         this.follwerInfoService.update(dfi);
     }
     
+    @RequestMapping("bzjPay")
+    @ResponseBody
+    public Object bzjPay(Integer amount, HttpServletRequest req)
+    {
+        String openId = RequestThreadLocal.openId.get();
+        UnifiedorderRequest request = new UnifiedorderRequest();
+        request.setNonce_str(RandomStringGenerator.generate());
+        request.setBody(AppContext.getSysParam("bzj.pay.body"));
+        request.setOut_trade_no(IDGenerater.getAnYMDHMSid());
+        request.setTotal_fee(amount * 100);
+        request.setSpbill_create_ip(req.getRemoteAddr());
+        request.setNotify_url("");
+        request.setOpenid(openId);
+        
+        try
+        {
+            UnifiedorderResponse response = PayManager.unifiedorder(request);
+        }
+        catch (SignatureException | PayApiException | PayBusinessException e)
+        {
+            Log.LOGGER.error("调用微信接口生成订单异常", e);
+            return OpResult.error("调用微信接口生成订单异常", e.getMessage());
+        }
+    }
 }

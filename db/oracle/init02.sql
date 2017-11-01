@@ -5,6 +5,9 @@ VALUES('wx.upload.public.url','公众号网页公开文件的上传url','/weixin
 INSERT INTO t_sys_param(ID,name,VALUE,remark)
 VALUES('wx.download.public.url','公众号网页公开文件的下载url','/weixins/wx/pubget','公众号网页公开文件的下载url');
 
+INSERT INTO t_sys_param(ID,name,VALUE,remark)
+VALUES('bzj.pay.body','保证金微信支付显示内容','保证金支付','保证金微信支付显示内容');
+
 INSERT INTO t_sys_dict(Id,name,value,ordno,pid,type,valid) VALUES('follwer.category','经营类别','follwer.category',100,'0','s',1);
 INSERT INTO t_sys_dict(Id,name,value,ordno,pid,type,valid) VALUES('fct1','厂家','1',1,'follwer.category','s',1);
 INSERT INTO t_sys_dict(Id,name,value,ordno,pid,type,valid) VALUES('fct2','商家','2',1,'follwer.category','s',1);

@@ -7,6 +7,13 @@
     <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
 	<title>认证</title>
 	<%@ include file="/WEB-INF/jsp/weixin/comm_css.jsp" %>
+	<style type="text/css">
+		.zhuozhong {
+			color:red;
+			font-weight:800;
+			font-size:20px;
+		}
+	</style>
 </head>
 <body ontouchstart>
 <div class="page">
@@ -15,7 +22,7 @@
     </div>
     <div class="page__bd">
 		<div class="weui-cells weui-cells_form" style="margin-top:5px">
-            <div class="weui-cell">
+            <div class="weui-cell ${fi.category == '1' ? 'zhuozhong' : '' }">
                 <div class="weui-cell__bd">
                     <label>厂家 (有实体店、有工厂等)</label>
                 </div>
@@ -23,7 +30,7 @@
                     <span>${bzjs1 }元</span>
                 </div>
             </div>
-            <div class="weui-cell">
+            <div class="weui-cell ${fi.category == '2' ? 'zhuozhong' : '' }">
                 <div class="weui-cell__bd">
                     <label>商家 (有店铺、附有小型工厂等)</label>
                 </div>
@@ -31,7 +38,7 @@
                     <span>${bzjs2 }元</span>
                 </div>
             </div>
-            <div class="weui-cell">
+            <div class="weui-cell ${fi.category == '3' ? 'zhuozhong' : '' }">
                 <div class="weui-cell__bd">
                     <label>专家 (行业专家)</label>
                 </div>
@@ -39,7 +46,7 @@
                     <span>${bzjs3 }元</span>
                 </div>
             </div>
-            <div class="weui-cell">
+            <div class="weui-cell ${fi.category == '4' ? 'zhuozhong' : '' }">
                 <div class="weui-cell__bd">
                     <label>安装工 (有专业技能等)</label>
                 </div>
@@ -47,7 +54,7 @@
                     <span>${bzjs4 }元</span>
                 </div>
             </div>
-            <div class="weui-cell">
+            <div class="weui-cell ${fi.category == '5' ? 'zhuozhong' : '' }">
                 <div class="weui-cell__bd">
                     <label>个人 (以自然人身份)</label>
                 </div>
@@ -55,7 +62,7 @@
                     <span>${bzjs5 }元</span>
                 </div>
             </div>
-            <div class="weui-cell">
+            <div class="weui-cell ${fi.category == '6' ? 'zhuozhong' : '' }">
                 <div class="weui-cell__bd">
                     <label>其他</label>
                 </div>
@@ -63,22 +70,26 @@
                     <span>${bzjs6 }元</span>
                 </div>
             </div>
-        </div>
-        <div class="weui-cell">
-        	<div class="weui-cell__bd">
-        		<p style="font-weight: 700">保证金说明：</p>
-	        	<div>
-	        		<p>保证金说明：</p><p>保证金说明：</p><p>保证金说明：</p>
+	        <div class="weui-cell">
+	        	<div class="weui-cell__bd">
+	        		<p style="font-weight: 700">保证金说明：</p>
+		        	<div>
+		        		<p>保证金说明：</p><p>保证金说明：</p><p>保证金说明：</p>
+		        	</div>
 	        	</div>
-        	</div>
-        </div>  
-        
-       	<div>
-       		<input type="checkBox" name="agree">
-       		<a href="" style="color:red">同意平台服务认证协议（点击查看）</a>
-       	</div>     
+	        </div> 
+        </div> 
+        <form action="../bzjPay" method="Post" id="xform">
+	       	<label for="weuiAgree" class="weui-agree">
+	            <input id="weuiAgree" name="xyAgree" type="checkbox" class="weui-agree__checkbox"/>
+	            <span class="weui-agree__text">
+	                	阅读并同意<a href="javascript:void(0);">《平台服务认证协议》</a>
+	            </span>
+	        </label> 
+	        <input type="hidden" name="amount" value="${currBzj }"/>
+        </form>        
         <div class="weui-btn-area_inline">
-           	<a class="weui-btn weui-btn_primary" href="javascript:;" id="cc1Pre">微信支付</a>
+           	<a class="weui-btn weui-btn_primary" href="javascript:;" id="xsubmit">微信支付</a>
         </div>
         <p>&nbsp;</p>
         <div class="weui-btn-area_inline">
@@ -90,31 +101,16 @@
 </body>
 <%@ include file="/WEB-INF/jsp/weixin/comm_js.jsp" %>
 <script>
-	var formData = {category : '${fi.category}',openId:'${fi.openId}'};
-	if(!formData.category){
-		$("#cc1Pre").hide();
-	}
-	$("input[name='category']").on("click",function(){
-		$("#cc1Pre").hide();
-		var cval = $(this).val();
-		if(formData.category != cval){
-			formData.category = cval;
-			$.ajax({url:ctx + "/wx/web/auth/saveCategory",
-				type:"POST",
-				data:formData,
-				dataType:"json",
-				async: false,
-				success:function(data){
-					if(data.status == 200){
-						location.href = ctx + "/wx/web/auth/to/info";
-					}
-				}
-			});
-		}
-		else {
-			location.href = ctx + "/wx/web/auth/to/info";
-		}
-	});
+	$(function(){
+		$("#xsubmit").on("click",function(){
+			if(!$("#weuiAgree").is(":checked")){
+				weui.alert("请阅读并同意《平台服务认证协议》！");
+				return;
+			}
+			
+			$("#xform").submit();
+		})
+	})
 	
 </script>
 </html>
