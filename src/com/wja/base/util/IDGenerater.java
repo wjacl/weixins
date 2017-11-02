@@ -22,7 +22,7 @@ public class IDGenerater
      * @return
      * @see [类、类#方法、类#成员]
      */
-    public static synchronized String getAnYMDHMSid()
+    public static synchronized String getAnYMDHMSid(String prefix)
     {
         Calendar ca = Calendar.getInstance();
         if (ca.equals(lastCa))

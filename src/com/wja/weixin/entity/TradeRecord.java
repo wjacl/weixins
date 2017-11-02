@@ -63,20 +63,9 @@ public class TradeRecord extends CommEntity
     private String ioType;
     
     /**
-     * 交易开始时间
-     */
-    @Column(name = "start_time", length = 14)
-    private Integer startTime;
-    
-    /**
-     * 交易完成时间
-     */
-    @Column(name = "end_time", length = 14)
-    private Integer endTime;
-    
-    /**
      * 交易金额
      */
+    @Column(precision = 8, scale = 2)
     private BigDecimal amount;
     
     /**
@@ -84,12 +73,6 @@ public class TradeRecord extends CommEntity
      */
     @Column(length = 500)
     private String info;
-    
-    /**
-     * 微信交易id
-     */
-    @Column(name = "wx_transaction_id", length = 32)
-    private String wxTransactionId;
     
     public String getOpenId()
     {

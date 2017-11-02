@@ -13,12 +13,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.sword.wechat4j.pay.PayManager;
-import org.sword.wechat4j.pay.exception.PayApiException;
-import org.sword.wechat4j.pay.exception.PayBusinessException;
-import org.sword.wechat4j.pay.exception.SignatureException;
-import org.sword.wechat4j.pay.protocol.unifiedorder.UnifiedorderRequest;
-import org.sword.wechat4j.pay.protocol.unifiedorder.UnifiedorderResponse;
 
 import com.wja.base.common.OpResult;
 import com.wja.base.common.service.SmsService;
@@ -31,6 +25,7 @@ import com.wja.base.web.RequestThreadLocal;
 import com.wja.weixin.common.WXContants;
 import com.wja.weixin.entity.Account;
 import com.wja.weixin.entity.FollwerInfo;
+import com.wja.weixin.entity.TradeRecord;
 import com.wja.weixin.service.FollwerInfoService;
 import com.wja.weixin.service.TradeService;
 
@@ -212,16 +207,21 @@ public class AuthController
     public Object bzjPay(BigDecimal amount, HttpServletRequest req)
     {
         String openId = RequestThreadLocal.openId.get();
-        UnifiedorderRequest request = this.tradeService.getAnUnifiedorderRequest(req.getRemoteAddr(),
-            amount,
-            AppContext.getSysParam("bzj.pay.body"));
-            
+        FollwerInfo fi = this.follwerInfoService.get(FollwerInfo.class, openId);
+        Dict dt = this.ds.get(Dict.class, "bzjs" + fi.getCategory());
+        if (!dt.getValue().equals(amount.toPlainString()))
+        {
+            return OpResult.error("amountError", null);
+        }
         try
         {
-            UnifiedorderResponse response = PayManager.unifiedorder(request);
-            PayManager.buildH5PayConfig(timeStamp, nonceStr, prepayId)
+            return OpResult.ok().setData(this.tradeService.generateJsPayParam(req.getRemoteAddr(),
+                amount,
+                TradeRecord.BusiType.BZJ,
+                AppContext.getSysParam("bzj.pay.body"),
+                null));
         }
-        catch (SignatureException | PayApiException | PayBusinessException e)
+        catch (Exception e)
         {
             Log.LOGGER.error("调用微信接口生成订单异常", e);
             return OpResult.error("调用微信接口生成订单异常", e.getMessage());

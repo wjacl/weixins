@@ -13,13 +13,16 @@ import org.sword.wechat4j.pay.protocol.unifiedorder.UnifiedorderRequest;
 import org.sword.wechat4j.pay.protocol.unifiedorder.UnifiedorderResponse;
 import org.sword.wechat4j.util.RandomStringGenerator;
 
+import com.wja.base.util.BeanUtil;
 import com.wja.base.util.IDGenerater;
 import com.wja.base.web.AppContext;
 import com.wja.base.web.RequestThreadLocal;
 import com.wja.weixin.dao.AccountDao;
 import com.wja.weixin.dao.TradeRecordDao;
+import com.wja.weixin.dao.WeiXinTradeRecordDao;
 import com.wja.weixin.entity.Account;
 import com.wja.weixin.entity.TradeRecord;
+import com.wja.weixin.entity.WeiXinTradeRecord;
 
 @Service
 public class TradeService
@@ -29,6 +32,9 @@ public class TradeService
     
     @Autowired
     private TradeRecordDao tradeRecordDao;
+    
+    @Autowired
+    private WeiXinTradeRecordDao wxtrDao;
     
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddhhmmss");
     
@@ -42,12 +48,14 @@ public class TradeService
      * @return
      * @see [类、类#方法、类#成员]
      */
-    public UnifiedorderRequest getAnUnifiedorderRequest(String userIp, BigDecimal amount, String body, String detail)
+    public UnifiedorderRequest getAnUnifiedorderRequest(String userIp, BigDecimal amount, String attach, String body,
+        String detail)
     {
         UnifiedorderRequest request = new UnifiedorderRequest();
         request.setNonce_str(RandomStringGenerator.generate());
         request.setBody(body);
         request.setDetail(detail);
+        request.setAttach(attach);
         request.setOut_trade_no(IDGenerater.getAnYMDHMSid());
         request.setTotal_fee(amount.multiply(new BigDecimal(100)).intValue());
         request.setSpbill_create_ip(userIp);
@@ -57,17 +65,20 @@ public class TradeService
         return request;
     }
     
-    public H5PayParam generateJsPayParam(String userIp, BigDecimal amount, String body, String detail)
+    public H5PayParam generateJsPayParam(String userIp, BigDecimal amount, String attach, String body, String detail)
         throws Exception
     {
         // 生成交易数据
-        UnifiedorderRequest request = this.getAnUnifiedorderRequest(userIp, amount, body, detail);
+        UnifiedorderRequest request = this.getAnUnifiedorderRequest(userIp, amount, attach, body, detail);
         UnifiedorderResponse response = PayManager.unifiedorder(request);
         H5PayParam param = PayManager.buildH5PayConfig(System.currentTimeMillis() / 1000 + "",
             request.getNonce_str(),
             response.getPrepay_id());
-        // 保存交易数据
-        
+        // 保存微信交易订单数据
+        WeiXinTradeRecord wtr = new WeiXinTradeRecord();
+        BeanUtil.copyPropertiesIgnoreNull(request, wtr);
+        wtr.setPrepay_id(response.getPrepay_id());
+        this.wxtrDao.save(wtr);
         return param;
     }
     
