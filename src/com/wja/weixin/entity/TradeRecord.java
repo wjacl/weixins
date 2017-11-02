@@ -1,7 +1,6 @@
 package com.wja.weixin.entity;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -64,9 +63,16 @@ public class TradeRecord extends CommEntity
     private String ioType;
     
     /**
-     * 交易时间
+     * 交易开始时间
      */
-    private Date time = new Date();
+    @Column(name = "start_time", length = 14)
+    private Integer startTime;
+    
+    /**
+     * 交易完成时间
+     */
+    @Column(name = "end_time", length = 14)
+    private Integer endTime;
     
     /**
      * 交易金额
@@ -78,6 +84,12 @@ public class TradeRecord extends CommEntity
      */
     @Column(length = 500)
     private String info;
+    
+    /**
+     * 微信交易id
+     */
+    @Column(name = "wx_transaction_id", length = 32)
+    private String wxTransactionId;
     
     public String getOpenId()
     {
@@ -107,16 +119,6 @@ public class TradeRecord extends CommEntity
     public void setIoType(String ioType)
     {
         this.ioType = ioType;
-    }
-    
-    public Date getTime()
-    {
-        return time;
-    }
-    
-    public void setTime(Date time)
-    {
-        this.time = time;
     }
     
     public BigDecimal getAmount()

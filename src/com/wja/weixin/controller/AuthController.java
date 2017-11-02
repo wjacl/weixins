@@ -19,14 +19,12 @@ import org.sword.wechat4j.pay.exception.PayBusinessException;
 import org.sword.wechat4j.pay.exception.SignatureException;
 import org.sword.wechat4j.pay.protocol.unifiedorder.UnifiedorderRequest;
 import org.sword.wechat4j.pay.protocol.unifiedorder.UnifiedorderResponse;
-import org.sword.wechat4j.util.RandomStringGenerator;
 
 import com.wja.base.common.OpResult;
 import com.wja.base.common.service.SmsService;
 import com.wja.base.system.entity.Dict;
 import com.wja.base.system.service.DictService;
 import com.wja.base.util.BeanUtil;
-import com.wja.base.util.IDGenerater;
 import com.wja.base.util.Log;
 import com.wja.base.web.AppContext;
 import com.wja.base.web.RequestThreadLocal;
@@ -211,21 +209,17 @@ public class AuthController
     
     @RequestMapping("bzjPay")
     @ResponseBody
-    public Object bzjPay(Integer amount, HttpServletRequest req)
+    public Object bzjPay(BigDecimal amount, HttpServletRequest req)
     {
         String openId = RequestThreadLocal.openId.get();
-        UnifiedorderRequest request = new UnifiedorderRequest();
-        request.setNonce_str(RandomStringGenerator.generate());
-        request.setBody(AppContext.getSysParam("bzj.pay.body"));
-        request.setOut_trade_no(IDGenerater.getAnYMDHMSid());
-        request.setTotal_fee(amount * 100);
-        request.setSpbill_create_ip(req.getRemoteAddr());
-        request.setNotify_url("");
-        request.setOpenid(openId);
-        
+        UnifiedorderRequest request = this.tradeService.getAnUnifiedorderRequest(req.getRemoteAddr(),
+            amount,
+            AppContext.getSysParam("bzj.pay.body"));
+            
         try
         {
             UnifiedorderResponse response = PayManager.unifiedorder(request);
+            PayManager.buildH5PayConfig(timeStamp, nonceStr, prepayId)
         }
         catch (SignatureException | PayApiException | PayBusinessException e)
         {
