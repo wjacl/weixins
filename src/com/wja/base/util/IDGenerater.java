@@ -36,6 +36,7 @@ public class IDGenerater
             seqNo = 1;
         }
         
-        return lastTimeStr + StringUtils.leftPad("" + seqNo, 6, '0');
+        return (StringUtils.isBlank(prefix) ? "" : prefix.trim()) + lastTimeStr
+            + StringUtils.leftPad("" + seqNo, 6, '0');
     }
 }
