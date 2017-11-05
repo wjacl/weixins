@@ -9,12 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.sword.wechat4j.pay.H5PayParam;
 import org.sword.wechat4j.pay.PayManager;
+import org.sword.wechat4j.pay.protocol.pay_result_notify.PayResultNotifyResponse;
 import org.sword.wechat4j.pay.protocol.unifiedorder.UnifiedorderRequest;
 import org.sword.wechat4j.pay.protocol.unifiedorder.UnifiedorderResponse;
 import org.sword.wechat4j.util.RandomStringGenerator;
 
+import com.wja.base.common.service.IDService;
 import com.wja.base.util.BeanUtil;
-import com.wja.base.util.IDGenerater;
+import com.wja.base.util.Log;
 import com.wja.base.web.AppContext;
 import com.wja.base.web.RequestThreadLocal;
 import com.wja.weixin.dao.AccountDao;
@@ -36,6 +38,9 @@ public class TradeService
     @Autowired
     private WeiXinTradeRecordDao wxtrDao;
     
+    @Autowired
+    private IDService idService;
+    
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddhhmmss");
     
     /**
@@ -56,7 +61,7 @@ public class TradeService
         request.setBody(body);
         request.setDetail(detail);
         request.setAttach(attach);
-        request.setOut_trade_no(IDGenerater.getAnYMDHMSid());
+        request.setOut_trade_no(idService.getAnYMDHMSid());
         request.setTotal_fee(amount.multiply(new BigDecimal(100)).intValue());
         request.setSpbill_create_ip(userIp);
         request.setNotify_url(AppContext.getSysParam("wx.pay.notify_url"));
@@ -82,12 +87,68 @@ public class TradeService
         return param;
     }
     
-    public Account getAccount(String openId)
+    /**
+     * 
+     * 处理微信交易通知
+     * 
+     * @param prs
+     * @see [类、类#方法、类#成员]
+     */
+    public void saveWeiXinTradeNotify(PayResultNotifyResponse prs)
     {
-        return this.accountDao.findOne(openId);
+        synchronized (this.getClass())
+        {
+            // 判断是否已处理
+            WeiXinTradeRecord r = this.getWeiXinTradeRecord(prs.getOut_trade_no());
+            
+            if (r != null)
+            {
+                if (r.getTransaction_id() == null)
+                { // 第一次收到
+                    if (r.getTotal_fee() != prs.getTotal_fee())
+                    {
+                        // 通知的金额不对
+                        Log.LOGGER.error("收到的微信交易通知的金额不对：" + prs.toString() + "。系统中的值为：" + r.getTotal_fee());
+                        // 短信通知平台维护人员
+                        
+                    }
+                    else
+                    {
+                        r.setTransaction_id(prs.getTransaction_id());
+                        r.setTime_end(prs.getTime_end());
+                        this.wxtrDao.save(r);
+                        TradeRecord tr = new TradeRecord();
+                        tr.setId(r.getOut_trade_no());
+                        tr.setOpenId(r.getOpenid());
+                        tr.setBusiType(r.getAttach());
+                        tr.setIoType(TradeRecord.IOType.IN);
+                        tr.setAmount(new BigDecimal(r.getTotal_fee() / 100.00));
+                        switch (r.getAttach())
+                        {
+                            case TradeRecord.BusiType.BZJ:
+                                tr.setInfo(AppContext.getSysParam("bzj.pay.body"));
+                                this.saveBaoZhengJinAdd(tr.getOpenId(), tr.getAmount());
+                                break;
+                            case TradeRecord.BusiType.CZ:
+                                tr.setInfo(AppContext.getSysParam("cz.pay.body"));
+                                this.saveChongZhi(tr.getOpenId(), tr.getAmount());
+                                break;
+                        }
+                        
+                        this.tradeRecordDao.save(tr);
+                    }
+                }
+            }
+            else
+            {
+                Log.LOGGER.error("收到不存在的微信交易通知：" + prs.toString());
+            }
+            
+        }
+        
     }
     
-    public void saveBaoZhengJinAdd(String openId, BigDecimal amount)
+    private void saveBaoZhengJinAdd(String openId, BigDecimal amount)
     {
         if (amount == null || StringUtils.isBlank(openId))
         {
@@ -95,14 +156,6 @@ public class TradeService
         }
         
         Account account = this.getAccount(openId);
-        TradeRecord tr = new TradeRecord();
-        tr.setAmount(amount);
-        tr.setOpenId(openId);
-        tr.setBusiType(TradeRecord.BusiType.BZJ);
-        tr.setIoType(TradeRecord.IOType.IN);
-        tr.setInfo("保证金支付");
-        
-        this.tradeRecordDao.save(tr);
         
         if (account == null)
         {
@@ -116,5 +169,43 @@ public class TradeService
         {
             this.accountDao.bzjAdd(amount, openId);
         }
+    }
+    
+    private void saveChongZhi(String openId, BigDecimal amount)
+    {
+        if (amount == null || StringUtils.isBlank(openId))
+        {
+            return;
+        }
+        
+        Account account = this.getAccount(openId);
+        
+        if (account == null)
+        {
+            account = new Account();
+            account.setBalance(amount);
+            account.setBzj(new BigDecimal(0));
+            account.setOpenId(openId);
+            this.accountDao.save(account);
+        }
+        else
+        {
+            this.accountDao.balanceAdd(amount, openId);
+        }
+    }
+    
+    public WeiXinTradeRecord getWeiXinTradeRecord(String id)
+    {
+        return this.wxtrDao.findOne(id);
+    }
+    
+    public void saveWeiXinTradeTecord(WeiXinTradeRecord r)
+    {
+        this.wxtrDao.save(r);
+    }
+    
+    public Account getAccount(String openId)
+    {
+        return this.accountDao.findOne(openId);
     }
 }

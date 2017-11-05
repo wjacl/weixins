@@ -27,10 +27,12 @@ public class WeiXinTradeNotifyController
         try
         {
             PayResultNotifyResponse prs = PayManager.parsePayResultNotify(request, response);
+            this.tradeService.saveWeiXinTradeNotify(prs);
         }
         catch (SignatureException | PayApiException | PayBusinessException e)
         {
             Log.LOGGER.error("接收微信的交易通知异常! ", e);
+            // 短信通知
         }
     }
 }

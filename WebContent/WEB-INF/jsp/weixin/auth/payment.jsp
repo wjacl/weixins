@@ -100,6 +100,8 @@
 </div>
 </body>
 <%@ include file="/WEB-INF/jsp/weixin/comm_js.jsp" %>
+<script type="text/javascript" src="${ctx }/js/jquery.form.min.js"></script>
+<%@ include file="/WEB-INF/jsp/weixin/js_sdk_config.jsp" %>
 <script>
 	$(function(){
 		$("#xsubmit").on("click",function(){
@@ -108,9 +110,42 @@
 				return;
 			}
 			
-			$("#xform").submit();
+			// $("#xform").submit();
+			var loading = weui.loading('提交中...');
+			//将文件加入到表单中提交
+			$('#xform').ajaxSubmit({dataType:"json",success:function(data){
+				loading.hide();
+				if(Constants.ResultStatus_Ok == data.status){
+					data = data.data;
+					wx.chooseWXPay(
+							$.extend({},data.data,{
+							    success: function (res) {
+							        // 支付成功后的回调函数
+							        //查询后台结果
+							        
+							        //
+							    }
+					}));
+				}
+				else{
+					if(data.mess == "amountError"){
+						weui.toast('保证金金额变更了，即将刷新获取最新金额！', {
+						    duration: 2000,
+						    callback: function(){ window.location.reload(); }
+						});
+					}
+					else if(data.mess){
+						weui,alert(data.mess);
+					}
+					else{
+						weui.alert("提交失败，请重试！");
+					}
+				}
+			}});
 		})
 	})
+	
+	
 	
 </script>
 </html>
