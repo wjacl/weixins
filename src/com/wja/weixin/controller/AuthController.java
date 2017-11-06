@@ -227,4 +227,22 @@ public class AuthController
             return OpResult.error("调用微信接口生成订单异常", e.getMessage());
         }
     }
+    
+    @RequestMapping("bzjPayOk")
+    public String bjzPayOk()
+    {
+        String openId = RequestThreadLocal.openId.get();
+        Account a = this.tradeService.getAccount(openId);
+        if (a != null && a.getBzj() != null)
+        {
+            FollwerInfo fi = this.follwerInfoService.get(FollwerInfo.class, openId);
+            fi.setStatus(FollwerInfo.STATUS_CERT_OK);
+            this.follwerInfoService.update(fi);
+            return "redirect:to/over";
+        }
+        else
+        {
+            return "redirect:to/payment";
+        }
+    }
 }

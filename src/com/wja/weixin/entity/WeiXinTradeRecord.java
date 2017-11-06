@@ -28,7 +28,7 @@ public class WeiXinTradeRecord
     private String time_end;
     
     @Column(length = 32)
-    private String prepay_id;
+    private String prepayId;
     
     @Column(length = 32)
     private String transaction_id;
@@ -93,14 +93,14 @@ public class WeiXinTradeRecord
         this.time_end = time_end;
     }
     
-    public String getPrepay_id()
+    public String getPrepayId()
     {
-        return prepay_id;
+        return prepayId;
     }
     
-    public void setPrepay_id(String prepay_id)
+    public void setPrepayId(String prepayId)
     {
-        this.prepay_id = prepay_id;
+        this.prepayId = prepayId;
     }
     
     public String getTransaction_id()

@@ -82,9 +82,14 @@ public class TradeService
         // 保存微信交易订单数据
         WeiXinTradeRecord wtr = new WeiXinTradeRecord();
         BeanUtil.copyPropertiesIgnoreNull(request, wtr);
-        wtr.setPrepay_id(response.getPrepay_id());
+        wtr.setPrepayId(response.getPrepay_id());
         this.wxtrDao.save(wtr);
         return param;
+    }
+    
+    public WeiXinTradeRecord getWeiXinTradeRecordByPrepayId(String prepayId)
+    {
+        return this.wxtrDao.findByPrepayId(prepayId);
     }
     
     /**

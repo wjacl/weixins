@@ -116,14 +116,19 @@
 			$('#xform').ajaxSubmit({dataType:"json",success:function(data){
 				loading.hide();
 				if(Constants.ResultStatus_Ok == data.status){
-					data = data.data;
 					wx.chooseWXPay(
 							$.extend({},data.data,{
 							    success: function (res) {
 							        // 支付成功后的回调函数
 							        //查询后台结果
-							        
-							        //
+							        $.getJSON(ctx + "wx/web/trade/check?" + data.data.package,function(res){
+							        	if(Constants.ResultStatus_Ok == res.status){
+							        		location.href=ctx + "wx/web/auth/bzjPayOk";
+							        	}
+							        	else {
+							        		weui.alert(res.mess);
+							        	}
+							        });
 							    }
 					}));
 				}

@@ -10,4 +10,5 @@ import com.wja.weixin.entity.WeiXinTradeRecord;
 public interface WeiXinTradeRecordDao
     extends JpaRepository<WeiXinTradeRecord, String>, JpaSpecificationExecutor<WeiXinTradeRecord>
 {
+    WeiXinTradeRecord findByPrepayId(String prepayId);
 }
