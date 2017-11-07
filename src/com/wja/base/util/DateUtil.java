@@ -1,6 +1,7 @@
 package com.wja.base.util;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -19,6 +20,8 @@ public class DateUtil
     
     public static final String DATE_MINUTE = "yyyy-MM-dd HH:mm";
     
+    public static final String DF_YYYY_MM = "yyyy-MM";
+    
     /**
      * 默认的格式器 格式：yyyy-MM-dd
      */
@@ -29,6 +32,27 @@ public class DateUtil
      */
     public static final DateFormat DATE_MINUTE_DF = new SimpleDateFormat(DATE_MINUTE);
     
+    public static final Date getMonthFirstDay(Date d)
+    {
+        Calendar ca = Calendar.getInstance();
+        Calendar c = Calendar.getInstance();
+        c.setTime(d);
+        ca.clear();
+        ca.set(c.get(Calendar.YEAR), c.get(Calendar.MONTH), 1);
+        return ca.getTime();
+    }
+    
+    public static final Date getNextMonth(Date d)
+    {
+        Calendar ca = Calendar.getInstance();
+        Calendar c = Calendar.getInstance();
+        c.setTime(d);
+        ca.clear();
+        ca.set(c.get(Calendar.YEAR), c.get(Calendar.MONTH), 1);
+        ca.add(Calendar.MONTH, 1);
+        return ca.getTime();
+    }
+    
     /**
      * 获取当前年份
      * 
@@ -38,6 +62,55 @@ public class DateUtil
     public static final int getCurrYear()
     {
         return Calendar.getInstance().get(Calendar.YEAR);
+    }
+    
+    /**
+     * 获取当前月份的下月1号date对象
+     * 
+     * @return
+     * @see [类、类#方法、类#成员]
+     */
+    public static Date getNextMonth()
+    {
+        Calendar now = Calendar.getInstance();
+        Calendar c = Calendar.getInstance();
+        c.clear();
+        now.add(Calendar.MONTH, 1);
+        c.set(now.get(Calendar.YEAR), now.get(Calendar.MONTH), 1);
+        return c.getTime();
+    }
+    
+    /**
+     * 
+     * 获得指定月份的下一个月1号日期，如没有给定月份值，则返回当前月份的下月1号
+     * 
+     * @param month 指定月份
+     * @param pattern 月份串格式,如为null,则按 yyyy-MM 格式解析
+     * @return
+     * @throws ParseException
+     * @see [类、类#方法、类#成员]
+     */
+    public static Date getNextMonth(String month, String pattern)
+        throws ParseException
+    {
+        if (StringUtils.isBlank(month))
+        {
+            return getNextMonth();
+        }
+        else
+        {
+            if (StringUtils.isBlank(pattern))
+            {
+                pattern = DF_YYYY_MM;
+            }
+            
+            Date d = DateUtil.getDateFormat(pattern).parse(month);
+            
+            Calendar ca = Calendar.getInstance();
+            ca.setTime(d);
+            ca.add(Calendar.MONTH, 1);
+            return ca.getTime();
+        }
     }
     
     /**

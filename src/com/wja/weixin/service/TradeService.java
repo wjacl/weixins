@@ -3,6 +3,8 @@ package com.wja.weixin.service;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +16,11 @@ import org.sword.wechat4j.pay.protocol.unifiedorder.UnifiedorderRequest;
 import org.sword.wechat4j.pay.protocol.unifiedorder.UnifiedorderResponse;
 import org.sword.wechat4j.util.RandomStringGenerator;
 
+import com.wja.base.common.CommSpecification;
 import com.wja.base.common.service.IDService;
 import com.wja.base.util.BeanUtil;
 import com.wja.base.util.Log;
+import com.wja.base.util.Page;
 import com.wja.base.web.AppContext;
 import com.wja.base.web.RequestThreadLocal;
 import com.wja.weixin.dao.AccountDao;
@@ -42,6 +46,17 @@ public class TradeService
     private IDService idService;
     
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddhhmmss");
+    
+    public Page<TradeRecord> tradePageQuery(Map<String, Object> params, Page<TradeRecord> page)
+    {
+        return page.setPageData(
+            this.tradeRecordDao.findAll(new CommSpecification<TradeRecord>(params), page.getPageRequest()));
+    }
+    
+    public List<?> queryMonthTongji(String openId, Date smonth, Date emonth)
+    {
+        return this.tradeRecordDao.queryMonthTongJi(openId, smonth, emonth);
+    }
     
     /**
      * 
