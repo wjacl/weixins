@@ -67,7 +67,11 @@ public class RequestThreadLocalSetFilter implements Filter
         
         // 设置引用上下文属性
         httpRequest.setAttribute("ctx", httpRequest.getContextPath());
+        // 设置版权年份
         httpRequest.setAttribute("copyRightYear", DateUtil.getCurrYear());
+        // 设置当前系统时间
+        httpRequest.setAttribute("currDate", DateUtil.getNowDateStr());
+        httpRequest.setAttribute("currDateTime", DateUtil.getNowStr());
         
         if (!this.servletContextAttributeInited)
         {

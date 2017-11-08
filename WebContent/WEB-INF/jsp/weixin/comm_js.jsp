@@ -3,6 +3,8 @@
 	<script type="text/javascript">
 	<!--
 	var ctx = '${ctx}';
+	var _sysCurrDate = '${currDate}';
+	var _sysCurrDateTime = '${currDateTime}';
 	var publicUploadUrl = '${publicUploadUrl}';
 	var publicDownloadUrl = '${publicDownloadUrl}';
 	//-->

@@ -28,6 +28,11 @@ public class DateUtil
     public static final DateFormat DEFAULT_DF = new SimpleDateFormat(DATE);
     
     /**
+     * 默认的格式器 格式：yyyy-MM-dd HH:mm:ss
+     */
+    public static final DateFormat DATE_TIME_DF = new SimpleDateFormat(DATE_TIME);
+    
+    /**
      * 日期分钟格式器
      */
     public static final DateFormat DATE_MINUTE_DF = new SimpleDateFormat(DATE_MINUTE);
@@ -111,6 +116,18 @@ public class DateUtil
             ca.add(Calendar.MONTH, 1);
             return ca.getTime();
         }
+    }
+    
+    /**
+     * 
+     * yyyy-MM-dd HH:mm:ss
+     * 
+     * @return
+     * @see [类、类#方法、类#成员]
+     */
+    public static final String getNowStr()
+    {
+        return DATE_TIME_DF.format(new Date());
     }
     
     /**

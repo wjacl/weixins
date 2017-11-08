@@ -58,8 +58,8 @@ public class TradeController
         // 获取月份统计结果
         if (CollectionUtil.isNotEmpty(page.getRows()))
         {
-            Date smonth = page.getRows().get(0).getCreateTime();
-            Date emonth = page.getRows().get(page.getRows().size() - 1).getCreateTime();
+            Date emonth = page.getRows().get(0).getCreateTime();
+            Date smonth = page.getRows().get(page.getRows().size() - 1).getCreateTime();
             
             res.put("tj",
                 this.tradeService.queryMonthTongji(openId,
