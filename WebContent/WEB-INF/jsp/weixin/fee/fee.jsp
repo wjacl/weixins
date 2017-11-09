@@ -30,7 +30,7 @@
 		}
 		
 		.tinfo{	
-			font-size:17px;
+			font-size:16px;
 			font-weight: 700;
 			padding-left:10px;
 			vertical-align: middle;
@@ -57,6 +57,7 @@
 			font-weight: 700;
 		}
 		.ttj_month_info{
+			font-size:13px;
 			color:#C0C0C0;
 		}
 	</style>
@@ -81,7 +82,7 @@
 			交易记录
 			<a href="javascript:;" id="showDatePicker" style="float:right"><img src="${ctx }/images/calender.png" height="24px"></a>
 		</div>
-		<div class="weui-cells" style="margin-top:5px;" id="searchResult">
+		<div class="weui-cells" style="overflow: auto;height:500px;" id="searchResult">
 	
 		</div>
 	</div>	
@@ -91,17 +92,17 @@
 <%@ include file="/WEB-INF/jsp/weixin/comm_js.jsp" %>
 <script>
 
-var nowMonth = _sysCurrDate.substring(0,7);
-var pageQueryData = {
-		pageNum:0,
-		size:10,
-		sort:"createTime",
-		order:"desc",
-		month:nowMonth
-	};
-	
-
-var lastMonth;
+	var nowMonth = _sysCurrDate.substring(0,7);
+	var pageQueryData = {
+			pageNum:0,
+			size:10,
+			sort:"createTime",
+			order:"desc",
+			month:nowMonth
+		};
+		
+	//列表上用来判断是否加入月统计用
+	var lastMonth;
 	
 	$(function(){
 		$('#showDatePicker').on('click', function () {
@@ -129,102 +130,105 @@ var lastMonth;
 	 }
  }
     
- 	function getMonthTjInfo(month,tjArray){
+ 	function getMonthTjInfo(mm,tjArray){
+ 		var month = mm;
+ 		if(month.charAt(4) == '0'){
+ 			month = mm.substring(0,4) + mm.charAt(5);
+ 		}
  		for(var i=0; i < tjArray.length; i++){
  			if(tjArray[i][0] == month){
  				return "消费支出：￥" + tjArray[i][1] + "&nbsp;&nbsp;充值：￥" + tjArray[i][2];
  			}
  		}
  	}
- 
+
+ 	function loadPageData(me){
+ 		$.ajax({
+            type: 'GET',
+            url: ctx + "/wx/web/fee/query",
+            data:pageQueryData,
+            dataType: 'json',
+            success: function(data){      	
+                // 拼接HTML
+                var result = '';
+                var arrLen = data.page.rows.length;
+                if(arrLen > 0){
+                	var row;
+                	var mon;
+                	var info;
+                    for(var i=0; i<arrLen; i++){
+                    	row = data.page.rows[i];
+                    	var ym = row.createTime.substring(0,7).split("-");
+                    	mon = ym[0] + ym[1];
+                    	if(mon != lastMonth){
+                    		result += '<div class="weui-cell ttj_month">' +
+				                    		'<div class="weui-cell__bd">' +
+				            					'<p>'+ ym[0] + '年' + ym[1] + '月</p>' +
+				            					'<p class="ttj_month_info">' + getMonthTjInfo(mon,data.tj) + '</p>' +
+				            				'</div>' +
+				            		  '</div>';
+                    		lastMonth = mon;
+                    	}
+                    	
+                    	info = row.info;
+                    	if(info.length > 12){
+                    		info = info.substring(0,12) + "...";
+                    	}
+                       result += '<div class="weui-cell">' +
+		                				'<div class="weui-cell__hd">' +
+				        					'<img src="${ctx }/images/trade_'+ row.busiType +'.png" >' + 
+				        				'</div>' +
+				        				'<div class="weui-cell__bd">' +
+				        					'<p class="tinfo">' + info + '</p>' +
+				        					'<p class="ttime">'+ row.createTime.substring(0,16) + '</p>' +
+				        				'</div>' +
+				        				'<div class="weui-cell__ft">' +
+				        					'<label class="tamount_' + row.ioType + '">' + (row.ioType == 'i' ? '+' : '-') + row.amount + '</label>' +
+				        				'</div>' +
+				        			'</div>';
+                    }
+
+                    $(".dropload-refresh").remove();
+                    // 插入数据到页面，放到最后面
+                    $('#searchResult').append(result);
+                    if(data.page.pageNum * data.page.size >= data.page.total){
+                    	// 锁定
+                        me.lock();
+                        // 无数据
+                        me.noData();
+                        $('#searchResult').append(me.opts.domDown.domNoData);
+                    }
+                    else{
+                    	$('#searchResult').append(me.opts.domDown.domRefresh);
+                    }
+                
+                }else{// 如果没有数据
+                	// 锁定
+                    me.lock();
+                    // 无数据
+                    me.noData();
+                    $(".dropload-refresh").remove();
+                    $('#searchResult').append(me.opts.domDown.domNoData);
+                }
+               	$(".dropload-down").remove();
+                me.resetload();
+            },
+            error: function(xhr, type){
+                weui.alert('Ajax error!');
+                // 即使加载出错，也得重置
+                me.resetload();
+            }
+        });
+ 	}
+ 	
      // dropload
     function initBrandDrop(){
      	$('#searchResult').dropload({ 
-     		loadUpFn:function(me){
-     			if(pageQueryData.month < nowMonth){
-     				var ym = pageQueryData.month.split("-");
-     				var d = new Date();
-     				d.setFullYear(ym[0]/1);
-     				d.setMonth(ym[1]/1);
-     				var y = d.getFullYear();
-     				var m = d.getMonth() + 1;
-     				reInitSearch(y + "-" + (m > 9 ? m : '0' + m));
-     			}
-     			else{
-     				
-     			}
-     		},
         	loadDownFn : function(me){
-         	pageQueryData.pageNum++;
-             $.ajax({
-                 type: 'GET',
-                 url: ctx + "/wx/web/fee/query",
-                 data:pageQueryData,
-                 dataType: 'json',
-                 success: function(data){
-                     // 拼接HTML
-                     var result = '';
-                     var arrLen = data.page.rows.length;
-                     if(arrLen > 0){
-                     	var row;
-                     	var mon;
-                     	var info;
-                         for(var i=0; i<arrLen; i++){
-                         	row = data.page.rows[i];
-                         	var ym = row.createTime.substring(0,7).split("-");
-                         	mon = ym[0] + ym[1];
-                         	if(mon != lastMonth){
-                         		result += '<div class="weui-cell ttj_month">' +
-					                    		'<div class="weui-cell__bd">' +
-					            					'<p>'+ ym[0] + '年' + ym[1] + '月</p>' +
-					            					'<p class="ttj_month_info">' + getMonthTjInfo(mon,data.tj) + '</p>' +
-					            				'</div>' +
-					            		  '</div>';
-                         		lastMonth = mon;
-                         	}
-                         	
-                         	info = row.info;
-                         	if(info.length > 12){
-                         		info = info.substring(0,12) + "...";
-                         	}
-                            result += '<div class="weui-cell">' +
-			                				'<div class="weui-cell__hd">' +
-					        					'<img src="${ctx }/images/trade_'+ row.busiType +'.png" >' + 
-					        				'</div>' +
-					        				'<div class="weui-cell__bd">' +
-					        					'<p class="tinfo">' + info + '</p>' +
-					        					'<p class="ttime">'+ row.createTime.substring(0,16) + '</p>' +
-					        				'</div>' +
-					        				'<div class="weui-cell__ft">' +
-					        					'<label class="tamount_' + row.ioType + '">' + (row.ioType == 'i' ? '+' : '-') + row.amount + '</label>' +
-					        				'</div>' +
-					        			'</div>';
-                         }
-                         // 插入数据到页面，放到最后面
-                         $('#searchResult').append(result);
-                     
-                     }else{// 如果没有数据
-                         // 锁定
-                         me.lock();
-                         // 无数据
-                         me.noData();
-                     }
-                     // 每次数据插入，必须重置
-                     //me.resetload();
-                  // 为了测试，延迟1秒加载
-                     setTimeout(function(){
-                         // 每次数据插入，必须重置
-                         me.resetload();
-                     },1000);
-                 },
-                 error: function(xhr, type){
-                     alert('Ajax error!');
-                     // 即使加载出错，也得重置
-                     me.resetload();
-                 }
-             });
-         },
-     });
+         		pageQueryData.pageNum++;
+         		loadPageData(me);
+         	}
+     	});
     }
      
     initBrandDrop();

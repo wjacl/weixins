@@ -18,4 +18,9 @@ public interface TradeRecordDao extends CommRepository<TradeRecord, String>
         + " and openId = ?1 and createTime >= ?2 and createTime < ?3 group by CONCAT(cast(year(createTime) as string),cast(month(createTime) as string))"
         + " order by m desc")
     List<?> queryMonthTongJi(String openId, Date smonth, Date emonth);
+    
+    /*
+     * @Query("select count(*) from TradeRecord where valid = '1' and openId = ?1 and createTime >= ?2") int
+     * queryAfterCount(String openId, Date month);
+     */
 }

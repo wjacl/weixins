@@ -58,6 +58,11 @@ public class TradeService
         return this.tradeRecordDao.queryMonthTongJi(openId, smonth, emonth);
     }
     
+    /*
+     * public int queryAfterCount(String openId, Date month) { return this.tradeRecordDao.queryAfterCount(openId,
+     * month); }
+     */
+    
     /**
      * 
      * 获得一个新的统一下单请求对象
