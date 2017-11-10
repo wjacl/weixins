@@ -406,22 +406,31 @@ var lastLetter;
                                     	'<span class="weui-icon-checked"></span>' +
                                 	'</div></label>';
                             }
+
+                            $(".dropload-refresh").remove();
                             // 插入数据到页面，放到最后面
                             $('#searchResult').append(result);
+                            if(data.pageNum * data.size >= data.total){
+                            	// 锁定
+                                me.lock();
+                                // 无数据
+                                me.noData();
+                                $('#searchResult').append(me.opts.domDown.domNoData);
+                            }
+                            else{
+                            	$('#searchResult').append(me.opts.domDown.domRefresh);
+                            }
                         
                         }else{// 如果没有数据
                             // 锁定
                             me.lock();
                             // 无数据
                             me.noData();
+                            $(".dropload-refresh").remove();
+                            $('#searchResult').append(me.opts.domDown.domNoData);
                         }
-                        // 每次数据插入，必须重置
-                        //me.resetload();
-                     // 为了测试，延迟1秒加载
-                        setTimeout(function(){
-                            // 每次数据插入，必须重置
-                            me.resetload();
-                        },1000);
+                       	$(".dropload-down").remove();
+                        me.resetload();
                     },
                     error: function(xhr, type){
                         alert('Ajax error!');
