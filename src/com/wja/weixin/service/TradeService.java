@@ -141,6 +141,7 @@ public class TradeService
                     {
                         r.setTransaction_id(prs.getTransaction_id());
                         r.setTime_end(prs.getTime_end());
+                        r.setOpenid(prs.getOpenid());
                         this.wxtrDao.save(r);
                         TradeRecord tr = new TradeRecord();
                         tr.setId(r.getOut_trade_no());
