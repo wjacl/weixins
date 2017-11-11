@@ -6,7 +6,7 @@
 <head>
 	<meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
-	<title>品牌</title>
+	<title>专家</title>
 	<%@ include file="/WEB-INF/jsp/weixin/comm_css.jsp" %>
 </head>
 <body ontouchstart>
@@ -16,30 +16,21 @@
             <form class="weui-search-bar__form">
                 <div class="weui-search-bar__box">
                     <i class="weui-icon-search"></i>
-                    <input type="search" class="weui-search-bar__input" id="searchInput" placeholder="品牌搜索" required/>
+                    <input type="search" class="weui-search-bar__input" id="searchInput" placeholder="专家搜索" required/>
                     <a href="javascript:" class="weui-icon-clear" id="searchClear"></a>
                 </div>
                 <label class="weui-search-bar__label" id="searchText">
                     <i class="weui-icon-search"></i>
-                    <span>品牌搜索</span>
+                    <span>专家搜索</span>
                 </label>
             </form>
         </div>
 	        <div class="weui-cell" style="padding:5px 10px;">
 		    	<div class="weui-cell__bd">
-		    		<h5>热门品牌</h5>
-		    		<div>
+		    		<h5>推荐专家</h5>
+		    		<div style="padding-left:10px;">
 		    		<c:forEach items="${hots }" var="d">
-		    			<a href="brandView?id=${d.brand.id }">
-		    				<c:choose>
-		    					<c:when test="${not empty d.brand.logo }">
-		    						<img alt="${d.brand.name }" src="${publicDownloadUrl }${d.brand.log}" height="40"/>
-		    					</c:when>
-		    					<c:otherwise>
-		    						<img alt="${d.brand.name }"  height="40"/>
-		    					</c:otherwise>
-		    				</c:choose>
-		    			</a>
+		    			<a href="zjview?id=${d.expert.openId}" style="display:inline-block">${d.expert.name}</a>
 		    		</c:forEach>
 		    		</div>
 		        </div>
@@ -106,7 +97,7 @@ $(function(){
  	function loadPageData(me){
  		$.ajax({
             type: 'GET',
-            url: ctx + "/wx/pub/fx/brandQuery",
+            url: ctx + "/wx/pub/fx/zjQuery",
             data:pageQueryData,
             dataType: 'json',
             success: function(data){      	
@@ -128,7 +119,7 @@ $(function(){
                      	}
                      	
                      	result += '<div class="weui-cell__bd">' +
-                     	'<a href="brandView?id=' + row.id + '" id="' + row.id + '" > ' +
+                     	'<a href="zjview?id=' + row.openId + '"> ' +
                          	'<p>' + nas + '</p></a></div>' +
                          	'</div>';
                     }

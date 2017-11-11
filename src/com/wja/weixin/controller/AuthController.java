@@ -20,6 +20,7 @@ import com.wja.base.system.entity.Dict;
 import com.wja.base.system.service.DictService;
 import com.wja.base.util.BeanUtil;
 import com.wja.base.util.Log;
+import com.wja.base.util.StringUtil;
 import com.wja.base.web.AppContext;
 import com.wja.base.web.RequestThreadLocal;
 import com.wja.weixin.common.WXContants;
@@ -199,6 +200,7 @@ public class AuthController
     {
         FollwerInfo dfi = this.follwerInfoService.get(FollwerInfo.class, fi.getOpenId());
         BeanUtil.copyPropertiesIgnoreNull(fi, dfi);
+        dfi.setPinyin(StringUtil.getPinYinHeadChar(dfi.getName()));
         this.follwerInfoService.update(dfi);
     }
     

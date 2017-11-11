@@ -45,6 +45,12 @@ public class FollwerInfo
     private String name;
     
     /**
+     * 名称拼音首字母
+     */
+    @Column(length = 30)
+    private String pinyin;
+    
+    /**
      * 法人名称
      */
     @Column(length = 30)
@@ -159,6 +165,16 @@ public class FollwerInfo
     public void setName(String name)
     {
         this.name = name;
+    }
+    
+    public String getPinyin()
+    {
+        return pinyin;
+    }
+    
+    public void setPinyin(String pinyin)
+    {
+        this.pinyin = pinyin;
     }
     
     public String getFname()
