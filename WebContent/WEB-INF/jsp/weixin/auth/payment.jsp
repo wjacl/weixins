@@ -140,7 +140,7 @@
 						});
 					}
 					else if(data.mess){
-						weui,alert(data.mess);
+						weui.alert(data.mess);
 					}
 					else{
 						weui.alert("提交失败，请重试！");

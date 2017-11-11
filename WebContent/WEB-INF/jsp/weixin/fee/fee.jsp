@@ -68,14 +68,14 @@
 		<div class="weui-flex dd1">		
 			<div  class="weui-flex__item">
 				<p>保证金</p>
-				<p>500￥</p>
+				<p>￥${ac.bzj }</p>
 			</div>
 			<div  class="weui-flex__item">
 				<p>余额</p>
-				<p>500￥</p>
+				<p>￥${ac.balance }</p>
 			</div>
 			<div  class="weui-flex__item">
-				<a href="" class="weui-btn weui-btn_mini weui-btn_primary">充值</a>
+				<a href="cz" class="weui-btn weui-btn_mini weui-btn_primary">充值</a>
 			</div>
 		</div>
 		<div class="dd2">

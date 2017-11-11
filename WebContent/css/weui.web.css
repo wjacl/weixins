@@ -11,3 +11,11 @@ html, body {
 .page__ft {
 	margin-top:10px;
 }
+
+.mtop5 {
+	margin-top:5px;
+}
+
+.no-top-line:before{
+	border-top:0px;
+}

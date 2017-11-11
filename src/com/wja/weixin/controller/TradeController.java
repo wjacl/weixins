@@ -1,18 +1,26 @@
 package com.wja.weixin.controller;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.wja.base.common.OpResult;
+import com.wja.base.system.service.DictService;
 import com.wja.base.util.CollectionUtil;
 import com.wja.base.util.DateUtil;
+import com.wja.base.util.Log;
 import com.wja.base.util.Page;
+import com.wja.base.web.AppContext;
 import com.wja.base.web.RequestThreadLocal;
 import com.wja.weixin.entity.TradeRecord;
 import com.wja.weixin.service.TradeService;
@@ -24,10 +32,53 @@ public class TradeController
     @Autowired
     private TradeService tradeService;
     
+    @Autowired
+    private DictService ds;
+    
     @RequestMapping("view")
-    public String view()
+    public String view(Model model)
     {
+        String openId = RequestThreadLocal.openId.get();
+        model.addAttribute("ac", this.tradeService.getAccount(openId));
         return "weixin/fee/fee";
+    }
+    
+    @RequestMapping("cz")
+    public String toCz(Model model)
+    {
+        model.addAttribute("opts", ds.getByPid("cz.amount"));
+        return "weixin/fee/cz";
+    }
+    
+    @RequestMapping("czok")
+    public String toCzok(Model model)
+    {
+        return "weixin/fee/czok";
+    }
+    
+    @RequestMapping("docz")
+    @ResponseBody
+    public Object doCz(BigDecimal amount, HttpServletRequest req)
+    {
+        if (amount == null || amount.compareTo(new BigDecimal(0)) != 1
+            || amount.compareTo(new BigDecimal(999999.99)) == 1)
+        {
+            return OpResult.error("金额[" + amount.toPlainString() + "]不正确,需在0.01~999999.99间", null);
+        }
+        
+        try
+        {
+            return OpResult.ok().setData(this.tradeService.generateJsPayParam(req.getRemoteAddr(),
+                amount,
+                TradeRecord.BusiType.CZ,
+                AppContext.getSysParam("wx.cz.body"),
+                null));
+        }
+        catch (Exception e)
+        {
+            Log.LOGGER.error("调用微信接口生成订单异常", e);
+            return OpResult.error("调用微信接口生成订单异常", e.getMessage());
+        }
     }
     
     @RequestMapping("query")
