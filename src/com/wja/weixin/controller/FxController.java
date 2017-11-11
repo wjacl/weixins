@@ -38,6 +38,20 @@ public class FxController
     @Autowired
     private FollwerInfoService follwerInfoService;
     
+    @RequestMapping("fx")
+    public String fx(Model model)
+    {
+        return "weixin/fx/fx";
+    }
+    
+    @RequestMapping("fxQuery")
+    @ResponseBody
+    public Object fxQuery(@RequestParam Map<String, Object> params, Page<FollwerInfo> page)
+    {
+        this.follwerInfoService.query(params, page);
+        return page;
+    }
+    
     @RequestMapping("zj")
     public String fxZj(Model model)
     {

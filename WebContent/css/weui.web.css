@@ -16,6 +16,10 @@ html, body {
 	margin-top:5px;
 }
 
+.no-margin-top:before{
+	margin-top:0px;
+}
+
 .no-top-line:before{
 	border-top:0px;
 }

@@ -126,10 +126,10 @@ public class CommSpecification<T> implements Specification<T>
                             pr = builder.isNull(expression);
                             break;
                         case in:
-                            pr = builder.in(expression.in((Collection)con.value));
+                            pr = expression.in((Collection)con.value);
                             break;
                         case notin:
-                            pr = builder.not(builder.in(expression.in((Collection)con.value)));
+                            pr = builder.not(expression.in((Collection)con.value));
                             break;
                         case after:
                             pr = builder.greaterThanOrEqualTo(expression, (Comparable)con.value);
