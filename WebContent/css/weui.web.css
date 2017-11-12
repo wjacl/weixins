@@ -23,3 +23,12 @@ html, body {
 .no-top-line:before{
 	border-top:0px;
 }
+.line_block {
+	display:inline-block;
+}
+.hot{
+	display:inline-block;
+	margin-left:10px;
+	margin-right:10px;
+	font-size:16px;
+}

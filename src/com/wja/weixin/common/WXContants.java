@@ -9,6 +9,12 @@ public interface WXContants
     
     interface Category
     {
+        String FACTORY = "1";
+        
+        String SHOP = "2";
+        
         String EXPERT = "3";
+        
+        String WORKER = "4";
     }
 }

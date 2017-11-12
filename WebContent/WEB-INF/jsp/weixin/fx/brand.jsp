@@ -103,6 +103,11 @@ $(function(){
         reInitSearch();
     });
 });
+
+function doView(id){
+	location.href = "brandView?id=" + id;
+}
+
  	function loadPageData(me){
  		$.ajax({
             type: 'GET',
@@ -120,7 +125,7 @@ $(function(){
                     for(var i=0; i<arrLen; i++){
                     	row = data.rows[i];
                     	 result += '<div class="weui-cell">';
-                         var nas = "&nbsp;&nbsp;" + row.name;
+                         var nas = "&nbsp;&nbsp;&nbsp;&nbsp;" + row.name;
                      	var fl = row.pinyin.charAt(0);
                      	if(fl != lastLetter){
                      		lastLetter = fl;
@@ -128,8 +133,7 @@ $(function(){
                      	}
                      	
                      	result += '<div class="weui-cell__bd">' +
-                     	'<a href="brandView?id=' + row.id + '" id="' + row.id + '" > ' +
-                         	'<p>' + nas + '</p></a></div>' +
+                     		'<h5 onclick="doView(\'' + row.id + '\')">'  + nas + '</h5></div>' +
                          	'</div>';
                     }
 

@@ -38,7 +38,7 @@
 				<a href="javascript:;" data="a" onclick="chooseAmount(this,4)" class="weui-btn weui-btn_mini weui-btn_default">安装工</a>
 			</div>
 		</div>
-		<div class="weui-cells mtop5" style="overflow: auto;height:500px;" id="searchResult">
+		<div class="weui-cells mtop5" style="overflow: auto;height:300px;" id="searchResult">
 	
 		</div>
 	</div>	
@@ -51,7 +51,6 @@
 
 var map,center,markersArray = [];
 var bounds;
-
 function init() {
 	/* wx.getLocation({
 	    type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
@@ -81,12 +80,14 @@ function initMap(){
     //添加缩放监听
     qq.maps.event.addListener(map,'zoom_changed',function() {
         bounds = map.getBounds();
+        $searchInput = $('#searchInput').blur();
     	reInitSearch();
     });
     
     //当地图中心属性更改时触发事件
     qq.maps.event.addListener(map, 'center_changed', function() {
         bounds = map.getBounds();
+        $searchInput = $('#searchInput').blur();
     	reInitSearch();
     });
     
@@ -215,24 +216,31 @@ $(function(){
 });
 
 function reMark(page){
-	if(page.pageNum == 0 && page.row.length > 0){
+	if(page.pageNum == 1){
 		deleteOverlays();
 	}
-	var row;
-	var index = (page.pageNum - 1) * page.size;
-	for(var i = 0; i < page.rows.length; i++){
-		index++;
-		row = page.rows[i];
-		if(row.lat && row.lng){
-			var loca = new qq.maps.LatLng(row.lat / 1,row.lng / 1);
-			addMarker(loca,index);
+	if(page.rows && page.rows.length > 0) {
+		var row;
+		var index = (page.pageNum - 1) * page.size;
+		for(var i = 0; i < page.rows.length; i++){
+			index++;
+			row = page.rows[i];
+			if(row.lat && row.lng){
+				var loca = new qq.maps.LatLng(row.lat / 1,row.lng / 1);
+				addMarker(loca,index);
+			}
 		}
 	}
+}
+
+function doView(id){
+	location.href = "view?id=" + id;
 }
 
  	function loadPageData(me){
  		$.ajax({
             type: 'POST',
+            async:false,
             url: ctx + "/wx/pub/fx/fxQuery",
             data:pageQueryData,
             dataType: 'json',
@@ -246,19 +254,22 @@ function reMark(page){
                 	var row;
                 	var mon;
                 	var info;
+                	var index = (data.pageNum - 1) * data.size;
                     for(var i=0; i<arrLen; i++){
                     	row = data.rows[i];
+                    	index++;
                     	 result += '<div class="weui-cell">';
-                         var nas = "&nbsp;&nbsp;" + row.name;
+                         var nas = "&nbsp;&nbsp;" + '<span class="weui-badge" style="margin-right: 5px;">' + index + '</span>' + row.name;
                      	var fl = row.pinyin.charAt(0);
                      	if(fl != lastLetter){
                      		lastLetter = fl;
-                     		nas = lastLetter.toUpperCase() + "&nbsp; " + row.name;
+                     		nas = lastLetter.toUpperCase() + "&nbsp; " + '<span class="weui-badge" style="margin-right: 5px;">' + index + '</span>' + row.name;
                      	}
                      	
                      	result += '<div class="weui-cell__bd">' +
-                     	'<a href="zjview?id=' + row.openId + '"> ' +
-                         	'<p>' + nas + '</p></a></div>' +
+                         	'<div><h5 class="line_block" style="width:70%"  onclick="doView(\'' + row.id + '\')">' + nas + '</h5>' + 
+                         	'<h5 class="line_block" style="width:30%;"><a href="tel:' + row.mphone + '" >' + row.mphone + '</a></h5></div>' +
+                         	'<p style="padding-left:30px;font-size:13px;">' + row.address + '</p></div>' +
                          	'</div>';
                     }
 

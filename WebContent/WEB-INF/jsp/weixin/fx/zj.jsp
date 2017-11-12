@@ -28,9 +28,9 @@
 	        <div class="weui-cell" style="padding:5px 10px;">
 		    	<div class="weui-cell__bd">
 		    		<h5>推荐专家</h5>
-		    		<div style="padding-left:10px;">
+		    		<div>
 		    		<c:forEach items="${hots }" var="d">
-		    			<a href="zjview?id=${d.expert.openId}" style="display:inline-block">${d.expert.name}</a>
+		    			<li onclick="doView('${d.expert.openId}')" class="hot">${d.expert.name}</h5>
 		    		</c:forEach>
 		    		</div>
 		        </div>
@@ -94,6 +94,11 @@ $(function(){
         reInitSearch();
     });
 });
+
+function doView(id){
+	location.href = "view?id=" + id;
+}
+
  	function loadPageData(me){
  		$.ajax({
             type: 'GET',
@@ -119,9 +124,10 @@ $(function(){
                      	}
                      	
                      	result += '<div class="weui-cell__bd">' +
-                     	'<a href="zjview?id=' + row.openId + '"> ' +
-                         	'<p>' + nas + '</p></a></div>' +
-                         	'</div>';
+	                     	'<div><h5 class="line_block" style="width:70%"  onclick="doView(\'' + row.id + '\')">' + nas + '</h5>' + 
+	                     	'<h5 class="line_block" style="width:30%;"><a href="tel:' + row.mphone + '" >' + row.mphone + '</a></h5></div>' +
+	                     	'<p style="padding-left:15px;font-size:13px;">' + row.address + '</p></div>' +
+	                     	'</div>';
                     }
 
                     $(".dropload-refresh").remove();
