@@ -241,7 +241,7 @@ function doView(id){
  		$.ajax({
             type: 'POST',
             async:false,
-            url: ctx + "/wx/pub/fx/fxQuery",
+            url: ctx + "/wx/web/fx/fxQuery",
             data:pageQueryData,
             dataType: 'json',
             success: function(data){   

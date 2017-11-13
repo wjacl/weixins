@@ -102,7 +102,7 @@ function doView(id){
  	function loadPageData(me){
  		$.ajax({
             type: 'GET',
-            url: ctx + "/wx/pub/fx/zjQuery",
+            url: ctx + "/wx/web/fx/zjQuery",
             data:pageQueryData,
             dataType: 'json',
             success: function(data){      	

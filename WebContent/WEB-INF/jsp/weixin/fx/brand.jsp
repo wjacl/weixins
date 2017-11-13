@@ -111,7 +111,7 @@ function doView(id){
  	function loadPageData(me){
  		$.ajax({
             type: 'GET',
-            url: ctx + "/wx/pub/fx/brandQuery",
+            url: ctx + "/wx/web/fx/brandQuery",
             data:pageQueryData,
             dataType: 'json',
             success: function(data){      	

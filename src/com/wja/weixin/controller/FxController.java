@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,21 +14,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.wja.base.common.OpResult;
 import com.wja.base.util.BeanUtil;
 import com.wja.base.util.CollectionUtil;
 import com.wja.base.util.Page;
+import com.wja.base.web.RequestThreadLocal;
 import com.wja.weixin.common.WXContants;
 import com.wja.weixin.entity.Brand;
 import com.wja.weixin.entity.FollwerInfo;
+import com.wja.weixin.entity.GzRecord;
 import com.wja.weixin.entity.HotBrand;
 import com.wja.weixin.entity.RecomExpert;
 import com.wja.weixin.service.BrandService;
 import com.wja.weixin.service.FollwerInfoService;
+import com.wja.weixin.service.GzService;
 import com.wja.weixin.service.HotBrandService;
 import com.wja.weixin.service.RecomExpertService;
 
 @Controller
-@RequestMapping("/wx/pub/fx")
+@RequestMapping("/wx/web/fx")
 public class FxController
 {
     @Autowired
@@ -42,10 +47,34 @@ public class FxController
     @Autowired
     private FollwerInfoService follwerInfoService;
     
+    @Autowired
+    private GzService gzService;
+    
     @RequestMapping("fx")
     public String fx(Model model)
     {
         return "weixin/fx/fx";
+    }
+    
+    @RequestMapping("gz")
+    @ResponseBody
+    public Object gz(String bgzid, String op)
+    {
+        String openId = RequestThreadLocal.openId.get();
+        GzRecord r = new GzRecord();
+        r.setGzid(openId);
+        r.setBgzid(bgzid);
+        
+        if ("gz".equals(op))
+        {
+            this.gzService.saveGz(r);
+        }
+        else
+        {
+            this.gzService.saveQxgz(r);
+        }
+        
+        return OpResult.ok();
     }
     
     @RequestMapping("view")
@@ -56,6 +85,11 @@ public class FxController
         if (fi != null)
         {
             model.addAttribute("fi", fi);
+            String openId = RequestThreadLocal.openId.get();
+            if (StringUtils.isNotBlank(openId))
+            {
+                model.addAttribute("gz", this.gzService.getByGzidAndBgzid(openId, fi.getOpenId()));
+            }
             switch (fi.getCategory())
             {
                 case WXContants.Category.FACTORY:
@@ -75,7 +109,7 @@ public class FxController
     @ResponseBody
     public Object fxQuery(@RequestParam Map<String, Object> params, Page<FollwerInfo> page)
     {
-        params.put("status", FollwerInfo.STATUS_AUDIT_PASS);
+        params.put("status_eq_intt", FollwerInfo.STATUS_AUDIT_PASS);
         this.follwerInfoService.query(params, page);
         return this.follwerInfoTrans(page);
     }
@@ -102,7 +136,7 @@ public class FxController
     public Object zjQuery(@RequestParam Map<String, Object> params, Page<FollwerInfo> page)
     {
         params.put("category", WXContants.Category.EXPERT);
-        params.put("status", FollwerInfo.STATUS_AUDIT_PASS);
+        params.put("status_eq_intt", FollwerInfo.STATUS_AUDIT_PASS);
         this.follwerInfoService.query(params, page);
         return this.follwerInfoTrans(page);
     }
