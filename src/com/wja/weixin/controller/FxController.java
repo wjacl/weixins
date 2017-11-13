@@ -75,6 +75,7 @@ public class FxController
     @ResponseBody
     public Object fxQuery(@RequestParam Map<String, Object> params, Page<FollwerInfo> page)
     {
+        params.put("status", FollwerInfo.STATUS_AUDIT_PASS);
         this.follwerInfoService.query(params, page);
         return this.follwerInfoTrans(page);
     }
@@ -101,6 +102,7 @@ public class FxController
     public Object zjQuery(@RequestParam Map<String, Object> params, Page<FollwerInfo> page)
     {
         params.put("category", WXContants.Category.EXPERT);
+        params.put("status", FollwerInfo.STATUS_AUDIT_PASS);
         this.follwerInfoService.query(params, page);
         return this.follwerInfoTrans(page);
     }
