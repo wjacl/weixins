@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
 	<title>${fi.name }</title>
 	<%@ include file="/WEB-INF/jsp/weixin/comm_css.jsp" %>
+	<link href="${ctx }/js/froala-editor/css/froala_style.min.css" rel="stylesheet" type="text/css" />
 	<style type="text/css">
 		.title{
 			font-size:17px;
@@ -34,7 +35,7 @@
 <body ontouchstart>
 <div class="page">
     <div class="page__bd">
-    	<div class="weui-cell" style="padding:10px;">
+    	<div class="weui-cell" style="padding:10px;border-bottom: 1px solid #e5e5e5;">
     		<div class=weui-cell__hd" style="padding-top:8px;">
     			<img src="${ctx }/images/shili.jpg" height="77" width="70">
     		</div>
@@ -66,6 +67,9 @@
     			<p class="info">电话：<a href="tel:${fi.mphone }" class="tel">${fi.mphone }</a>  微信：${fi.wechat }</p>
     		</div>
     	</div>
+    	<div class="fr-view" style="padding:10px;">
+	      ${fi.intro }
+	    </div>
 	</div>	
 	<%@ include file="/WEB-INF/jsp/weixin/footer.jsp" %>
 </div>

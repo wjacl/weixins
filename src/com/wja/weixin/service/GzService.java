@@ -13,6 +13,7 @@ import com.wja.base.util.CollectionUtil;
 import com.wja.base.util.Page;
 import com.wja.base.util.Sort;
 import com.wja.weixin.dao.GzRecordDao;
+import com.wja.weixin.entity.FollwerInfo;
 import com.wja.weixin.entity.GzRecord;
 
 @Service
@@ -21,6 +22,9 @@ public class GzService extends CommService<GzRecord>
     
     @Autowired
     private GzRecordDao gzRecordDao;
+    
+    @Autowired
+    private FollwerInfoService follweInfoService;
     
     public GzRecord getByGzidAndBgzid(String gzid, String bgzid)
     {
@@ -38,6 +42,9 @@ public class GzService extends CommService<GzRecord>
         GzRecord dbr = this.getByGzidAndBgzid(r.getGzid(), r.getBgzid());
         if (dbr == null)
         {
+            FollwerInfo fi = follweInfoService.get(FollwerInfo.class, r.getBgzid());
+            fi.setBgzs(fi.getBgzs() + 1);
+            this.follweInfoService.update(fi);
             return this.gzRecordDao.save(r);
         }
         else
@@ -57,6 +64,10 @@ public class GzService extends CommService<GzRecord>
             }
             
             this.gzRecordDao.save(list);
+            
+            FollwerInfo fi = follweInfoService.get(FollwerInfo.class, r.getBgzid());
+            fi.setBgzs(fi.getBgzs() - 1);
+            this.follweInfoService.update(fi);
         }
     }
     

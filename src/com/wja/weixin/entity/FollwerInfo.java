@@ -130,6 +130,12 @@ public class FollwerInfo
     private int status = 0;
     
     /**
+     * 被关注数
+     */
+    @Column(length = 8)
+    private int bgzs;
+    
+    /**
      * 数据删除标识
      * 
      * @see CommConstants.DATA_VALID
@@ -305,6 +311,16 @@ public class FollwerInfo
     public void setStatus(int status)
     {
         this.status = status;
+    }
+    
+    public int getBgzs()
+    {
+        return bgzs;
+    }
+    
+    public void setBgzs(int bgzs)
+    {
+        this.bgzs = bgzs;
     }
     
     public byte getValid()
