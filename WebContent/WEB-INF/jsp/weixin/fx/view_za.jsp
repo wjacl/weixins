@@ -28,7 +28,7 @@
 			color:black;
 		}
 		.gz_button {
-			line-height:20px;padding:0 5px;float:right;
+			line-height:25px;padding:0 5px;float:right;
 		}
 	</style>
 </head>
