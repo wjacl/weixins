@@ -11,6 +11,9 @@ VALUES('bzj.pay.body','保证金微信支付显示内容','保证金支付','保
 INSERT INTO t_sys_param(ID,name,VALUE,remark)
 VALUES('cz.pay.body','充值微信支付显示内容','账户充值','充值微信支付显示内容');
 
+INSERT INTO t_sys_param(ID,name,VALUE,remark)
+VALUES('mess.fb.plat.fee','信息全平台推送收费金额','5','信息全平台推送收费金额');
+
 INSERT INTO t_sys_dict(Id,name,value,ordno,pid,type,valid) VALUES('follwer.category','经营类别','follwer.category',100,'0','s',1);
 INSERT INTO t_sys_dict(Id,name,value,ordno,pid,type,valid) VALUES('fct1','厂家','1',1,'follwer.category','s',1);
 INSERT INTO t_sys_dict(Id,name,value,ordno,pid,type,valid) VALUES('fct2','商家','2',2,'follwer.category','s',1);

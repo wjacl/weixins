@@ -68,7 +68,7 @@
 		                </div>
 		                <div class="weui-cell__bd">
 		                    <select class="weui-select" name="range">
-		                        <option value="1">全平台(5元/条)</option>
+		                        <option value="1">全平台(${mpf }元/条)</option>
 		                        <option value="2">关注者(免费)</option>
 		                    </select>
 		                </div>
@@ -144,7 +144,7 @@
 		                </div>
 		                <div class="weui-cell__bd">
 		                    <select class="weui-select" name="range">
-		                        <option value="1">全平台(5元/条)</option>
+		                        <option value="1">全平台(${mpf }元/条)</option>
 		                        <option value="2">关注者(免费)</option>
 		                    </select>
 		                </div>

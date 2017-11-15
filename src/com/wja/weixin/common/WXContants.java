@@ -17,4 +17,9 @@ public interface WXContants
         
         String WORKER = "4";
     }
+    
+    interface SysParam
+    {
+        String MessPlatFee = "mess.fb.plat.fee";
+    }
 }

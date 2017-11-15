@@ -47,6 +47,36 @@ public class TradeService
     
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddhhmmss");
     
+    /**
+     * 扣费
+     * 
+     * @param openId
+     * @param amount
+     * @param info
+     * @return
+     * @see [类、类#方法、类#成员]
+     */
+    public boolean saveKouFei(String openId, BigDecimal amount, String info)
+    {
+        Account a = this.getAccount(openId);
+        if (a == null || a.getBalance().compareTo(amount) == -1)
+        {
+            return false;
+        }
+        
+        TradeRecord tr = new TradeRecord();
+        tr.setBusiType(TradeRecord.BusiType.XF);
+        tr.setIoType(TradeRecord.IOType.OUT);
+        tr.setOpenId(openId);
+        tr.setAmount(amount);
+        tr.setInfo(info);
+        
+        this.tradeRecordDao.save(tr);
+        this.accountDao.balanceSub(amount, openId);
+        
+        return true;
+    }
+    
     public Page<TradeRecord> tradePageQuery(Map<String, Object> params, Page<TradeRecord> page)
     {
         return page.setPageData(
