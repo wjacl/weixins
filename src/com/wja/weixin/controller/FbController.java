@@ -68,7 +68,7 @@ public class FbController
             {
                 m.setImg(p.getImg().split(";")[0]);
             }
-            m.setRange(range);
+            m.setTrange(range);
             m.setMtype(Message.Mtype.Product);
             m.setLinkId(p.getId());
             return this.messageService.saveMessage(m);

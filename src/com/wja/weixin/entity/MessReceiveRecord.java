@@ -9,7 +9,7 @@ import com.wja.base.common.CommEntity;
 @Entity
 @Table(name = "t_wx_mess_rec")
 // @Where(clause = " valid = " + CommConstants.DATA_VALID)
-public class MessReceiver extends CommEntity
+public class MessReceiveRecord extends CommEntity
 {
     /**
      * 接收者ID

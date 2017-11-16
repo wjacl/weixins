@@ -23,7 +23,7 @@
                 </div>
             </div>
 	    	<div class="weui-tab__panel" id="mess" style="padding-top:30px;">
-		      <form action="../saveIntro" method="post" id="form">
+		      <form action="messfb" method="post" id="mform">
 					<div class="weui-cells weui-cells_form no-top-line">  
 						<div class="weui-cell">
 							<div class="weui-cell__hd"><label class="weui-label">标题：</label></div>
@@ -74,15 +74,15 @@
 		                </div>
 					</div>      
 			        <div class="weui-cell no-top-line weui-btn-area_inline">
-						<input type="hidden" name="id" value="${openId }">
-						<input type="hidden" name="logo" >
-			            <a class="weui-btn weui-btn_primary" href="javascript:" id="formSubmitBtn">发布</a>
+						<input type="hidden" name="pubid" value="${openId }">
+						<input type="hidden" name="img" >
+			            <a class="weui-btn weui-btn_primary" href="javascript:;" id="mformSubmitBtn">发布</a>
 			        </div>
 			    </div>
 			    </form>
 		    </div>
 		    <div class="weui-tab__panel" id="prod" style="display:none;padding-top:30px;">
-				<form action="../saveIntro" method="post" id="form">
+				<form action="prodfb" method="post" id="pform">
 					<div class="weui-cells weui-cells_form no-top-line"> 			
 						<div class="weui-cell">
 							<div class="weui-cell__hd"><label class="weui-label">产品名称：</label></div>
@@ -150,9 +150,9 @@
 		                </div>
 					</div> 
 			        <div class="weui-cell no-top-line weui-btn-area_inline">
-						<input type="hidden" name="openId" value="${fi.openId }">
-						<input type="hidden" name="logo" value="${fi.logo }">
-			            <a class="weui-btn weui-btn_primary" href="javascript:;">发布</a>
+						<input type="hidden" name="pubid" value="${openId }">
+						<input type="hidden" name="img" >
+			            <a class="weui-btn weui-btn_primary" href="javascript:;" id="pformSubmitBtn">发布</a>
 			        </div>
 			    </div>
 			    </form>
@@ -163,60 +163,115 @@
 </div>
 </body>
 <%@ include file="/WEB-INF/jsp/weixin/comm_js.jsp" %>
-<script type="text/javascript" src="${ctx }/js/app/weixin/form.js"></script>
+<script type="text/javascript" src="${ctx }/js/jquery.form.min.js"></script>
 <script type="text/javascript" src="${ctx }/js/app/weixin/img_upload.js"></script>
 <%@ include file="/WEB-INF/jsp/weixin/h5_fich_editor_js.jsp" %>
-
-<script>
-$(function(){
-    $('.weui-navbar__item').on('click', function () {
-        $(this).addClass('weui-bar__item_on').siblings('.weui-bar__item_on').removeClass('weui-bar__item_on');
-    	var id = $(this).data("for");
-    	if(id == "mess"){
-    		$("#prod").hide();
-    	}
-    	else{
-    		$("#mess").hide();
-    	}
-    	$("#" + id).show();
-    });
-});
-</script>
-
-
 <script>
 
 	var imgUploader = new ImgUploader('uploader',ctx + '/wx/web/upload/comm',false,1,0,'uploadCount','uploaderFiles',{type:'message'});
 	var productImgUploader = new ImgUploader('productUploader',ctx + '/wx/web/upload/comm',false,10,0,'productUploaderCount','productUploaderFiles',{type:'product'});
 	
-	function doFormSubmit(){
-		var re = imgUploader.upload();
-		if(re){
-			var xx = 1;
-			function ccck(){
-				if(imgUploader.uploadedFileNames.length < imgUploader.uploadList.length && xx < 10){
-					xx++;
-					setTimeout(ccck,300);
-				}
-				else{
-					if(imgUploader.uploadedFileNames.length == imgUploader.uploadCount){
-						$("input[name='logo']").val(imgUploader.getUploadedFileNameStr());
-						var loading = weui.loading('提交中...');
-						//将文件加入到表单中提交
-						$('#form').submit();
-					}
-					else {
-						weui.alert('请检查一下图片是否都已上传，待都完成上传后，再点击 下一步');
-					}
-				}
-			}
-			setTimeout(ccck,300);
-		}
-	}
-	
 	$(function(){
+		$('.weui-navbar__item').on('click', function () {
+	        $(this).addClass('weui-bar__item_on').siblings('.weui-bar__item_on').removeClass('weui-bar__item_on');
+	    	var id = $(this).data("for");
+	    	if(id == "mess"){
+	    		$("#prod").hide();
+	    	}
+	    	else{
+	    		$("#mess").hide();
+	    	}
+	    	$("#" + id).show();
+	    });
+		
 		h5FichEditorAuthInroInit("intro");
 		h5FichEditorAuthInroInit("prodIntro");
+		
+	  	$("#mformSubmitBtn").on("click",function(){
+        	weui.form.validate('#mform', function (error) {
+                if (!error) {
+                	var re = imgUploader.upload();
+            		if(re){
+            			var xx = 1;
+            			function ccck(){
+            				if(imgUploader.uploadedFileNames.length < imgUploader.uploadList.length && xx < 10){
+            					xx++;
+            					setTimeout(ccck,300);
+            				}
+            				else{
+            					if(imgUploader.uploadedFileNames.length == imgUploader.uploadCount){
+            						$("input[name='img']").val(imgUploader.getUploadedFileNameStr());
+            						var loading = weui.loading('提交中...');
+            						//将文件加入到表单中提交
+            						$('#mform').ajaxSubmit({dataType:"json",success:function(data){
+            							loading.hide();
+            							if(Constants.ResultStatus_Ok == data.status){
+	            							weui.toast('发布成功', 3000);
+	            							setTimeout(location.reload(),3000);
+            							}
+            							else{
+            								if(data.mess){
+            									weui.alert(data.mess);
+            								}
+            								else{
+            									weui.alert("提交失败，请重试！");
+            								}
+            							}
+            						}});
+            					}
+            					else {
+            						weui.alert('请检查一下图片是否都已上传，待都完成上传后，再点击 下一步');
+            					}
+            				}
+            			}
+            			setTimeout(ccck,300);
+            		}                   
+                }
+            });
+        });
+	  	
+	  	$("#pformSubmitBtn").on("click",function(){
+        	weui.form.validate('#pform', function (error) {
+                if (!error) {
+                	var re = productImgUploader.upload();
+            		if(re){
+            			var xx = 1;
+            			function ccck(){
+            				if(productImgUploader.uploadedFileNames.length < productImgUploader.uploadList.length && xx < 10){
+            					xx++;
+            					setTimeout(ccck,300);
+            				}
+            				else{
+            					if(productImgUploader.uploadedFileNames.length == productImgUploader.uploadCount){
+            						$("input[name='img']").val(productImgUploader.getUploadedFileNameStr());
+            						var loading = weui.loading('提交中...');
+            						//将文件加入到表单中提交
+            						$('#mform').ajaxSubmit({dataType:"json",success:function(data){
+            							loading.hide();
+            							if(Constants.ResultStatus_Ok == data.status){
+	            							weui.toast('发布成功', 3000);
+	            							setTimeout(location.reload(),3000);
+            							}
+            							else{
+            								if(data.mess){
+            									weui.alert(data.mess);
+            								}
+            								else{
+            									weui.alert("提交失败，请重试！");
+            								}
+            							}
+            						}});
+            					}
+            					else {
+            						weui.alert('请检查一下图片是否都已上传，待都完成上传后，再点击 下一步');
+            					}
+            				}
+            			}
+            			setTimeout(ccck,300);
+            		}                   
+                }
+            });
+        });
 	});
 </script>
 </html>

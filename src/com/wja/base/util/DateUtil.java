@@ -37,6 +37,21 @@ public class DateUtil
      */
     public static final DateFormat DATE_MINUTE_DF = new SimpleDateFormat(DATE_MINUTE);
     
+    /**
+     * 获取当前日期指定天数前的日期
+     * @param days 之前天数
+     * @return
+     * @see [类、类#方法、类#成员]
+     */
+    public static final Date getBeforeDate(int days){
+        Calendar ca = Calendar.getInstance();
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.DAY_OF_MONTH, -days);
+        ca.clear();
+        ca.set(c.get(Calendar.YEAR), c.get(Calendar.MONTH), 1);
+        return ca.getTime();
+    }
+    
     public static final Date getMonthFirstDay(Date d)
     {
         Calendar ca = Calendar.getInstance();

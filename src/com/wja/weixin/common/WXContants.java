@@ -21,5 +21,9 @@ public interface WXContants
     interface SysParam
     {
         String MessPlatFee = "mess.fb.plat.fee";
+        /**
+         * 消息留存天数
+         */
+        String MESS_RELAY_DAYS = "mess.relay.days";
     }
 }

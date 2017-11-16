@@ -1,17 +1,25 @@
 package com.wja.weixin.service;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.wja.base.common.OpResult;
 import com.wja.base.common.service.CommService;
+import com.wja.base.util.DateUtil;
+import com.wja.base.util.Log;
+import com.wja.base.util.Page;
 import com.wja.base.web.AppContext;
 import com.wja.weixin.common.WXContants;
-import com.wja.weixin.dao.MessReceiverDao;
+import com.wja.weixin.dao.MessReceiveRecordDao;
 import com.wja.weixin.dao.MessageDao;
+import com.wja.weixin.dao.MessageQueryDao;
+import com.wja.weixin.entity.MessReceiveRecord;
 import com.wja.weixin.entity.Message;
+import com.wja.weixin.entity.MessageVo;
 
 @Service
 public class MessageService extends CommService<Message>
@@ -21,7 +29,10 @@ public class MessageService extends CommService<Message>
     private MessageDao messageDao;
     
     @Autowired
-    private MessReceiverDao messRecevierDao;
+    private MessageQueryDao messageQueryDao;
+    
+    @Autowired
+    private MessReceiveRecordDao messRecevieDao;
     
     @Autowired
     private FollwerInfoService follweInfoService;
@@ -29,9 +40,13 @@ public class MessageService extends CommService<Message>
     @Autowired
     private TradeService tradeService;
     
+    public MessReceiveRecord saveMessRec(MessReceiveRecord mr){
+       return this.messRecevieDao.save(mr);
+    }
+    
     public OpResult saveMessage(Message m)
     {
-        if (Message.Range.Platform.equals(m.getRange()))
+        if (Message.Range.Platform.equals(m.getTrange()))
         {
             String fee = AppContext.getSysParam(WXContants.SysParam.MessPlatFee);
             BigDecimal amount = new BigDecimal(fee);
@@ -47,14 +62,33 @@ public class MessageService extends CommService<Message>
         }
         else
         {
-            m.setRange(Message.Range.GZZ);
+            m.setTrange(Message.Range.GZZ);
         }
         
         m = this.messageDao.save(m);
         
-        // 推送微信消息 交给消息推送线程池来推送
+        // TODO 推送微信消息 交给消息推送线程池来推送
         
         return OpResult.ok();
     }
     
+    public Page<MessageVo> queryMyMessage(String openId,Page<MessageVo> page){
+        int relayDays = AppContext.getIntSysParam(WXContants.SysParam.MESS_RELAY_DAYS);
+        Date stime = new Date();
+        if(relayDays == Integer.MAX_VALUE || relayDays <= 0){
+            try
+            {
+                stime = DateUtil.DEFAULT_DF.parse("2017-10-01");
+            }
+            catch (ParseException e)
+            {
+                Log.LOGGER.error("时间字符串转时间异常", e);
+            }
+        }
+        else {
+            stime = DateUtil.getBeforeDate(relayDays);
+        }
+        
+        return this.messageQueryDao.queryMyMessages(openId, stime, page);
+    }
 }

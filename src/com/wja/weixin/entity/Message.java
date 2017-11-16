@@ -51,14 +51,14 @@ public class Message extends CommEntity
     /**
      * 内容
      */
-    @Column(length = 5000)
+    @Column(length = 4000)
     private String content;
     
     /**
      * 范围 1全平台，2关注者
      */
     @Column(length = 1)
-    private String range;
+    private String trange;
     
     /**
      * 费用
@@ -114,16 +114,16 @@ public class Message extends CommEntity
         this.content = content;
     }
     
-    public String getRange()
+    public String getTrange()
     {
-        return range;
+        return trange;
     }
-    
-    public void setRange(String range)
+
+    public void setTrange(String trange)
     {
-        this.range = range;
+        this.trange = trange;
     }
-    
+
     public String getFee()
     {
         return fee;
