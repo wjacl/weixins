@@ -35,7 +35,7 @@ public class Product extends CommEntity
     /**
      * 图片
      */
-    @Column(length = 500)
+    @Column(length = 1000)
     private String img;
     
     /**

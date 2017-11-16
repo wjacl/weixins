@@ -17,7 +17,7 @@ public class ProductService extends CommService<Product>
     @Autowired
     private FollwerInfoService follweInfoService;
     
-    public Product saveProduct(Product p)
+    public Product saveProduct(Product p, String trange)
     {
         return this.productDao.save(p);
     }

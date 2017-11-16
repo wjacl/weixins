@@ -7,7 +7,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.wja.base.common.OpResult;
 import com.wja.base.web.AppContext;
 import com.wja.base.web.RequestThreadLocal;
 import com.wja.weixin.common.WXContants;
@@ -52,27 +51,25 @@ public class FbController
     
     @RequestMapping("prodfb")
     @ResponseBody
-    public Object prodFb(Product p, String range)
+    public Object prodFb(Product p, String trange)
     {
         String openId = RequestThreadLocal.openId.get();
         p.setPubId(openId);
-        p = this.productService.saveProduct(p);
+        p = this.productService.saveProduct(p, trange);
         
         // 消息推送
-        if (Message.Range.Platform.equals(range))
+        Message m = new Message();
+        m.setPubId(openId);
+        m.setTitle("新产品!" + p.getTitle());
+        if (StringUtils.isNotBlank(p.getImg()))
         {
-            Message m = new Message();
-            m.setPubId(openId);
-            m.setTitle("新产品!" + p.getTitle());
-            if (StringUtils.isNotBlank(p.getImg()))
-            {
-                m.setImg(p.getImg().split(";")[0]);
-            }
-            m.setTrange(range);
-            m.setMtype(Message.Mtype.Product);
-            m.setLinkId(p.getId());
-            return this.messageService.saveMessage(m);
+            m.setImg(p.getImg().split(";")[0]);
         }
-        return OpResult.ok();
+        m.setTrange(trange);
+        m.setMtype(Message.Mtype.Product);
+        m.setLinkId(p.getId());
+        
+        return this.messageService.saveMessage(m);
+        
     }
 }

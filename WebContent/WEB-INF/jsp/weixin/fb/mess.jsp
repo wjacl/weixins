@@ -42,9 +42,6 @@
 			                        </div>
 			                        <div class="weui-uploader__bd">
 			                            <ul class="weui-uploader__files" id="uploaderFiles">
-			                            <c:if test="${not empty fi.logo }">
-			                                <li class="weui-uploader__file" style="background-image:url(${ctx}/wx/pubget${fi.logo })" data-id="${fi.logo }"></li>
-			                            </c:if>
 			                            </ul>
 			                            <div class="weui-uploader__input-box">
 			                                <input id="uploaderInput" class="weui-uploader__input" type="file" accept="image/*" capture="camera" multiple/>
@@ -57,7 +54,7 @@
 			                <div class="weui-cell__bd">
 			                	<p>内容：</p>
 			                	<div>
-			                    <textarea name="intro" id="intro">		                         
+			                    <textarea name="content" id="intro">		                         
 			                    </textarea>
 			                    </div>
 			                </div>
@@ -67,7 +64,7 @@
 		                    <label for="" class="weui-label">发送范围：</label>
 		                </div>
 		                <div class="weui-cell__bd">
-		                    <select class="weui-select" name="range">
+		                    <select class="weui-select" name="trange">
 		                        <option value="1">全平台(${mpf }元/条)</option>
 		                        <option value="2">关注者(免费)</option>
 		                    </select>
@@ -118,9 +115,6 @@
 			                        </div>
 			                        <div class="weui-uploader__bd">
 			                            <ul class="weui-uploader__files" id="productUploaderFiles">
-			                            <c:if test="${not empty fi.logo }">
-			                                <li class="weui-uploader__file" style="background-image:url(${ctx}/wx/pubget${fi.logo })" data-id="${fi.logo }"></li>
-			                            </c:if>
 			                            </ul>
 			                            <div class="weui-uploader__input-box">
 			                                <input id="productUploaderInput" class="weui-uploader__input" type="file" accept="image/*" capture="camera" multiple/>
@@ -133,7 +127,7 @@
 			                <div class="weui-cell__bd">
 			                	<p>产品介绍：</p>
 			                	<div>
-			                    <textarea name="intro" id="prodIntro">
+			                    <textarea name="content" id="prodIntro">
 			                    </textarea>
 			                    </div>
 			                </div>
@@ -143,7 +137,7 @@
 		                    <label for="" class="weui-label">推送范围：</label>
 		                </div>
 		                <div class="weui-cell__bd">
-		                    <select class="weui-select" name="range">
+		                    <select class="weui-select" name="trange">
 		                        <option value="1">全平台(${mpf }元/条)</option>
 		                        <option value="2">关注者(免费)</option>
 		                    </select>
@@ -151,7 +145,7 @@
 					</div> 
 			        <div class="weui-cell no-top-line weui-btn-area_inline">
 						<input type="hidden" name="pubid" value="${openId }">
-						<input type="hidden" name="img" >
+						<input type="hidden" dd="prod" name="img" >
 			            <a class="weui-btn weui-btn_primary" href="javascript:;" id="pformSubmitBtn">发布</a>
 			        </div>
 			    </div>
@@ -243,10 +237,10 @@
             				}
             				else{
             					if(productImgUploader.uploadedFileNames.length == productImgUploader.uploadCount){
-            						$("input[name='img']").val(productImgUploader.getUploadedFileNameStr());
+            						$("input[dd='prod']").val(productImgUploader.getUploadedFileNameStr());
             						var loading = weui.loading('提交中...');
             						//将文件加入到表单中提交
-            						$('#mform').ajaxSubmit({dataType:"json",success:function(data){
+            						$('#pform').ajaxSubmit({dataType:"json",success:function(data){
             							loading.hide();
             							if(Constants.ResultStatus_Ok == data.status){
 	            							weui.toast('发布成功', 3000);
