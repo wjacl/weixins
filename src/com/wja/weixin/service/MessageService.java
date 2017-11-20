@@ -3,10 +3,12 @@ package com.wja.weixin.service;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.wja.base.common.CommSpecification;
 import com.wja.base.common.OpResult;
 import com.wja.base.common.service.CommService;
 import com.wja.base.util.DateUtil;
@@ -72,7 +74,28 @@ public class MessageService extends CommService<Message>
         return OpResult.ok();
     }
     
-    public Page<MessageVo> queryMyMessage(String openId,Page<MessageVo> page){
+    /**
+     * 查询我的历史发布
+     * @param params
+     * @param page
+     * @return
+     * @see [类、类#方法、类#成员]
+     */
+    public Page<Message> queryMyFb(Map<String, Object> params, Page<Message> page){
+        return page.setPageData(
+            this.messageDao.findAll(new CommSpecification<Message>(params), page.getPageRequest()));
+    }
+    
+    /**
+     * 
+     * 查询我收到的信息
+     * @param openId
+     * @param title
+     * @param page
+     * @return
+     * @see [类、类#方法、类#成员]
+     */
+    public Page<MessageVo> queryMyMessage(String openId,String title,Page<MessageVo> page){
         int relayDays = AppContext.getIntSysParam(WXContants.SysParam.MESS_RELAY_DAYS);
         Date stime = new Date();
         if(relayDays == Integer.MAX_VALUE || relayDays <= 0){
@@ -89,6 +112,6 @@ public class MessageService extends CommService<Message>
             stime = DateUtil.getBeforeDate(relayDays);
         }
         
-        return this.messageQueryDao.queryMyMessages(openId, stime, page);
+        return this.messageQueryDao.queryMyMessages(openId, title,stime, page);
     }
 }

@@ -1,16 +1,22 @@
 package com.wja.weixin.controller;
 
+import java.util.Map;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.wja.base.common.OpResult;
+import com.wja.base.util.Page;
 import com.wja.base.web.AppContext;
 import com.wja.base.web.RequestThreadLocal;
 import com.wja.weixin.common.WXContants;
 import com.wja.weixin.entity.Message;
+import com.wja.weixin.entity.MessageVo;
 import com.wja.weixin.entity.Product;
 import com.wja.weixin.service.FollwerInfoService;
 import com.wja.weixin.service.GzService;
@@ -71,5 +77,71 @@ public class FbController
         
         return this.messageService.saveMessage(m);
         
+    }
+       
+    @RequestMapping("toMyMess")
+    public String tomyMess(){
+        return "weixin/fb/mess_my";
+    }
+    
+    @RequestMapping("queryMyMess")
+    @ResponseBody
+    public Object queryMyMess(String title,Page<MessageVo> page)
+    {
+        String openId = RequestThreadLocal.openId.get();
+        return this.messageService.queryMyMessage(openId, title, page);
+    }
+ 
+    @RequestMapping("toMyfb")
+    public String tpMyFb(){
+        return "weixin/fb/mess_fb";
+    }
+    
+    @RequestMapping("queryMyfb")
+    @ResponseBody
+    public Page<Message> queryMyFb(@RequestParam Map<String, Object> params, Page<Message> page)
+    {
+        String openId = RequestThreadLocal.openId.get();
+        params.put("pubid", openId);
+        return this.messageService.queryMyFb(params, page);
+    }
+    
+    @RequestMapping("chehui")
+    @ResponseBody
+    public Object cheHui(String id)
+    {
+        String openId = RequestThreadLocal.openId.get();
+        Message m = this.messageService.get(Message.class, id);
+        if(m.getPubId().equals(openId)){
+            this.messageService.delete(m);
+            return OpResult.ok();
+        }
+        else {
+            return OpResult.error("您不是发布者，无权撤回！", null);
+        }
+    }
+    
+    @RequestMapping("view")
+    public String view(String id){
+        Message m = this.messageService.get(Message.class, id);
+        if(m == null){
+            return "weixin/not_exist";   //不存在
+        }
+        
+        String openId = RequestThreadLocal.openId.get();
+        if(!m.getTrange().equals(Message.Range.Platform)){
+            if(this.gzService.getByGzidAndBgzid(openId, m.getPubId()) == null){
+                return "weixin/no_autho";   //无权浏览
+            }
+        }
+        
+        switch(m.getMtype()){
+            case Message.Mtype.Product:
+                return "redirect:../prod/view?id=" + m.getLinkId();
+            case Message.Mtype.WorkOrder:
+                return "redirect:../worder/view?id=" + m.getLinkId();
+            default:
+                return "weixin/fb/view_mess";
+        }
     }
 }
