@@ -15,8 +15,8 @@ import com.wja.base.util.Page;
 import com.wja.base.web.AppContext;
 import com.wja.base.web.RequestThreadLocal;
 import com.wja.weixin.common.WXContants;
+import com.wja.weixin.entity.FollwerInfo;
 import com.wja.weixin.entity.Message;
-import com.wja.weixin.entity.MessageVo;
 import com.wja.weixin.entity.Product;
 import com.wja.weixin.service.FollwerInfoService;
 import com.wja.weixin.service.GzService;
@@ -86,7 +86,7 @@ public class FbController
     
     @RequestMapping("queryMyMess")
     @ResponseBody
-    public Object queryMyMess(String title,Page<MessageVo> page)
+    public Object queryMyMess(String title,Page<?> page)
     {
         String openId = RequestThreadLocal.openId.get();
         return this.messageService.queryMyMessage(openId, title, page);
@@ -122,7 +122,7 @@ public class FbController
     }
     
     @RequestMapping("view")
-    public String view(String id){
+    public String view(String id,Model model){
         Message m = this.messageService.get(Message.class, id);
         if(m == null){
             return "weixin/not_exist";   //不存在
@@ -141,7 +141,9 @@ public class FbController
             case Message.Mtype.WorkOrder:
                 return "redirect:../worder/view?id=" + m.getLinkId();
             default:
-                return "weixin/fb/view_mess";
+                model.addAttribute("me", m);
+                model.addAttribute("fi", this.follwerInfoService.get(FollwerInfo.class, m.getPubId()));
+                return "weixin/fb/mess_view";
         }
     }
 }

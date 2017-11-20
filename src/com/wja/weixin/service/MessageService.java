@@ -21,7 +21,6 @@ import com.wja.weixin.dao.MessageDao;
 import com.wja.weixin.dao.MessageQueryDao;
 import com.wja.weixin.entity.MessReceiveRecord;
 import com.wja.weixin.entity.Message;
-import com.wja.weixin.entity.MessageVo;
 
 @Service
 public class MessageService extends CommService<Message>
@@ -95,7 +94,7 @@ public class MessageService extends CommService<Message>
      * @return
      * @see [类、类#方法、类#成员]
      */
-    public Page<MessageVo> queryMyMessage(String openId,String title,Page<MessageVo> page){
+    public Page<?> queryMyMessage(String openId,String title,Page<?> page){
         int relayDays = AppContext.getIntSysParam(WXContants.SysParam.MESS_RELAY_DAYS);
         Date stime = new Date();
         if(relayDays == Integer.MAX_VALUE || relayDays <= 0){

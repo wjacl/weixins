@@ -1,0 +1,21 @@
+
+		.title{
+			font-size:17px;
+			font-weight: 700;
+			line-height: 25px;
+			display:inline-block;
+		}
+		.info {	
+			line-height: 20px;
+			font-size:14px;
+		}
+		.categ {
+			margin-left:10px;
+			font-size:12px;
+		}
+		.tel{
+			color:black;
+		}
+		.gz_button {
+			line-height:25px;padding:0 5px;float:right;
+		}

@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
 	<title>收信息</title>
 	<%@ include file="/WEB-INF/jsp/weixin/comm_css.jsp" %>
+	<link rel="stylesheet" href="${ctx }/css/weui.list.css"/>
 </head>
 <body ontouchstart>
 <div class="page">
@@ -25,7 +26,7 @@
                 </label>
             </form>
         </div>
-		<div class="weui-cells" style="overflow: auto;height:500px;" id="searchResult">
+		<div class="weui-cells no-top-line mtop5" style="overflow: auto;height:500px;" id="searchResult">
 	
 		</div>
 	</div>	
@@ -97,21 +98,25 @@ function doView(id){
                 var arrLen = data.rows.length;
                 if(arrLen > 0){
                 	var row;
-                	var mon;
-                	var info;
                     for(var i=0; i<arrLen; i++){
                     	row = data.rows[i];
-                    	 result += '<div class="weui-cell">';
-                         var nas = "&nbsp;&nbsp;&nbsp;&nbsp;" + row.name;
-                     	var fl = row.pinyin.charAt(0);
-                     	if(fl != lastLetter){
-                     		lastLetter = fl;
-                     		nas = lastLetter.toUpperCase() + "&nbsp; " + row.name;
-                     	}
+                    	result += '<div class="weui-cell"  onclick="doView(\'' + row[0] + '\')">';
+                        
+                    	result += '<div class=weui-cell__hd" style="padding-top:8px;">';
+                    	result += '<img src="'+ publicDownloadUrl + row[3] + '" height="70" width="70">';
+                    	result += '</div>';
+                    	result += '<div class="weui-cell__bd" style="margin-left:5px;">';
+                    	result += '<div>';
+                    	result += '<p class="title">' + row[2] + '</p>';
+                    	if(row[6] == null) {
+                    		result += '<a href="javascript:;" data-op="qx" class="weui-btn weui-btn_mini weui-btn_warn gz_button">未读</a>';
+                    	}	
+                   		result += '</div>';
+                   		result += '<p class="info">发布者：' + row[5] + '</p>';
+                   		result += '<p class="info">发布时间：' + row[4] + '</p>';
+                   		result += '</div>';
                      	
-                     	result += '<div class="weui-cell__bd">' +
-                     		'<h5 onclick="doView(\'' + row.id + '\')">'  + nas + '</h5></div>' +
-                         	'</div>';
+                     	result += '</div>';
                     }
 
                     $(".dropload-refresh").remove();
