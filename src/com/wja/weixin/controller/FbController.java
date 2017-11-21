@@ -66,7 +66,11 @@ public class FbController
         // 消息推送
         Message m = new Message();
         m.setPubId(openId);
-        m.setTitle("新产品!" + p.getTitle());
+        String prefix = AppContext.getSysParam(WXContants.SysParam.MESS_PROD_TITLE_PREFIX);
+        if(prefix == null){
+            prefix = "";
+        }
+        m.setTitle(prefix + p.getTitle());
         if (StringUtils.isNotBlank(p.getImg()))
         {
             m.setImg(p.getImg().split(";")[0]);
@@ -102,7 +106,7 @@ public class FbController
     public Page<Message> queryMyFb(@RequestParam Map<String, Object> params, Page<Message> page)
     {
         String openId = RequestThreadLocal.openId.get();
-        params.put("pubid", openId);
+        params.put("pubId", openId);
         return this.messageService.queryMyFb(params, page);
     }
     
@@ -129,7 +133,7 @@ public class FbController
         }
         
         String openId = RequestThreadLocal.openId.get();
-        if(!m.getTrange().equals(Message.Range.Platform)){
+        if(!m.getPubId().equals(openId) && !m.getTrange().equals(Message.Range.Platform)){
             if(this.gzService.getByGzidAndBgzid(openId, m.getPubId()) == null){
                 return "weixin/no_autho";   //无权浏览
             }

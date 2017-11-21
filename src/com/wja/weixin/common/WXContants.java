@@ -25,5 +25,10 @@ public interface WXContants
          * 消息留存天数
          */
         String MESS_RELAY_DAYS = "mess.relay.days";
+        
+        /**
+         * 产品推送消息的标题前缀
+         */
+        String MESS_PROD_TITLE_PREFIX = "mess.prod.title.prefix";
     }
 }
