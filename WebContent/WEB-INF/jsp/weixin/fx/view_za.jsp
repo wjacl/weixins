@@ -36,9 +36,11 @@
 <div class="page">
     <div class="page__bd">
     	<div class="weui-cell" style="padding:10px;border-bottom: 1px solid #e5e5e5;">
-    		<div class=weui-cell__hd" style="padding-top:8px;">
-    			<img src="${ctx }/images/shili.jpg" height="77" width="70">
-    		</div>
+    		<c:if test="${not empty fi.logo }">
+	    		<div class=weui-cell__hd" style="padding-top:8px;">
+	    			<img src="${publicDownloadUrl}${fi.logo}" height="77" width="70">
+	    		</div>
+    		</c:if>
     		<div class="weui-cell__bd" style="margin-left:5px;">
     			<div>
     				<p class="title">${fi.name }</p>

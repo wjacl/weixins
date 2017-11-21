@@ -30,15 +30,20 @@
 		.gz_button {
 			line-height:25px;padding:0 5px;float:right;
 		}
+		.bbt{
+			line-height:25px;padding:0 5px;
+		}
 	</style>
 </head>
 <body ontouchstart>
 <div class="page">
     <div class="page__bd">
     	<div class="weui-cell" style="padding:10px;border-bottom: 1px solid #e5e5e5;">
-    		<div class=weui-cell__hd" style="padding-top:8px;">
-    			<img src="${ctx }/images/shili.jpg" height="77" width="70">
-    		</div>
+    		<c:if test="${not empty fi.logo }">
+	    		<div class=weui-cell__hd" style="padding-top:8px;">
+	    			<img src="${publicDownloadUrl}${fi.logo}" height="77" width="70">
+	    		</div>
+    		</c:if>
     		<div class="weui-cell__bd" style="margin-left:5px;">
     			<div>
     				<p class="title">${fi.name }</p>
@@ -81,70 +86,6 @@
 		    </div>
             <div class="weui-tab__panel" id="prod" style="display:none;padding-top:30px;">
 				<div class="weui-cells no-top-line" style="overflow: auto;height:400px;" id="searchResult">
-					<div class="weui-cell">
-    		<div class=weui-cell__hd" style="padding-top:8px;">
-    			<img src="${ctx }/images/shili.jpg" height="77" width="70">
-    		</div>
-    		<div class="weui-cell__bd" style="margin-left:5px;">
-    			<div>
-    				<p class="title">${fi.name }</p>
-    				<span class="categ">
-    					<c:choose>
-    						<c:when test="${fi.category == '1' }">厂家</c:when>
-    						<c:when test="${fi.category == '2' }">商家</c:when>
-    						<c:when test="${fi.category == '3' }">专家</c:when>
-    						<c:when test="${fi.category == '4' }">安装师傅</c:when>
-    						<c:when test="${fi.category == '5' }">自然人</c:when>
-    						<c:when test="${fi.category == '6' }">其他</c:when>
-    					</c:choose>
-    				</span>
-    				<c:if test="${fi.openId != openId }">
-	    				<c:choose>
-	    					<c:when test="${not empty gz }">
-	    						<a href="javascript:;" data-op="qx" onclick="dogz('${fi.openId}',this)" class="weui-btn weui-btn_mini weui-btn_warn gz_button">取消关注</a>
-	    					</c:when>
-	    					<c:otherwise>
-	    						<a href="javascript:;" data-op="gz" onclick="dogz('${fi.openId}',this)" class="weui-btn weui-btn_mini weui-btn_plain-primary gz_button">+关注</a>
-	    					</c:otherwise>
-	    				</c:choose>
-    				</c:if>
-    			</div>
-    			<p class="info">地址：${fi.address }</p>
-    			<p class="info">电话：<a href="tel:${fi.mphone }" class="tel">${fi.mphone }</a>  微信：${fi.wechat }</p>
-    		</div>
-    	</div>
-    	<div class="weui-cell">
-    		<div class=weui-cell__hd" style="padding-top:8px;">
-    			<img src="${ctx }/images/shili.jpg" height="77" width="70">
-    		</div>
-    		<div class="weui-cell__bd" style="margin-left:5px;">
-    			<div>
-    				<p class="title">${fi.name }</p>
-    				<span class="categ">
-    					<c:choose>
-    						<c:when test="${fi.category == '1' }">厂家</c:when>
-    						<c:when test="${fi.category == '2' }">商家</c:when>
-    						<c:when test="${fi.category == '3' }">专家</c:when>
-    						<c:when test="${fi.category == '4' }">安装师傅</c:when>
-    						<c:when test="${fi.category == '5' }">自然人</c:when>
-    						<c:when test="${fi.category == '6' }">其他</c:when>
-    					</c:choose>
-    				</span>
-    				<c:if test="${fi.openId != openId }">
-	    				<c:choose>
-	    					<c:when test="${not empty gz }">
-	    						<a href="javascript:;" data-op="qx" onclick="dogz('${fi.openId}',this)" class="weui-btn weui-btn_mini weui-btn_warn gz_button">取消关注</a>
-	    					</c:when>
-	    					<c:otherwise>
-	    						<a href="javascript:;" data-op="gz" onclick="dogz('${fi.openId}',this)" class="weui-btn weui-btn_mini weui-btn_plain-primary gz_button">+关注</a>
-	    					</c:otherwise>
-	    				</c:choose>
-    				</c:if>
-    			</div>
-    			<p class="info">地址：${fi.address }</p>
-    			<p class="info">电话：<a href="tel:${fi.mphone }" class="tel">${fi.mphone }</a>  微信：${fi.wechat }</p>
-    		</div>
-    	</div>
 				</div>
             </div>
         
@@ -155,6 +96,7 @@
 </body>
 <%@ include file="/WEB-INF/jsp/weixin/comm_js.jsp" %>
 <script>
+var self = ${openId == fi.openId};
 $(function(){
     $('.weui-navbar__item').on('click', function () {
         $(this).addClass('weui-bar__item_on').siblings('.weui-bar__item_on').removeClass('weui-bar__item_on');
@@ -205,17 +147,39 @@ var pageQueryData = {
 		size:10,
 		sort:"createTime",
 		order:"desc",
-		belongId:"${fi.openId}"
+		pubId:"${fi.openId}"
 	};
 
 function doView(id){
-	location.href = "prodView?id=" + id;
+	location.href = "../prod/view?id=" + id;
+}
+
+function doDel(id){
+	weui.confirm('您确定删除？', function(){ 
+		var loading = weui.loading('提交中...');
+		//将文件加入到表单中提交
+		$.getJSON(ctx + "/wx/web/prod/del",{id:id},function(data){
+			loading.hide();
+			if(Constants.ResultStatus_Ok == data.status){
+				weui.toast('删除成功!', 3000);
+				setTimeout($("#" + id).remove(),4000);
+			}
+			else{
+				if(data.mess){
+					weui.alert(data.mess);
+				}
+				else{
+					weui.alert("提交失败，请重试！");
+				}
+			}
+		});
+	});
 }
 
  	function loadPageData(me){
  		$.ajax({
             type: 'GET',
-            url: ctx + "/wx/web/fx/prodQuery",
+            url: ctx + "/wx/web/prod/query",
             data:pageQueryData,
             dataType: 'json',
             success: function(data){      	
@@ -228,19 +192,29 @@ function doView(id){
                 	var info;
                     for(var i=0; i<arrLen; i++){
                     	row = data.rows[i];
-                    	 result += '<div class="weui-cell">';
-                         var nas = "&nbsp;&nbsp;" + row.name;
-                     	var fl = row.pinyin.charAt(0);
-                     	if(fl != lastLetter){
-                     		lastLetter = fl;
-                     		nas = lastLetter.toUpperCase() + "&nbsp; " + row.name;
-                     	}
-                     	
-                     	result += '<div class="weui-cell__bd">' +
-	                     	'<div><h5 class="line_block" style="width:70%"  onclick="doView(\'' + row.id + '\')">' + nas + '</h5>' + 
-	                     	'<h5 class="line_block" style="width:30%;"><a href="tel:' + row.mphone + '" >' + row.mphone + '</a></h5></div>' +
-	                     	'<p style="padding-left:15px;font-size:13px;">' + row.address + '</p></div>' +
-	                     	'</div>';
+						result += '<div class="weui-cell" id="' + row.id + '">';
+                        
+                    	result += '<div class=weui-cell__hd" style="padding-top:8px;">';
+                    	if(row.img == null || row.img == ""){
+                    		result += '<img src="${ctx}/images/mms.png" height="70" width="70">';
+                    	}
+                    	else {
+                    		result += '<img src="'+ publicDownloadUrl + row.img.split(";")[0] + '" height="70" width="70">';
+                    	}
+                    	result += '</div>';
+                    	result += '<div class="weui-cell__bd" onclick="doView(\'' + row.id + '\')" style="margin-left:5px;">';
+                    	result += '<div>';
+                    	result += '<p class="title">' + row.title + '</p>';
+                   		result += '</div>';
+                   		result += '<p class="info">发布时间：' + row.createTime.substring(0,16) + '</p>';
+                   		result += '</div>';
+                   		if(self){
+	                    	result += '<div class="weui-cell__ft" style="width:40px">';
+                    		result += '<a href="${ctx}/wx/web/prod/edit?id=' + row.id + '" class="weui-btn weui-btn_mini weui-btn_plain-primary bbt">修改</a>';
+                    		result += '<a href="javascript:;" onclick="doDel(\'' + row.id + '\')" class="weui-btn weui-btn_mini weui-btn_plain-primary bbt">删除</a>';
+	                     	result += '</div>';
+                   		}
+                     	result += '</div>';
                     }
 
                     $(".dropload-refresh").remove();
@@ -290,6 +264,6 @@ function doView(id){
      	});
     }
      
-    //initBrandDrop();
+    initBrandDrop();
 </script>
 </html>

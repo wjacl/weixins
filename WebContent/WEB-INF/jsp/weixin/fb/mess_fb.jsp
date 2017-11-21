@@ -131,15 +131,17 @@ function doCheHui(id){
                     		result += '<img src="'+ publicDownloadUrl + row.img + '" height="70" width="70">';
                     	}
                     	result += '</div>';
-                    	result += '<div class="weui-cell__bd" style="margin-left:5px;">';
+                    	result += '<div class="weui-cell__bd" onclick="doView(\'' + row.id + '\')" style="margin-left:5px;">';
                     	result += '<div>';
-                    	result += '<p class="title" onclick="doView(\'' + row.id + '\')">' + row.title + '</p>';
-                    	
-                    	result += '<a href="javascript:;" onclick="doCheHui(\'' + row.id + '\')" class="weui-btn weui-btn_mini weui-btn_plain-primary gz_button">撤回</a>';
+                    	result += '<p class="title">' + row.title + '</p>';
                     		
                    		result += '</div>';
                    		result += '<p class="info">发布时间：' + row.createTime.substring(0,16) + '</p>';
                    		result += '</div>';
+
+                    	result += '<div class="weui-cell__ft" style="width:40px">';
+                    	result += '<a href="javascript:;" onclick="doCheHui(\'' + row.id + '\')" class="weui-btn weui-btn_mini weui-btn_plain-primary gz_button">撤回</a>';
+                     	result += '</div>';
                      	
                      	result += '</div>';
                     }

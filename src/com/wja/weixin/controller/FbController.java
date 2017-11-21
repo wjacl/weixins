@@ -61,7 +61,7 @@ public class FbController
     {
         String openId = RequestThreadLocal.openId.get();
         p.setPubId(openId);
-        p = this.productService.saveProduct(p, trange);
+        p = this.productService.saveProduct(p);
         
         // 消息推送
         Message m = new Message();
