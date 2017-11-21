@@ -32,6 +32,7 @@ public class MessageQueryDao
                     "                        from t_wx_gz_record b " +
                     "                        where b.gzid = ? and b.valid = 1) " +
                     "       ) " +
+                    "   and a.pubid != ? " +
                     (StringUtils.isBlank(title) ? "" : " and a.title like ? ") +
                     " order by a.create_time desc ";
         
@@ -44,36 +45,16 @@ public class MessageQueryDao
             "                        from t_wx_gz_record b " +
             "                        where b.gzid = ? and b.valid = 1) " +
             "       ) " +
+            "   and a.pubid != ? " +
             (StringUtils.isBlank(title) ? "" : " and a.title like ? ");
-        
-        /*
-        String sql = "select a.*,d.name,c.createTime readTime " +
-            " from Message a join FollwerInfo d on (a.pubid = d.openId) " + 
-            " LEFT JOIN MessReceiveRecord c " +
-            " on (a.id = c.messId and c.recId = ?) " +
-            " where a.valid = 1 " +
-            "   and a.createTime >= ? " +
-            "   and (a.trange = '1'  " +
-            "         or a.pubId in (select b.bgzid " +
-            "                        from GzRecord b " +
-            "                        where b.gzid = ? and b.valid = 1) " +
-            "       ) " +
-            (StringUtils.isBlank(title) ? "" : " and a.title like ? ") +
-            " order by a.createTime desc ";
-        
-        String countSql = "select count(*) "
-            + " from Message a "
-            + " where a.valid = 1 "
-            + " and a.createTime >= ? "
-            + " and (a.trange = '1' or a.pubId in (select b.bgzid from GzRecord where b.gzid = ?)) " +
-            (StringUtils.isBlank(title) ? "" : " and a.title like ? ");
-            */
+
         String strTime = DateUtil.DEFAULT_DF.format(stime);
         Query query = em.createNativeQuery(countSql);
         query.setParameter(1, strTime);
         query.setParameter(2, openId);
+        query.setParameter(3, openId);
         if(StringUtils.isNotBlank(title)){
-            query.setParameter(3, "%" + title + "%");
+            query.setParameter(4, "%" + title + "%");
         }
         Long total = ((BigInteger)query.getSingleResult()).longValue();
         page.setTotal(total);
@@ -82,8 +63,9 @@ public class MessageQueryDao
             query.setParameter(1, openId);
             query.setParameter(2, strTime);
             query.setParameter(3, openId);
+            query.setParameter(4, openId);
             if(StringUtils.isNotBlank(title)){
-                query.setParameter(4, "%" + title + "%");
+                query.setParameter(5, "%" + title + "%");
             }
             query.setFirstResult(page.getStartNum() - 1);
             query.setMaxResults(page.getSize());
