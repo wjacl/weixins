@@ -103,7 +103,12 @@ function doView(id){
                     	result += '<div class="weui-cell"  onclick="doView(\'' + row[0] + '\')">';
                         
                     	result += '<div class=weui-cell__hd" style="padding-top:8px;">';
-                    	result += '<img src="'+ publicDownloadUrl + row[3] + '" height="70" width="70">';
+                    	if(row[3] == null || row[3] == ""){
+                    		result += '<img src="${ctx}/images/mms.png" height="70" width="70">';
+                    	}
+                    	else {
+                    		result += '<img src="'+ publicDownloadUrl + row[3] + '" height="70" width="70">';
+                    	}
                     	result += '</div>';
                     	result += '<div class="weui-cell__bd" style="margin-left:5px;">';
                     	result += '<div>';
