@@ -30,5 +30,10 @@ public interface WXContants
          * 产品推送消息的标题前缀
          */
         String MESS_PROD_TITLE_PREFIX = "mess.prod.title.prefix";
+        
+        /**
+         * 派单消息的标题前缀
+         */
+        String MESS_PD_TITLE_PREFIX = "mess.pd.title.prefix";
     }
 }
