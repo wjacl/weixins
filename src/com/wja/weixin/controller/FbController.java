@@ -132,19 +132,18 @@ public class FbController
             return "weixin/not_exist";   //不存在
         }
         
-        String openId = RequestThreadLocal.openId.get();
-        if(!m.getPubId().equals(openId) && !m.getTrange().equals(Message.Range.Platform)){
-            if(this.gzService.getByGzidAndBgzid(openId, m.getPubId()) == null){
-                return "weixin/no_autho";   //无权浏览
-            }
-        }
-        
         switch(m.getMtype()){
             case Message.Mtype.Product:
                 return "redirect:../prod/view?id=" + m.getLinkId();
             case Message.Mtype.WorkOrder:
                 return "redirect:../worder/view?id=" + m.getLinkId();
             default:
+                String openId = RequestThreadLocal.openId.get();
+                if(!m.getPubId().equals(openId) && !m.getTrange().equals(Message.Range.Platform)){
+                    if(this.gzService.getByGzidAndBgzid(openId, m.getPubId()) == null){
+                        return "weixin/no_autho";   //无权浏览
+                    }
+                }
                 model.addAttribute("me", m);
                 model.addAttribute("fi", this.follwerInfoService.get(FollwerInfo.class, m.getPubId()));
                 return "weixin/fb/mess_view";

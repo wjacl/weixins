@@ -61,10 +61,10 @@ public class MessageService extends CommService<Message>
             }
             m.setFee(fee);
         }
-        else
+        /*else
         {
             m.setTrange(Message.Range.GZZ);
-        }
+        }*/
         
         m = this.messageDao.save(m);
         

@@ -89,8 +89,9 @@ public class PdController
             prefix = "";
         }
         m.setTitle(prefix + w.getWno());
-        
+        m.setTrange(Message.Range.GR);
         m.setMtype(Message.Mtype.WorkOrder);
+        m.setToIds(w.getWorker());
         m.setLinkId(w.getId());
         
         return this.messageService.saveMessage(m);

@@ -34,6 +34,11 @@ public class Message extends CommEntity
         String Platform = "1";
         
         String GZZ = "2";
+        
+        /**
+         * 定向的个人
+         */
+        String GR = "3";
     }
     
     /**
@@ -83,6 +88,12 @@ public class Message extends CommEntity
      */
     @Column(length = 32)
     private String linkId;
+    
+    /**
+     * 接收者ID，派单时用到该字段
+     */
+    @Column(length = 400)
+    private String toIds;
     
     public String getTitle()
     {
@@ -162,6 +173,16 @@ public class Message extends CommEntity
     public void setLinkId(String linkId)
     {
         this.linkId = linkId;
+    }
+
+    public String getToIds()
+    {
+        return toIds;
+    }
+
+    public void setToIds(String toIds)
+    {
+        this.toIds = toIds;
     }
     
 }
