@@ -33,7 +33,7 @@ public class WorkOrder extends CommEntity
     private String img;
     
     /**
-     * 产品介绍
+     * 工单说明
      */
     @Column(length = 2000)
     private String content;

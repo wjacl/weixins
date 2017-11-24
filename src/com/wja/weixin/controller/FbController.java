@@ -136,7 +136,7 @@ public class FbController
             case Message.Mtype.Product:
                 return "redirect:../prod/view?id=" + m.getLinkId();
             case Message.Mtype.WorkOrder:
-                return "redirect:../worder/view?id=" + m.getLinkId();
+                return "redirect:../pd/view?id=" + m.getLinkId();
             default:
                 String openId = RequestThreadLocal.openId.get();
                 if(!m.getPubId().equals(openId) && !m.getTrange().equals(Message.Range.Platform)){
