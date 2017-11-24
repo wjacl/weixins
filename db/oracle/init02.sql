@@ -20,6 +20,9 @@ VALUES('mess.prod.title.prefix','产品消息的标题前缀','新产品！','�
 INSERT INTO t_sys_param(ID,name,VALUE,remark)
 VALUES('mess.pd.title.prefix','派单消息的标题前缀','工单-','产品消息的标题前缀');
 
+INSERT INTO t_sys_param(ID,name,VALUE,remark)
+VALUES('zhi.gou.phone','平台直购电话','18888888888','平台直购电话');
+
 INSERT INTO t_sys_dict(Id,name,value,ordno,pid,type,valid) VALUES('follwer.category','经营类别','follwer.category',100,'0','s',1);
 INSERT INTO t_sys_dict(Id,name,value,ordno,pid,type,valid) VALUES('fct1','厂家','1',1,'follwer.category','s',1);
 INSERT INTO t_sys_dict(Id,name,value,ordno,pid,type,valid) VALUES('fct2','商家','2',2,'follwer.category','s',1);

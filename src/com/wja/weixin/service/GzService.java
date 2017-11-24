@@ -12,6 +12,7 @@ import com.wja.base.common.service.CommService;
 import com.wja.base.util.CollectionUtil;
 import com.wja.base.util.Page;
 import com.wja.base.util.Sort;
+import com.wja.weixin.dao.GzQueryDao;
 import com.wja.weixin.dao.GzRecordDao;
 import com.wja.weixin.entity.FollwerInfo;
 import com.wja.weixin.entity.GzRecord;
@@ -24,7 +25,14 @@ public class GzService extends CommService<GzRecord>
     private GzRecordDao gzRecordDao;
     
     @Autowired
+    private GzQueryDao gzQueryDao;
+    
+    @Autowired
     private FollwerInfoService follweInfoService;
+    
+    public Page<?> queryMyGz(String openId,Map<String,String> params,Page<?> page){
+        return this.gzQueryDao.queryMyGz(openId, params, page);
+    }
     
     public GzRecord getByGzidAndBgzid(String gzid, String bgzid)
     {

@@ -35,5 +35,10 @@ public interface WXContants
          * 派单消息的标题前缀
          */
         String MESS_PD_TITLE_PREFIX = "mess.pd.title.prefix";
+        
+        /**
+         * 直购电话
+         */
+        String ZHI_GOU_PHONE = "zhi.gou.phone";
     }
 }
