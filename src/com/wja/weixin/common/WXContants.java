@@ -40,5 +40,11 @@ public interface WXContants
          * 直购电话
          */
         String ZHI_GOU_PHONE = "zhi.gou.phone";
+        
+        /**
+         * 审核者id
+         */
+        String AUDIT_ID = "audit_id";
+        
     }
 }

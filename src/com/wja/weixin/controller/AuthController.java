@@ -2,6 +2,7 @@ package com.wja.weixin.controller;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -20,11 +21,13 @@ import com.wja.base.system.entity.Dict;
 import com.wja.base.system.service.DictService;
 import com.wja.base.util.BeanUtil;
 import com.wja.base.util.Log;
+import com.wja.base.util.Page;
 import com.wja.base.util.StringUtil;
 import com.wja.base.web.AppContext;
 import com.wja.base.web.RequestThreadLocal;
 import com.wja.weixin.common.WXContants;
 import com.wja.weixin.entity.Account;
+import com.wja.weixin.entity.AuditRecord;
 import com.wja.weixin.entity.FollwerInfo;
 import com.wja.weixin.entity.TradeRecord;
 import com.wja.weixin.service.FollwerInfoService;
@@ -246,5 +249,71 @@ public class AuthController
         {
             return "redirect:to/payment";
         }
+    }
+    
+    @RequestMapping("auditList")
+    public String toAuditList(){
+        if(this.hasAuditPrivilege()){
+            return "weixin/auth/audit_list";
+        }
+        else{
+            return "weixin/no_autho";   //无权浏览
+        }
+    }
+    
+    @RequestMapping("queryAuditList")
+    @ResponseBody
+    public Object queryNeedAuditList(Map<String, Object> params, Page<FollwerInfo> page){
+        if(this.hasAuditPrivilege()){
+            params.put("status_eq_intt", FollwerInfo.STATUS_CERT_OK);
+            return this.follwerInfoService.query(params, page);
+        }
+        else {
+            return null;
+        }
+    }
+    
+    @RequestMapping("toAudit")
+    public String toAudit(String id,Model model){
+        if(this.hasAuditPrivilege()){
+            String openId = RequestThreadLocal.openId.get();
+            
+            FollwerInfo fi = this.follwerInfoService.get(FollwerInfo.class, openId);
+            model.addAttribute("fi", fi);
+            return "weixin/auth/audit";
+        }
+        else{
+            return "weixin/no_autho";   //无权浏览
+        }
+    }
+    
+    @RequestMapping("audit")
+    @ResponseBody
+    public Object queryNeedAuditList(AuditRecord r){
+        if(this.hasAuditPrivilege()){
+            this.follwerInfoService.saveAudit(r);
+            return OpResult.ok();
+        }
+        else {
+            return OpResult.error("无权操作!", null);
+        }
+    }
+    
+    private boolean hasAuditPrivilege(){
+        String openId = RequestThreadLocal.openId.get();
+        String auditIds = AppContext.getSysParam(WXContants.SysParam.AUDIT_ID);
+        if(StringUtils.isBlank(openId) || StringUtils.isBlank(auditIds)){
+            return false;
+        }
+        else {
+            String[] ids = auditIds.split(";");
+            for(String id : ids){
+                if(id.equals(openId)){
+                    return true;
+                }
+            }
+        }
+        
+        return false;
     }
 }
