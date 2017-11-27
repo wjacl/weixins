@@ -24,6 +24,8 @@ public class Message extends CommEntity
         String Product = "p";
         
         String WorkOrder = "w";
+        
+        String AUDIT = "at";
     }
     
     /**
