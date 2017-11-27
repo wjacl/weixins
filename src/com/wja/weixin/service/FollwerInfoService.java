@@ -12,6 +12,7 @@ import com.wja.weixin.dao.AuditRecordDao;
 import com.wja.weixin.dao.FollwerInfoDao;
 import com.wja.weixin.entity.AuditRecord;
 import com.wja.weixin.entity.FollwerInfo;
+import com.wja.weixin.entity.Message;
 
 @Service
 public class FollwerInfoService extends CommService<FollwerInfo>
@@ -22,6 +23,9 @@ public class FollwerInfoService extends CommService<FollwerInfo>
     
     @Autowired
     private AuditRecordDao auditRecordDao;
+    
+    @Autowired
+    private MessageService messageService;
     
     public Page<FollwerInfo> query(Map<String, Object> params, Page<FollwerInfo> page)
     {
@@ -34,5 +38,13 @@ public class FollwerInfoService extends CommService<FollwerInfo>
         FollwerInfo fi = this.follwerInfoDao.getOne(r.getBid());
         fi.setStatus(r.getResult());
         this.follwerInfoDao.save(fi);
+        
+        Message m = new Message();
+        m.setPubId(r.getAid());
+        m.setToIds(r.getBid());
+        m.setTitle("认证审核通知！审核结果：" + (r.getResult() == FollwerInfo.STATUS_AUDIT_PASS ? "通过":"未通过"));
+        m.setContent(r.getMess());
+        m.setMtype(Message.Mtype.Normal);
+        this.messageService.saveMessage(m);
     }
 }

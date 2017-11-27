@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.wja.base.common.OpResult;
@@ -48,6 +49,31 @@ public class AuthController
     
     @Autowired
     private TradeService tradeService;
+    
+    @RequestMapping("auth")
+    public String auth(Model model){
+        String openId = RequestThreadLocal.openId.get();
+        FollwerInfo fi = this.follwerInfoService.get(FollwerInfo.class, openId);
+        if(fi == null){
+            return "redirect:to/category";
+        }
+        switch(fi.getStatus()){
+            case FollwerInfo.STATUS_NEED_AUDIT:
+                return "redirect:to/category";
+            case FollwerInfo.STATUS_CATEGORY_OK:
+                return "redirect:to/info";
+            case FollwerInfo.STATUS_INFO_OK:
+                return "redirect:to/intro";
+            case FollwerInfo.STATUS_INTRO_OK:
+                return "redirect:to/brand";
+            case FollwerInfo.STATUS_BRAND_OK:
+                return "redirect:to/payment";
+            case FollwerInfo.STATUS_CERT_OK: case FollwerInfo.STATUS_AUDIT_PASS:
+                model.addAttribute("fi", fi);
+                return "weixin/auth/view";
+        }
+        return "redirect:to/category";
+    }
     
     @RequestMapping("to/{page}")
     public String to(Model model, @PathVariable("page") String page)
@@ -263,7 +289,7 @@ public class AuthController
     
     @RequestMapping("queryAuditList")
     @ResponseBody
-    public Object queryNeedAuditList(Map<String, Object> params, Page<FollwerInfo> page){
+    public Object queryNeedAuditList(@RequestParam Map<String, Object> params, Page<FollwerInfo> page){
         if(this.hasAuditPrivilege()){
             params.put("status_eq_intt", FollwerInfo.STATUS_CERT_OK);
             return this.follwerInfoService.query(params, page);
@@ -279,6 +305,9 @@ public class AuthController
             String openId = RequestThreadLocal.openId.get();
             
             FollwerInfo fi = this.follwerInfoService.get(FollwerInfo.class, openId);
+            if(fi.getStatus() == FollwerInfo.STATUS_AUDIT_PASS || fi.getStatus() == FollwerInfo.STATUS_NEED_AUDIT){
+                return "weixin/auth/audited";
+            }
             model.addAttribute("fi", fi);
             return "weixin/auth/audit";
         }
@@ -291,6 +320,8 @@ public class AuthController
     @ResponseBody
     public Object queryNeedAuditList(AuditRecord r){
         if(this.hasAuditPrivilege()){
+            String openId = RequestThreadLocal.openId.get();
+            r.setAid(openId);
             this.follwerInfoService.saveAudit(r);
             return OpResult.ok();
         }

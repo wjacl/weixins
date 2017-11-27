@@ -1,13 +1,18 @@
 package com.wja.weixin.entity;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Where;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.wja.base.common.CommConstants;
+import com.wja.base.util.DateUtil;
 
 @Entity
 @Table(name = "t_wx_follwer_info")
@@ -142,6 +147,12 @@ public class FollwerInfo
      */
     @Column(length = 1)
     private byte valid = CommConstants.DATA_VALID;
+    
+
+    @Column(name = "create_time")
+    @DateTimeFormat(pattern = DateUtil.DATE_TIME)
+    @JSONField(format = DateUtil.DATE_TIME)
+    private Date createTime;
     
     public String getOpenId()
     {
@@ -332,4 +343,16 @@ public class FollwerInfo
     {
         this.valid = valid;
     }
+
+    public Date getCreateTime()
+    {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime)
+    {
+        this.createTime = createTime;
+    }
+    
+    
 }
