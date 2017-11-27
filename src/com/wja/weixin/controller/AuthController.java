@@ -58,7 +58,7 @@ public class AuthController
             return "redirect:to/category";
         }
         switch(fi.getStatus()){
-            case FollwerInfo.STATUS_NEED_AUDIT:
+            case FollwerInfo.STATUS_NEED_EDIT:
                 return "redirect:to/category";
             case FollwerInfo.STATUS_CATEGORY_OK:
                 return "redirect:to/info";
@@ -68,11 +68,22 @@ public class AuthController
                 return "redirect:to/brand";
             case FollwerInfo.STATUS_BRAND_OK:
                 return "redirect:to/payment";
-            case FollwerInfo.STATUS_CERT_OK: case FollwerInfo.STATUS_AUDIT_PASS:
+            case FollwerInfo.STATUS_CERT_OK: 
+                return "weixin/auth/submit";
+            case FollwerInfo.STATUS_AUDIT_PASS:case FollwerInfo.STATUS_AUDIT_NOT_PASS:case FollwerInfo.STATUS_NEED_AUDIT:
                 model.addAttribute("fi", fi);
                 return "weixin/auth/view";
         }
         return "redirect:to/category";
+    }
+    
+    @RequestMapping("submitAudit")
+    public String submitAudit(){
+        String openId = RequestThreadLocal.openId.get();
+        FollwerInfo fi = this.follwerInfoService.get(FollwerInfo.class, openId);
+        fi.setStatus(FollwerInfo.STATUS_NEED_AUDIT);
+        this.follwerInfoService.update(fi);
+        return "redirect:auth";
     }
     
     @RequestMapping("to/{page}")
@@ -108,7 +119,7 @@ public class AuthController
             }
             else
             {
-                page = "over";
+                page = "submit";
             }
         }
         

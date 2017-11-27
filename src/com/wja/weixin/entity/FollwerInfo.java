@@ -19,7 +19,8 @@ import com.wja.base.util.DateUtil;
 @Where(clause = " valid = " + CommConstants.DATA_VALID)
 public class FollwerInfo
 {
-    public static final int STATUS_NEED_AUDIT = 0;
+
+    public static final int STATUS_NEED_EDIT = 0;
     
     public static final int STATUS_CATEGORY_OK = 1;
     
@@ -32,6 +33,10 @@ public class FollwerInfo
     public static final int STATUS_CERT_OK = 5;
     
     public static final int STATUS_AUDIT_PASS = 6;
+    
+    public static final int STATUS_NEED_AUDIT = 7;
+    
+    public static final int STATUS_AUDIT_NOT_PASS = 8;
     
     @Id
     @Column(length = 40)
@@ -129,7 +134,7 @@ public class FollwerInfo
     private String brandAuthors;
     
     /**
-     * 认证状态：1完成经营类别选择，2、信息填写完成，3、简介完成，4、品牌完成，5、保证金支付完成，6审核通过，0审核未通过
+     * 认证状态：1完成经营类别选择，2、信息填写完成，3、简介完成，4、品牌完成，5、保证金支付完成，6审核通过，7待审核，0审核未通过
      */
     @Column(length = 2)
     private int status = 0;
