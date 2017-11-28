@@ -46,7 +46,7 @@
     </init-param>
     <init-param>
       <param-name>except-uri-patterns</param-name>
-      <param-value>/js/.*;/css/.*;/images/.*;/html/.*;/user/regist;/dict/get;/user/unameCheck;/weixin/mess;/wx/.*</param-value>
+      <param-value>/index.jsp;/js/.*;/css/.*;/images/.*;/html/.*;/user/regist;/dict/get;/user/unameCheck;/weixin/mess;/wx/.*</param-value>
     </init-param>
   </filter>
   <filter-mapping>

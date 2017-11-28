@@ -4,36 +4,47 @@
 			"name":"信息",
 			"sub_button" : [
 				{
-					"name" : "我的信息",
+					"name" : "收信息",
 					"type" : "view",
-					"url" : "http://18494w50i7.51mypc.cn/weixins/wx/web/message/my"
+					"url" : "http://18494w50i7.51mypc.cn/weixins/wx/web/fb/toMyMess"
 				},
 				{
-					"name" : "发布信息",
+					"name" : "发信息",
 					"type" : "view",
-					"url" : "http://18494w50i7.51mypc.cn/weixins/wx/web/message/publish"
-				},
-				{
-					"name" : "发布产品",
-					"type" : "view",
-					"url" : "http://18494w50i7.51mypc.cn/weixins/wx/web/product/publish"
+					"url" : "http://18494w50i7.51mypc.cn/weixins/wx/web/fb/mess"
 				},
 				{
 					"name" : "派单",
 					"type" : "view",
-					"url" : "http://18494w50i7.51mypc.cn/weixins/wx/web/order/publish"
+					"url" : "http://18494w50i7.51mypc.cn/weixins/wx/web/pd/pd"
 				},
 				{
 					"name" : "历史发布",
 					"type" : "view",
-					"url" : "http://18494w50i7.51mypc.cn/weixins/wx/web/history/publish"
+					"url" : "http://18494w50i7.51mypc.cn/weixins/wx/web/fb/toMyfb"
 				}
 			]
 		},
 		{
 			"name" : "发现",
-			"type" : "view",
-			"url" : "http://18494w50i7.51mypc.cn/weixins/wx/web/discovery"},
+			"sub_button" : [
+				{
+					"name" : "附近",
+					"type" : "view",
+					"url" : "http://18494w50i7.51mypc.cn/weixins/wx/web/fx/fx"
+				},
+				{
+					"name" : "品牌",
+					"type" : "view",
+					"url" : "http://18494w50i7.51mypc.cn/weixins/wx/web/fx/brand"
+				},
+				{
+					"name" : "专家",
+					"type" : "view",
+					"url" : "http://18494w50i7.51mypc.cn/weixins/wx/web/fx/zj"
+				}
+			]	
+		},
 		{
 			"name":"我",
 			"sub_button" : [
@@ -45,12 +56,17 @@
 				{
 					"name" : "费用",
 					"type" : "view",
-					"url" : "http://18494w50i7.51mypc.cn/weixins/wx/web/expense/my"
+					"url" : "http://18494w50i7.51mypc.cn/weixins/wx/web/fee/view"
 				},
 				{
-					"name" : "足迹",
+					"name" : "我的关注",
 					"type" : "view",
-					"url" : "http://18494w50i7.51mypc.cn/weixins/wx/web/view/my"
+					"url" : "http://18494w50i7.51mypc.cn/weixins/wx/web/me/gz"
+				},
+				{
+					"name" : "直购",
+					"type" : "view",
+					"url" : "http://18494w50i7.51mypc.cn/weixins/wx/web/me/zg"
 				}
 			]	
 		}
