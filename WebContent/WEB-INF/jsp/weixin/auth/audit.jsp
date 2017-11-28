@@ -147,7 +147,7 @@
                 </div>
 			</div>
 	        <div class="weui-cell no-top-line weui-btn-area_inline">
-	            <a class="weui-btn weui-btn_primary" href="javascript:;" onclick="doAudit(0)">不通过</a>
+	            <a class="weui-btn weui-btn_primary" href="javascript:;" onclick="doAudit(8)">不通过</a>
 	            <a class="weui-btn weui-btn_primary" href="javascript:;" onclick="doAudit(6)">通过</a>
 	        </div>
 	    </div>

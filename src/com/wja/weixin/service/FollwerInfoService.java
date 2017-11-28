@@ -1,5 +1,6 @@
 package com.wja.weixin.service;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,11 @@ public class FollwerInfoService extends CommService<FollwerInfo>
     @Autowired
     private MessageService messageService;
     
+    public List<AuditRecord> queryAuditRecord(String id){
+        
+        return this.auditRecordDao.findByBidOrderByCreateTimeDesc(id);
+    }
+    
     public Page<FollwerInfo> query(Map<String, Object> params, Page<FollwerInfo> page)
     {
         return page.setPageData(
@@ -44,6 +50,7 @@ public class FollwerInfoService extends CommService<FollwerInfo>
         m.setToIds(r.getBid());
         m.setTitle("认证审核通知！审核结果：" + (r.getResult() == FollwerInfo.STATUS_AUDIT_PASS ? "通过":"未通过"));
         m.setContent(r.getMess());
+        m.setTrange(Message.Range.GR);
         m.setMtype(Message.Mtype.Normal);
         this.messageService.saveMessage(m);
     }

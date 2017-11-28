@@ -88,11 +88,11 @@
 	        </label> 
 	        <input type="hidden" name="amount" value="${currBzj }"/>
         </form>        
-        <div class="weui-btn-area_inline">
+        <div class="weui-cell no-top-line weui-btn-area_inline">
            	<a class="weui-btn weui-btn_primary" href="javascript:;" id="xsubmit">微信支付</a>
         </div>
         <p>&nbsp;</p>
-        <div class="weui-btn-area_inline">
+        <div class="weui-cell no-top-line weui-btn-area_inline">
            	<a class="weui-btn weui-btn_primary" href="brand" id="cc2Pre">上一步</a>
         </div>
 	</div>	

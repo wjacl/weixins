@@ -19,8 +19,7 @@
         </div>
         <div class="weui-msg__opr-area">
             <p class="weui-btn-area">
-                <a href="javascript:;" class="weui-btn weui-btn_primary">修改</a>
-                <a href="javascript:;" class="weui-btn weui-btn_primary">浏览</a>
+                <a href="${ctx }/wx/web/auth/auth" class="weui-btn weui-btn_primary">浏览</a>
             </p>
         </div>
     </div>

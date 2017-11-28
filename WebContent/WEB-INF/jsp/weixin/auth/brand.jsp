@@ -106,7 +106,7 @@
         </div>
         </div>
         </div>
-        <div class="weui-btn-area_inline" style="margin-top: 10px;">
+        <div class="weui-cell no-top-line weui-btn-area_inline" style="margin-top: 10px;">
             <a class="weui-btn weui-btn_primary" href="intro">上一步</a>
             <a class="weui-btn weui-btn_primary" href="javascript:;" onclick="zancun()">暂 存</a>
             <a class="weui-btn weui-btn_primary" href="javascript:;" id="nextStep">下一步</a>

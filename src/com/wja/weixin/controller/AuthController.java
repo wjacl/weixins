@@ -30,8 +30,10 @@ import com.wja.weixin.common.WXContants;
 import com.wja.weixin.entity.Account;
 import com.wja.weixin.entity.AuditRecord;
 import com.wja.weixin.entity.FollwerInfo;
+import com.wja.weixin.entity.Message;
 import com.wja.weixin.entity.TradeRecord;
 import com.wja.weixin.service.FollwerInfoService;
+import com.wja.weixin.service.MessageService;
 import com.wja.weixin.service.TradeService;
 
 @Controller
@@ -49,6 +51,9 @@ public class AuthController
     
     @Autowired
     private TradeService tradeService;
+    
+    @Autowired
+    private MessageService messageService;
     
     @RequestMapping("auth")
     public String auth(Model model){
@@ -70,11 +75,12 @@ public class AuthController
                 return "redirect:to/payment";
             case FollwerInfo.STATUS_CERT_OK: 
                 return "weixin/auth/submit";
-            case FollwerInfo.STATUS_AUDIT_PASS:case FollwerInfo.STATUS_AUDIT_NOT_PASS:case FollwerInfo.STATUS_NEED_AUDIT:
-                model.addAttribute("fi", fi);
-                return "weixin/auth/view";
+            case FollwerInfo.STATUS_AUDIT_NOT_PASS:
+                //查询审批意见
+                model.addAttribute("ads", this.follwerInfoService.queryAuditRecord(openId));
         }
-        return "redirect:to/category";
+        model.addAttribute("fi", fi);
+        return "weixin/auth/view";
     }
     
     @RequestMapping("submitAudit")
@@ -83,7 +89,19 @@ public class AuthController
         FollwerInfo fi = this.follwerInfoService.get(FollwerInfo.class, openId);
         fi.setStatus(FollwerInfo.STATUS_NEED_AUDIT);
         this.follwerInfoService.update(fi);
-        return "redirect:auth";
+        
+        //发送通知消息
+        Message m = new Message();
+        m.setTitle("认证待审核");
+        m.setContent(fi.getName());
+        m.setPubId(openId);
+        m.setMtype(Message.Mtype.AUDIT);
+        m.setTrange(Message.Range.GR);
+        m.setToIds(AppContext.getSysParam(WXContants.SysParam.AUDIT_ID));
+        
+        this.messageService.saveMessage(m);
+        
+        return "redirect:to/over";
     }
     
     @RequestMapping("to/{page}")
@@ -228,12 +246,12 @@ public class AuthController
     public String saveBrand(FollwerInfo fi, String saveType)
     {
         fi.setStatus(FollwerInfo.STATUS_BRAND_OK);
-        this.doSave(fi);
         if ("zancun".equals(saveType))
         {
-            return "redirect:to/brand";
+            fi.setStatus(FollwerInfo.STATUS_INTRO_OK);
         }
-        return "redirect:to/payment";
+        this.doSave(fi);
+        return "redirect:auth";
     }
     
     private void doSave(FollwerInfo fi)
@@ -280,7 +298,7 @@ public class AuthController
             FollwerInfo fi = this.follwerInfoService.get(FollwerInfo.class, openId);
             fi.setStatus(FollwerInfo.STATUS_CERT_OK);
             this.follwerInfoService.update(fi);
-            return "redirect:to/over";
+            return "redirect:auth";
         }
         else
         {
@@ -302,7 +320,7 @@ public class AuthController
     @ResponseBody
     public Object queryNeedAuditList(@RequestParam Map<String, Object> params, Page<FollwerInfo> page){
         if(this.hasAuditPrivilege()){
-            params.put("status_eq_intt", FollwerInfo.STATUS_CERT_OK);
+            params.put("status_eq_intt", FollwerInfo.STATUS_NEED_AUDIT);
             return this.follwerInfoService.query(params, page);
         }
         else {
@@ -313,11 +331,12 @@ public class AuthController
     @RequestMapping("toAudit")
     public String toAudit(String id,Model model){
         if(this.hasAuditPrivilege()){
-            String openId = RequestThreadLocal.openId.get();
-            
-            FollwerInfo fi = this.follwerInfoService.get(FollwerInfo.class, openId);
-            if(fi.getStatus() == FollwerInfo.STATUS_AUDIT_PASS || fi.getStatus() == FollwerInfo.STATUS_NEED_AUDIT){
+            FollwerInfo fi = this.follwerInfoService.get(FollwerInfo.class, id);
+            if(fi.getStatus() == FollwerInfo.STATUS_AUDIT_PASS || fi.getStatus() == FollwerInfo.STATUS_AUDIT_NOT_PASS){
                 return "weixin/auth/audited";
+            }
+            else if(fi.getStatus() != FollwerInfo.STATUS_NEED_AUDIT){
+                return "weixin/auth/editing";
             }
             model.addAttribute("fi", fi);
             return "weixin/auth/audit";

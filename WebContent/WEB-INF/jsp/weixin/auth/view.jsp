@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -140,8 +141,34 @@
                 </div>
 			</div>
 			</c:if>	
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                	<p>认证审核状态：
+                    <label>	
+    					<c:choose>
+    						<c:when test="${fi.status == 6 }">通过</c:when>
+    						<c:when test="${fi.status == 8 }">未通过</c:when>
+    						<c:when test="${fi.status == 7 }">待审核</c:when>
+    						<c:otherwise>信息编辑中</c:otherwise>
+    					</c:choose>
+    				</label>
+    				</p>
+                </div>
+            </div>
+            <c:if test="${not empty ads}">         	
+            <div class="weui-cell">
+                <div class="weui-cell__bd">                 
+					<p>审核信息：</p>
+			    	<div style="padding:10px;">
+				      <c:forEach items="${ads }" var="a">
+				      	<p> ${fn:substring(a.createTime, 0, 16)} ${a.result==6?'通过':'未通过'}! ${a.mess }</p>
+				      </c:forEach>
+				    </div>
+                </div>
+            </div>
+            </c:if>
 	        <div class="weui-cell no-top-line weui-btn-area_inline">
-	            <a class="weui-btn weui-btn_primary" href="javascript:;" onclick="doAudit()">修改认证信息</a>
+	            <a class="weui-btn weui-btn_primary" href="javascript:;" onclick="doUpdate()">修改认证信息</a>
 	        </div>
 	    </div>
 	</div>	

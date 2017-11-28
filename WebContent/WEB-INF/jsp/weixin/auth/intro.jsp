@@ -51,7 +51,7 @@
             </div>
 			<input type="hidden" name="openId" value="${fi.openId }">
 			<input type="hidden" name="logo" value="${fi.logo }">
-        <div class="weui-btn-area_inline">
+        <div class="weui-cell no-top-line weui-btn-area_inline">
             <a class="weui-btn weui-btn_primary" href="info" id="cc2Pre">上一步</a>
             <!-- <a class="weui-btn weui-btn_primary" href="javascript:" id="toBrand">下一步</a> -->
             <a class="weui-btn weui-btn_primary" href="javascript:" id="formSubmitBtn">下一步</a>

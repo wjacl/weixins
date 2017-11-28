@@ -3,6 +3,7 @@ package com.wja.weixin.service;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.wja.base.common.CommSpecification;
 import com.wja.base.common.OpResult;
 import com.wja.base.common.service.CommService;
+import com.wja.base.util.CollectionUtil;
 import com.wja.base.util.DateUtil;
 import com.wja.base.util.Log;
 import com.wja.base.util.Page;
@@ -24,8 +26,7 @@ import com.wja.weixin.entity.Message;
 
 @Service
 public class MessageService extends CommService<Message>
-{
-    
+{    
     @Autowired
     private MessageDao messageDao;
     
@@ -36,13 +37,13 @@ public class MessageService extends CommService<Message>
     private MessReceiveRecordDao messRecevieDao;
     
     @Autowired
-    private FollwerInfoService follweInfoService;
-    
-    @Autowired
     private TradeService tradeService;
     
-    public MessReceiveRecord saveMessRec(MessReceiveRecord mr){
-       return this.messRecevieDao.save(mr);
+    public void saveMessRec(MessReceiveRecord mr){
+       List<MessReceiveRecord> list = this.messRecevieDao.findByRecIdAndMessId(mr.getRecId(), mr.getMessId());
+       if(CollectionUtil.isEmpty(list)){
+           this.messRecevieDao.save(mr);
+       }
     }
     
     public OpResult saveMessage(Message m)

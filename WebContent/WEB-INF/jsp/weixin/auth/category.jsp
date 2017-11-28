@@ -69,7 +69,7 @@
                     <span class="weui-icon-checked"></span>
                 </div>
             </label>
-	        <div class="weui-btn-area_inline">
+	        <div class="weui-cell no-top-line weui-btn-area_inline">
 	            <a class="weui-btn weui-btn_primary" href="info" id="cc1Pre">下一步</a>
 	        </div>
         </div>

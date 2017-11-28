@@ -27,7 +27,7 @@
     		</c:if>
     			
 		    	<div class="fr-view">
-			      ${fi.intro }
+			      ${me.content }
 			    </div>
 			    
     			<div>

@@ -13,7 +13,7 @@
 <body ontouchstart>
 <div class="page">
     <div class="page__hd" style="margin-top:5px">
-         <h2 style="text-align:center;vertical-align: middle;">审核</h2>
+         <h2 style="text-align:center;vertical-align: middle;">待审核认证列表</h2>
     </div>
     <div class="page__bd">
 		<div class="weui-cells mtop5" style="overflow: auto;height:500px;" id="searchResult">
@@ -64,7 +64,7 @@ function doCheHui(id){
                     		result += '<img src="'+ publicDownloadUrl + row.logo + '" height="70" width="70">';
                     	}
                     	result += '</div>';
-                    	result += '<div class="weui-cell__bd" onclick="doView(\'' + row.openId + '\')" style="margin-left:5px;">';
+                    	result += '<div class="weui-cell__bd" onclick="doCheHui(\'' + row.openId + '\')" style="margin-left:5px;">';
                     	result += '<div>';
                     	result += '<p class="title">' + row.name + '</p>';
                     	result += '<span class="categ">';

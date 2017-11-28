@@ -16,6 +16,7 @@ import com.wja.base.web.AppContext;
 import com.wja.base.web.RequestThreadLocal;
 import com.wja.weixin.common.WXContants;
 import com.wja.weixin.entity.FollwerInfo;
+import com.wja.weixin.entity.MessReceiveRecord;
 import com.wja.weixin.entity.Message;
 import com.wja.weixin.entity.Product;
 import com.wja.weixin.service.FollwerInfoService;
@@ -131,19 +132,34 @@ public class FbController
         if(m == null){
             return "weixin/not_exist";   //不存在
         }
+        String openId = RequestThreadLocal.openId.get();
+        if(!m.getPubId().equals(openId) && !m.getTrange().equals(Message.Range.Platform)){
+            if(m.getTrange().equals(Message.Range.GR)){
+                if(StringUtils.isBlank(m.getToIds()) || !m.getToIds().contains(openId)){
+                    return "weixin/no_autho";   //无权浏览
+                }
+            }
+            else {
+                if(this.gzService.getByGzidAndBgzid(openId, m.getPubId()) == null){
+                    return "weixin/no_autho";   //无权浏览
+                }
+            }
+        }
+        
+        //记录浏览记录
+        MessReceiveRecord mrr = new MessReceiveRecord();
+        mrr.setMessId(m.getId());
+        mrr.setRecId(openId);
+        this.messageService.saveMessRec(mrr);
         
         switch(m.getMtype()){
             case Message.Mtype.Product:
                 return "redirect:../prod/view?id=" + m.getLinkId();
             case Message.Mtype.WorkOrder:
                 return "redirect:../pd/view?id=" + m.getLinkId();
-            default:
-                String openId = RequestThreadLocal.openId.get();
-                if(!m.getPubId().equals(openId) && !m.getTrange().equals(Message.Range.Platform)){
-                    if(this.gzService.getByGzidAndBgzid(openId, m.getPubId()) == null){
-                        return "weixin/no_autho";   //无权浏览
-                    }
-                }
+            case Message.Mtype.AUDIT:
+                return "redirect:../auth/auditList";
+            default:               
                 model.addAttribute("me", m);
                 model.addAttribute("fi", this.follwerInfoService.get(FollwerInfo.class, m.getPubId()));
                 return "weixin/fb/mess_view";

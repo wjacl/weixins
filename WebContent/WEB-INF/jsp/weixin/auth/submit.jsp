@@ -19,8 +19,8 @@
         </div>
         <div class="weui-msg__opr-area">
             <p class="weui-btn-area">
-                <a href="../submitAudit" class="weui-btn weui-btn_primary">提交审核</a>
-                <a href="brand" class="weui-btn weui-btn_primary">上一步</a>
+                <a href="${ctx }/wx/web/auth/submitAudit" class="weui-btn weui-btn_primary">提交审核</a>
+                <a href="${ctx }/wx/web/auth/to/brand" class="weui-btn weui-btn_primary">上一步</a>
             </p>
         </div>
     </div>

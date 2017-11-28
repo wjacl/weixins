@@ -77,7 +77,7 @@
                 	<input class="weui-input" type="tel" name="mphone" value="${fi.mphone }" required pattern="^\d{11}$" maxlength="11" placeholder="请输入你的手机号" emptyTips="请输入手机号" notMatchTips="请输入正确的手机号">
                 </div>
             </div>
-            <div class="weui-cell" id="vcodeCell" style="display:${not empty fi.mphone ? 'none':'block'}">
+            <div class="weui-cell" id="vcodeCell" style="display:${not empty fi.mphone ? 'none':''}">
                 <div class="weui-cell__hd">
                     <label class="weui-label">短信验证码：</label>
                 </div>
@@ -95,7 +95,7 @@
                 </div>
             </div>
 			<input type="hidden" name="openId" value="${fi.openId }">
-        <div class="weui-btn-area_inline">
+        <div class="weui-cell no-top-line weui-btn-area_inline">
             <a class="weui-btn weui-btn_primary" href="category" id="cc2Pre">上一步</a>
             <!-- <a class="weui-btn weui-btn_primary" href="javascript:" id="toBrand">下一步</a> -->
             <a class="weui-btn weui-btn_primary" href="javascript:" id="formSubmitBtn">下一步</a>
