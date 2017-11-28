@@ -12,16 +12,20 @@ import org.sword.wechat4j.token.server.CustomerServer;
  */
 public class CustomerAccessTokenServer extends CustomerServer {
 
-	/* (non-Javadoc)
+    private static Token accessToken;
+	/*
 	 * @see org.sword.wechat4j.token.DbAccessTokenServer#find()
 	 */
 	@Override
 	public String find() {
-		String accessToken = null;
+		//String accessToken = null;
 		//执行数据库操作
 //		String sql = "select cfgValue from cfg where cfg.cfgKey = 'access_token'";
 //		accessToken = DBUtil.query(sql);
-		return accessToken;
+		if(CustomerAccessTokenServer.accessToken != null){
+		    return CustomerAccessTokenServer.accessToken.getToken();
+		}
+		return null;
 	}
 
 	/* (non-Javadoc)
@@ -33,6 +37,7 @@ public class CustomerAccessTokenServer extends CustomerServer {
 //		String sql = "update cfg set cfg.cfgValue=" + accessToken.getToken() + 
 //				" where cfg.cfgKey= 'access_token'";
 //		DBUtil.execute(sql);
+	    CustomerAccessTokenServer.accessToken = accessToken;
 		return true;
 	}
 }

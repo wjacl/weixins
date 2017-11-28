@@ -5,12 +5,15 @@ import org.sword.wechat4j.token.server.CustomerServer;
 
 public class JsApiTicketCustomerServer extends CustomerServer{
 
-	public String find() {
+    private static Token jsApiTicket;
+    
+	@Override
+    public String find() {
 		String jsApiTicket = null;
 		//执行数据库操作
 //		String sql = "select cfgValue from cfg where cfg.cfgKey = 'jsapi_ticket'";
 //		jsApiTicket = DBUtil.query(sql);
-		return jsApiTicket;
+		return JsApiTicketCustomerServer.jsApiTicket == null ? null : JsApiTicketCustomerServer.jsApiTicket.getToken();
 	}
 
 	/* (non-Javadoc)
@@ -22,6 +25,7 @@ public class JsApiTicketCustomerServer extends CustomerServer{
 //		String sql = "update cfg set cfg.cfgValue=" + jsApiTicket.getToken() + 
 //				" where cfg.cfgKey= 'access_token'";
 //		DBUtil.execute(sql);
+	    JsApiTicketCustomerServer.jsApiTicket = jsApiTicket;
 		return true;
 	}
 
