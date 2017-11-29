@@ -34,6 +34,7 @@ public class MessageQueryDao
                     "         or (a.trange = '3' and a.toIds like ?) " +
                     "       ) " +
                     "   and a.pubid != ? " +
+                    "   and a.create_time > (select create_time from t_wx_follwer_info where openid = ?) " +
                     (StringUtils.isBlank(title) ? "" : " and a.title like ? ") +
                     " order by a.create_time desc ";
         
@@ -48,6 +49,7 @@ public class MessageQueryDao
             "         or (a.trange = '3' and a.toIds like ?) " +
             "       ) " +
             "   and a.pubid != ? " +
+            "   and a.create_time > (select create_time from t_wx_follwer_info where openid = ?) " +
             (StringUtils.isBlank(title) ? "" : " and a.title like ? ");
 
         String strTime = DateUtil.DEFAULT_DF.format(stime);
@@ -56,8 +58,9 @@ public class MessageQueryDao
         query.setParameter(2, openId);
         query.setParameter(3, "%" + openId + "%");
         query.setParameter(4, openId);
+        query.setParameter(5, openId);
         if(StringUtils.isNotBlank(title)){
-            query.setParameter(5, "%" + title + "%");
+            query.setParameter(6, "%" + title + "%");
         }
         Long total = ((BigInteger)query.getSingleResult()).longValue();
         page.setTotal(total);
@@ -68,8 +71,9 @@ public class MessageQueryDao
             query.setParameter(3, openId);
             query.setParameter(4, "%" + openId + "%");
             query.setParameter(5, openId);
+            query.setParameter(6, openId);
             if(StringUtils.isNotBlank(title)){
-                query.setParameter(6, "%" + title + "%");
+                query.setParameter(7, "%" + title + "%");
             }
             query.setFirstResult(page.getStartNum() - 1);
             query.setMaxResults(page.getSize());
