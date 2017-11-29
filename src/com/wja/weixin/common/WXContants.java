@@ -18,6 +18,11 @@ public interface WXContants
         String WORKER = "4";
     }
     
+    interface KG {
+        int OPEN = 1;
+        int CLOSE = 0;
+    }
+    
     interface SysParam
     {
         String MessPlatFee = "mess.fb.plat.fee";
@@ -45,6 +50,56 @@ public interface WXContants
          * 审核者id
          */
         String AUDIT_ID = "audit_id";
+        
+        /**
+         * 认证-通知审核模板信息ID
+         */
+        String AUTH_NOTIFY_AUDIT_TEMPLATE_ID = "auth.audit.template.id";
+        
+        /**
+         * 认证-通知审核模板信息url
+         */
+        String AUTH_NOTIFY_AUDIT_TEMPLATE_URL = "auth.audit.template.url";
+        
+        /**
+         * 工单通知模板信息ID
+         */
+        String WORK_ORDER_TEMPLATE_ID = "work.order.template.id";
+        
+        /**
+         * 工单通知模板信息url
+         */
+        String WORK_ORDER_TEMPLATE_URL = "work.order.template.url";
+        
+        /**
+         * 产品发布是否发送模板消息开关参数
+         */
+        String PROD_FB_SEND_TEMPLATE = "prod.fb.send.template";
+        
+        /**
+         * 产品发布模板信息ID
+         */
+        String PROD_FB_SEND_TEMPLATE_ID = "prod.template.id";
+        
+        /**
+         * 产品发布模板信息url
+         */
+        String PROD_FB_SEND_TEMPLATE_URL = "prod.template.url";
+
+        /**
+         * 信息发布是否发送模板消息开关参数
+         */
+        String MESS_FB_SEND_TEMPLATE = "mess.fb.send.template";
+        
+        /**
+         * 信息通知模板信息ID
+         */
+        String MESS_FB_SEND_TEMPLATE_ID = "mess.template.id";
+        
+        /**
+         * 信息通知模板信息url
+         */
+        String MESS_FB_SEND_TEMPLATE_URL = "mess.template.url";
         
     }
 }

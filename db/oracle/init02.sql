@@ -24,7 +24,37 @@ INSERT INTO t_sys_param(ID,name,VALUE,remark)
 VALUES('zhi.gou.phone','平台直购电话','18888888888','平台直购电话');
 
 INSERT INTO t_sys_param(ID,name,VALUE,remark)
-VALUES('audit_id','审核者id','','审核者id，多个以英文;间隔');
+VALUES('audit_id','认证审核者id','','认证审核者id，多个以英文;间隔');
+
+INSERT INTO t_sys_param(ID,name,VALUE,remark)
+VALUES('auth.audit.template.id','认证审核通知模板id','','认证审核通知模板id');
+
+INSERT INTO t_sys_param(ID,name,VALUE,remark)
+VALUES('auth.audit.template.url','认证审核通知模板跳转url','http://www.cshyc.com/wx/web/auth/auditList','认证审核通知模板跳转url');
+
+INSERT INTO t_sys_param(ID,name,VALUE,remark)
+VALUES('work.order.template.id','工单通知模板id','','工单通知模板id');
+
+INSERT INTO t_sys_param(ID,name,VALUE,remark)
+VALUES('work.order.template.url','工单通知模板跳转url','http://www.cshyc.com/wx/web/pd/view','工单通知模板跳转url');
+
+INSERT INTO t_sys_param(ID,name,VALUE,remark)
+VALUES('prod.fb.send.template','产品发布-模板消息开关(1开，0关)','0','产品发布-模板消息开关(1开，0关)');
+
+INSERT INTO t_sys_param(ID,name,VALUE,remark)
+VALUES('prod.template.id','新产品通知模板id','','新产品通知模板id');
+
+INSERT INTO t_sys_param(ID,name,VALUE,remark)
+VALUES('prod.template.url','新产品通知模板跳转url','http://www.cshyc.com/wx/web/prod/view','新产品通知模板跳转url');
+
+INSERT INTO t_sys_param(ID,name,VALUE,remark)
+VALUES('mess.fb.send.template','信息发布-模板消息开关(1开，0关)','0','信息发布-模板消息开关(1开，0关)');
+
+INSERT INTO t_sys_param(ID,name,VALUE,remark)
+VALUES('mess.template.id','信息通知模板id','','信息通知模板id');
+
+INSERT INTO t_sys_param(ID,name,VALUE,remark)
+VALUES('mess.template.url','信息通知模板跳转url','http://www.cshyc.com/wx/web/fb/view','信息通知模板跳转url');
 
 INSERT INTO t_sys_dict(Id,name,value,ordno,pid,type,valid) VALUES('follwer.category','经营类别','follwer.category',100,'0','s',1);
 INSERT INTO t_sys_dict(Id,name,value,ordno,pid,type,valid) VALUES('fct1','厂家','1',1,'follwer.category','s',1);

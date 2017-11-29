@@ -28,6 +28,10 @@ public class FollwerInfoService extends CommService<FollwerInfo>
     @Autowired
     private MessageService messageService;
     
+    public List<String> queryIds(){
+        return this.follwerInfoDao.findAllIds();
+    }
+    
     public List<AuditRecord> queryAuditRecord(String id){
         
         return this.auditRecordDao.findByBidOrderByCreateTimeDesc(id);
