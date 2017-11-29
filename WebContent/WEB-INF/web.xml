@@ -69,6 +69,29 @@
     <filter-name>AuthenticationFilter</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
+  <!-- 微信openId获取过滤器 -->
+  <filter>
+    <filter-name>WeixinFilter</filter-name>
+    <filter-class>com.wja.weixin.filter.WeixinFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>WeixinFilter</filter-name>
+    <url-pattern>/wx/web/*</url-pattern>
+  </filter-mapping>
+  <!-- 必须认证Ok才可访问的过滤器 -->
+  <filter>
+    <filter-name>NeedAuthedFilter</filter-name>
+    <filter-class>com.wja.weixin.filter.NeedAuthedFilter</filter-class>
+    <init-param>
+      <param-name>include-uri-patterns</param-name>
+      <param-value>/wx/web/fee/*;/wx/web/fb/mess;/wx/web/fb/messfb;/wx/web/fb/prodfb</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>NeedAuthedFilter</filter-name>
+    <url-pattern>/wx/web/*</url-pattern>
+  </filter-mapping>
+  
   <filter>
     <filter-name>SpringOpenEntityManagerInViewFilter</filter-name>
     <filter-class>org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter</filter-class>

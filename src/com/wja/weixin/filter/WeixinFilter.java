@@ -8,7 +8,6 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -24,7 +23,6 @@ import com.wja.base.web.RequestThreadLocal;
 /**
  * Servlet Filter implementation class WeixinFilter
  */
-@WebFilter("/wx/web/*")
 public class WeixinFilter implements Filter
 {
     
@@ -62,49 +60,38 @@ public class WeixinFilter implements Filter
         }
         else
         {
-            // 看请求参数中是否有openId
-            openId = request.getParameter("openId");
-            if (StringUtils.isNotBlank(openId))
+            String code = request.getParameter("code");
+            String state = request.getParameter("state");
+            if (StringUtils.isNotBlank(code) && "aa".equals(state))
             {
-                request.getSession().setAttribute("openId", openId);
-                RequestThreadLocal.openId.set(openId);
-                chain.doFilter(request, response);
+                try
+                {
+                    GetAccessTokenResponse tr = OAuthManager.getAccessToken(new GetAccessTokenRequest(code));
+                    openId = tr.getOpenid();
+                    request.getSession().setAttribute("openId", openId);
+                    RequestThreadLocal.openId.set(openId);
+                    chain.doFilter(request, response);
+                }
+                catch (OAuthException e)
+                {
+                    Log.LOGGER.error("网页获取用户的openId异常!", e);
+                    request.getRequestDispatcher("/error.jsp").forward(req, resp);
+                }
+                
             }
             else
             {
-                String code = request.getParameter("code");
-                String state = request.getParameter("state");
-                if (StringUtils.isNotBlank(code) && "aa".equals(state))
+                StringBuffer reqUrl = request.getRequestURL();
+                String reqStr = request.getQueryString();
+                if (StringUtils.isNotBlank(reqStr))
                 {
-                    try
-                    {
-                        GetAccessTokenResponse tr = OAuthManager.getAccessToken(new GetAccessTokenRequest(code));
-                        openId = tr.getOpenid();
-                        request.getSession().setAttribute("openId", openId);
-                        RequestThreadLocal.openId.set(openId);
-                        chain.doFilter(request, response);
-                    }
-                    catch (OAuthException e)
-                    {
-                        Log.LOGGER.error("网页获取用户的openId异常!", e);
-                        request.getRequestDispatcher("/weixin/web/comm/error").forward(req, resp);
-                    }
-                    
+                    reqUrl.append("?" + reqStr);
                 }
-                else
-                {
-                    StringBuffer reqUrl = request.getRequestURL();
-                    String reqStr = request.getQueryString();
-                    if (StringUtils.isNotBlank(reqStr))
-                    {
-                        reqUrl.append("?" + reqStr);
-                    }
-                    String redUrl = OAuthManager.generateRedirectURI(reqUrl.toString(), "snsapi_base", "aa");
-                    Log.LOGGER.info(redUrl);
-                    response.sendRedirect(redUrl);
-                }
+                String redUrl = OAuthManager.generateRedirectURI(reqUrl.toString(), "snsapi_base", "aa");
+                Log.LOGGER.info(redUrl);
+                response.sendRedirect(redUrl);
             }
-        }
+        }   
     }
     
     /**
