@@ -61,7 +61,12 @@
 				{
 					"name" : "我的关注",
 					"type" : "view",
-					"url" : "http://18494w50i7.51mypc.cn/weixins/wx/web/me/gz"
+					"url" : "http://18494w50i7.51mypc.cn/weixins/wx/web/me/mygz"
+				},
+				{
+					"name" : "足迹",
+					"type" : "view",
+					"url" : "http://18494w50i7.51mypc.cn/weixins/wx/web/me/myview"
 				},
 				{
 					"name" : "直购",
