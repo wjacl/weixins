@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -77,8 +78,8 @@ public class FxController
         return OpResult.ok();
     }
     
-    @RequestMapping("view")
-    public String view(String id, Model model)
+    @RequestMapping("view/{id}")
+    public String view(@PathVariable("id") String id, Model model)
     {
         FollwerInfo fi = follwerInfoService.get(FollwerInfo.class, id);
         
@@ -158,8 +159,8 @@ public class FxController
         return "weixin/fx/brand";
     }
     
-    @RequestMapping("brandView")
-    public String viewBrand(String id, Model model)
+    @RequestMapping("brandView/{id}")
+    public String viewBrand(@PathVariable("id") String id, Model model)
     {
         Brand b = this.brandService.get(Brand.class, id);
         

@@ -234,7 +234,7 @@ function reMark(page){
 }
 
 function doView(id){
-	location.href = "view?id=" + id;
+	location.href = "view/" + id;
 }
 
  	function loadPageData(me){

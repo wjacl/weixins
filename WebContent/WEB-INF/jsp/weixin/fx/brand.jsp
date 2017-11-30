@@ -30,7 +30,7 @@
 		    		<h5>热门品牌</h5>
 		    		<div>
 		    		<c:forEach items="${hots }" var="d">
-		    			<a href="brandView?id=${d.brand.id }">
+		    			<a href="brandView/${d.brand.id }">
 		    				<c:choose>
 		    					<c:when test="${not empty d.brand.logo }">
 		    						<img alt="${d.brand.name }" src="${publicDownloadUrl }${d.brand.log}" height="40"/>
@@ -105,7 +105,7 @@ $(function(){
 });
 
 function doView(id){
-	location.href = "brandView?id=" + id;
+	location.href = "brandView/" + id;
 }
 
  	function loadPageData(me){

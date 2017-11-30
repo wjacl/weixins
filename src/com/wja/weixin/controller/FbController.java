@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -126,8 +127,8 @@ public class FbController
         }
     }
     
-    @RequestMapping("view")
-    public String view(String id,Model model){
+    @RequestMapping("view/{id}")
+    public String view(@PathVariable("id") String id,Model model){
         Message m = this.messageService.get(Message.class, id);
         if(m == null){
             return "weixin/not_exist";   //不存在
@@ -154,9 +155,9 @@ public class FbController
         
         switch(m.getMtype()){
             case Message.Mtype.Product:
-                return "redirect:../prod/view?id=" + m.getLinkId();
+                return "redirect:../prod/view/" + m.getLinkId();
             case Message.Mtype.WorkOrder:
-                return "redirect:../pd/view?id=" + m.getLinkId();
+                return "redirect:../pd/view/" + m.getLinkId();
             case Message.Mtype.AUDIT:
                 return "redirect:../auth/auditList";
             default:               

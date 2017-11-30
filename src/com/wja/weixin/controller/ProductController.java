@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -29,8 +30,8 @@ public class ProductController
     @Autowired
     private ProductService productService;
     
-    @RequestMapping("view")
-    public String view(String id,Model model)
+    @RequestMapping("view/{id}")
+    public String view(@PathVariable("id") String id,Model model)
     {
         if(StringUtils.isBlank(id)){
             return "weixin/not_exist";   //不存在
@@ -51,8 +52,8 @@ public class ProductController
         return this.productService.query(params, page);
     }
     
-    @RequestMapping("edit")
-    public String toUpdate(String id,Model model){
+    @RequestMapping("edit/{id}")
+    public String toUpdate(@PathVariable("id") String id,Model model){
         if(StringUtils.isBlank(id)){
             return "weixin/not_exist";   //不存在
         }

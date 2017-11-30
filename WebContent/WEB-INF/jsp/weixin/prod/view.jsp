@@ -61,7 +61,7 @@
 <%@ include file="/WEB-INF/jsp/weixin/comm_js.jsp" %>
 <script>
 	function viewFollwer(id){
-		location.href= ctx + "/wx/web/fx/view?id=" + id;
+		location.href= ctx + "/wx/web/fx/view/" + id;
 	}
 </script>
 </html>

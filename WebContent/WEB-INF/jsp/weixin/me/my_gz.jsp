@@ -128,7 +128,7 @@ $(function(){
 });
 
 function doView(id){
-	location.href = ctx + "/wx/web/fx/view?id=" + id;
+	location.href = ctx + "/wx/web/fx/view/" + id;
 }
 
 function doCheHui(id){

@@ -362,7 +362,7 @@ function reMark(page){
 }
 
 function doView(id){
-	location.href = "view?id=" + id;
+	location.href = "view/" + id;
 }
 function checkChoosed(id){
 	for(var i = 0; i < workers.length; i++){

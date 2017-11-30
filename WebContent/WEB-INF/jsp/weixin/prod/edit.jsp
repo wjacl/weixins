@@ -119,7 +119,7 @@
             							loading.hide();
             							if(Constants.ResultStatus_Ok == data.status){
 	            							weui.toast('修改成功', 3000);
-	            							setTimeout(location.href="${ctx}/wx/web/fx/view?id=${p.pubId}",4000);
+	            							setTimeout(location.href="${ctx}/wx/web/fx/view/${p.pubId}",4000);
             							}
             							else{
             								if(data.mess){

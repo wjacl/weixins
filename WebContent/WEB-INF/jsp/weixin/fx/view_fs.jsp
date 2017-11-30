@@ -151,7 +151,7 @@ var pageQueryData = {
 	};
 
 function doView(id){
-	location.href = "../prod/view?id=" + id;
+	location.href = "../prod/view/" + id;
 }
 
 function doDel(id){
@@ -210,7 +210,7 @@ function doDel(id){
                    		result += '</div>';
                    		if(self){
 	                    	result += '<div class="weui-cell__ft" style="width:40px">';
-                    		result += '<a href="${ctx}/wx/web/prod/edit?id=' + row.id + '" class="weui-btn weui-btn_mini weui-btn_plain-primary bbt">修改</a>';
+                    		result += '<a href="${ctx}/wx/web/prod/edit/' + row.id + '" class="weui-btn weui-btn_mini weui-btn_plain-primary bbt">修改</a>';
                     		result += '<a href="javascript:;" onclick="doDel(\'' + row.id + '\')" class="weui-btn weui-btn_mini weui-btn_plain-primary bbt">删除</a>';
 	                     	result += '</div>';
                    		}
