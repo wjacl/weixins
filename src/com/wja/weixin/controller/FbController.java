@@ -20,10 +20,12 @@ import com.wja.weixin.entity.FollwerInfo;
 import com.wja.weixin.entity.MessReceiveRecord;
 import com.wja.weixin.entity.Message;
 import com.wja.weixin.entity.Product;
+import com.wja.weixin.entity.ViewRecord;
 import com.wja.weixin.service.FollwerInfoService;
 import com.wja.weixin.service.GzService;
 import com.wja.weixin.service.MessageService;
 import com.wja.weixin.service.ProductService;
+import com.wja.weixin.service.ViewRecordService;
 
 @Controller
 @RequestMapping("/wx/web/fb")
@@ -39,7 +41,10 @@ public class FbController
     private MessageService messageService;
     
     @Autowired
-    private ProductService productService;
+    private ProductService productService;  
+
+    @Autowired
+    private ViewRecordService viewRecordService;
     
     @RequestMapping("mess")
     public String fb(Model model)
@@ -147,7 +152,7 @@ public class FbController
             }
         }
         
-        //记录浏览记录
+        //记录消息接收记录
         MessReceiveRecord mrr = new MessReceiveRecord();
         mrr.setMessId(m.getId());
         mrr.setRecId(openId);
@@ -163,6 +168,11 @@ public class FbController
             default:               
                 model.addAttribute("me", m);
                 model.addAttribute("fi", this.follwerInfoService.get(FollwerInfo.class, m.getPubId()));
+                
+                if(openId != null){
+                    //记录浏览记录
+                    this.viewRecordService.saveRecord(new ViewRecord(id,m.getTitle(),ViewRecord.Otype.MESSAGE,openId));
+                }
                 return "weixin/fb/mess_view";
         }
     }

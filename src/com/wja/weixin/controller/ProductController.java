@@ -17,8 +17,10 @@ import com.wja.base.util.Page;
 import com.wja.base.web.RequestThreadLocal;
 import com.wja.weixin.entity.FollwerInfo;
 import com.wja.weixin.entity.Product;
+import com.wja.weixin.entity.ViewRecord;
 import com.wja.weixin.service.FollwerInfoService;
 import com.wja.weixin.service.ProductService;
+import com.wja.weixin.service.ViewRecordService;
 
 @Controller
 @RequestMapping("/wx/web/prod")
@@ -29,6 +31,9 @@ public class ProductController
 
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private ViewRecordService viewRecordService;
     
     @RequestMapping("view/{id}")
     public String view(@PathVariable("id") String id,Model model)
@@ -42,6 +47,13 @@ public class ProductController
         }
         model.addAttribute("p", p);
         model.addAttribute("fi", this.follwerInfoService.get(FollwerInfo.class, p.getPubId()));
+        
+        String openId = RequestThreadLocal.openId.get();
+        if(openId != null){
+            //记录浏览记录
+            this.viewRecordService.saveRecord(new ViewRecord(id,p.getTitle(),ViewRecord.Otype.PRODUCT,openId));
+        }
+        
         return "weixin/prod/view";
     }
     

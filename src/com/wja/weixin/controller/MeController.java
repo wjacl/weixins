@@ -13,7 +13,9 @@ import com.wja.base.util.Page;
 import com.wja.base.web.AppContext;
 import com.wja.base.web.RequestThreadLocal;
 import com.wja.weixin.common.WXContants;
+import com.wja.weixin.entity.ViewRecord;
 import com.wja.weixin.service.GzService;
+import com.wja.weixin.service.ViewRecordService;
 
 @Controller
 @RequestMapping("/wx/web/me")
@@ -21,6 +23,9 @@ public class MeController
 {
     @Autowired
     private GzService gzService;
+
+    @Autowired
+    private ViewRecordService viewRecordService;
     
     @RequestMapping("zg")
     public String tozg(Model model)
@@ -41,5 +46,21 @@ public class MeController
 
         String openId = RequestThreadLocal.openId.get();
         return this.gzService.queryMyGz(openId, params, page);
+    }
+    
+
+    @RequestMapping("myview")
+    public String toMyview()
+    {
+        return "weixin/me/my_view";
+    }
+    
+    @RequestMapping("queryMyView")
+    @ResponseBody
+    public Page<ViewRecord> queryMyView(@RequestParam Map<String, Object> params, Page<ViewRecord> page){
+
+        String openId = RequestThreadLocal.openId.get();
+        params.put("vid", openId);
+        return this.viewRecordService.query(params, page);
     }
 }

@@ -26,11 +26,13 @@ import com.wja.weixin.entity.FollwerInfo;
 import com.wja.weixin.entity.GzRecord;
 import com.wja.weixin.entity.HotBrand;
 import com.wja.weixin.entity.RecomExpert;
+import com.wja.weixin.entity.ViewRecord;
 import com.wja.weixin.service.BrandService;
 import com.wja.weixin.service.FollwerInfoService;
 import com.wja.weixin.service.GzService;
 import com.wja.weixin.service.HotBrandService;
 import com.wja.weixin.service.RecomExpertService;
+import com.wja.weixin.service.ViewRecordService;
 
 @Controller
 @RequestMapping("/wx/web/fx")
@@ -50,6 +52,9 @@ public class FxController
     
     @Autowired
     private GzService gzService;
+    
+    @Autowired
+    private ViewRecordService viewRecordService;
     
     @RequestMapping("fx")
     public String fx(Model model)
@@ -91,6 +96,12 @@ public class FxController
             {
                 model.addAttribute("gz", this.gzService.getByGzidAndBgzid(openId, fi.getOpenId()));
             }
+            
+            if(openId != null) {
+                //记录浏览记录
+                this.viewRecordService.saveRecord(new ViewRecord(id,fi.getName(),ViewRecord.Otype.FOLLWER,openId));
+            }
+            
             switch (fi.getCategory())
             {
                 case WXContants.Category.FACTORY:
@@ -166,6 +177,12 @@ public class FxController
         
         if (b != null)
         {
+
+            String openId = RequestThreadLocal.openId.get();
+            if(openId != null) {
+                //记录浏览记录
+                this.viewRecordService.saveRecord(new ViewRecord(id,b.getName(),ViewRecord.Otype.BRAND,openId));
+            }
             model.addAttribute("b", b);
             return "weixin/fx/view_brand";
         }
