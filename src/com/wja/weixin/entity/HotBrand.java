@@ -9,9 +9,12 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Where;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.wja.base.common.CommConstants;
 import com.wja.base.common.CommEntity;
+import com.wja.base.util.DateUtil;
 
 @Entity
 @Table(name = "t_wx_brand_hot")
@@ -22,8 +25,12 @@ public class HotBrand extends CommEntity
     @JoinColumn(name = "brand_id")
     private Brand brand;
     
+    @DateTimeFormat(pattern = DateUtil.DATE)
+    @JSONField(format = DateUtil.DATE)
     private Date startTime;
     
+    @DateTimeFormat(pattern = DateUtil.DATE)
+    @JSONField(format = DateUtil.DATE)
     private Date endTime;
     
     private int orderno;

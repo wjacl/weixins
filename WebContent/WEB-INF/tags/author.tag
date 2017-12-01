@@ -2,13 +2,17 @@
 <%@ tag import="java.util.Set" %>
 <%@ attribute name="path" required="true" type="java.lang.String" %>
 <%
-	if(!path.startsWith("http://")){
-	    path = request.getContextPath() + (path.startsWith("/")? "" : "/") + path;
-	}
+	String[] paths = path.split(";");
+	for(String p : paths) {
+		if(!p.startsWith("http://")){
+		    p = request.getContextPath() + (p.startsWith("/")? "" : "/") + p;
+		}
 	
-	if(((Set<String>)session.getAttribute(CommConstants.SESSION_USER_PRIV_PATHS)).contains(path)){
+		if(((Set<String>)session.getAttribute(CommConstants.SESSION_USER_PRIV_PATHS)).contains(p)){
 %>
-	<jsp:doBody></jsp:doBody>
+			<jsp:doBody></jsp:doBody>
 <%
+		break;
+		}
 	}
 %>

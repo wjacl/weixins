@@ -3,11 +3,13 @@ package com.wja.weixin.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Where;
 
 import com.wja.base.common.CommConstants;
 import com.wja.base.common.CommEntity;
+import com.wja.base.util.SetValue;
 
 @Entity
 @Table(name = "t_wx_brand")
@@ -40,6 +42,10 @@ public class Brand extends CommEntity
      */
     @Column(length = 20000)
     private String intro;
+    
+    @Transient
+    @SetValue(clazz = FollwerInfo.class, id = "openId", field = "name")
+    private String ownerName;
     
     public String getOpenId()
     {
@@ -89,6 +95,16 @@ public class Brand extends CommEntity
     public void setPinyin(String pinyin)
     {
         this.pinyin = pinyin;
+    }
+
+    public String getOwnerName()
+    {
+        return ownerName;
+    }
+
+    public void setOwnerName(String ownerName)
+    {
+        this.ownerName = ownerName;
     }
     
 }

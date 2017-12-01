@@ -109,3 +109,32 @@ VALUES('login.try.max.times','登录最大尝试次数','6','登录最大尝试�
 INSERT INTO t_sys_privilege(pr_id,pr_name,Path,p_pr_id,pr_type,valid,Order_No)
 VALUES('person','个人信息','/person/info',NULL,'1',1,8990);
 INSERT INTO t_sys_role_priv(r_id,pr_id) VALUES('admin','person');
+
+INSERT INTO t_sys_privilege(pr_id,pr_name,Path,p_pr_id,pr_type,valid,Order_No)
+VALUES('busi','业务管理',NULL,NULL,'2',1,1000);
+
+INSERT INTO t_sys_privilege(pr_id,pr_name,Path,p_pr_id,pr_type,valid,Order_No)
+VALUES('busi-brand','品牌管理','/admin/brand/manage','busi','1',1,1111);
+INSERT INTO t_sys_privilege(pr_id,pr_name,Path,p_pr_id,pr_type,valid,Order_No)
+VALUES('busi-brand-query','查询','/admin/brand/query','busi-brand','0',1,1112);
+
+INSERT INTO t_sys_role_priv(r_id,pr_id) VALUES('admin','busi');
+INSERT INTO t_sys_role_priv(r_id,pr_id) VALUES('admin','busi-brand');
+INSERT INTO t_sys_role_priv(r_id,pr_id) VALUES('admin','busi-brand-query');
+
+INSERT INTO t_sys_privilege(pr_id,pr_name,Path,p_pr_id,pr_type,valid,Order_No)
+VALUES('busi-hotBrand','热门品牌管理','/admin/hotBrand/manage','busi','1',1,1121);
+INSERT INTO t_sys_privilege(pr_id,pr_name,Path,p_pr_id,pr_type,valid,Order_No)
+VALUES('busi-hotBrand-query','查询','/admin/hotBrand/query','busi-hotBrand','0',1,1122);
+INSERT INTO t_sys_privilege(pr_id,pr_name,Path,p_pr_id,pr_type,valid,Order_No)
+VALUES('busi-hotBrand-add','新增','/admin/hotBrand/add','busi-hotBrand','0',1,1123);
+INSERT INTO t_sys_privilege(pr_id,pr_name,Path,p_pr_id,pr_type,valid,Order_No)
+VALUES('busi-hotBrand-update','修改','/admin/hotBrand/update','busi-hotBrand','0',1,1124);
+INSERT INTO t_sys_privilege(pr_id,pr_name,Path,p_pr_id,pr_type,valid,Order_No)
+VALUES('busi-hotBrand-delete','删除','/admin/hotBrand/delete','busi-hotBrand','0',1,1125);
+
+INSERT INTO t_sys_role_priv(r_id,pr_id) VALUES('admin','busi-hotBrand');
+INSERT INTO t_sys_role_priv(r_id,pr_id) VALUES('admin','busi-hotBrand-query');
+INSERT INTO t_sys_role_priv(r_id,pr_id) VALUES('admin','busi-hotBrand-add');
+INSERT INTO t_sys_role_priv(r_id,pr_id) VALUES('admin','busi-hotBrand-update');
+INSERT INTO t_sys_role_priv(r_id,pr_id) VALUES('admin','busi-hotBrand-delete');
