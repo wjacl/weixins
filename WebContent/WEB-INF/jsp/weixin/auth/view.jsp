@@ -59,16 +59,6 @@
     						<c:when test="${fi.category == '6' }">其他</c:when>
     					</c:choose>
     				</span>
-    				<c:if test="${fi.openId != openId }">
-	    				<c:choose>
-	    					<c:when test="${not empty gz }">
-	    						<a href="javascript:;" data-op="qx" onclick="dogz('${fi.openId}',this)" class="weui-btn weui-btn_mini weui-btn_warn gz_button">取消关注</a>
-	    					</c:when>
-	    					<c:otherwise>
-	    						<a href="javascript:;" data-op="gz" onclick="dogz('${fi.openId}',this)" class="weui-btn weui-btn_mini weui-btn_plain-primary gz_button">+关注</a>
-	    					</c:otherwise>
-	    				</c:choose>
-    				</c:if>
     			</div>
     			<p class="info">地址：${fi.address }</p>
     			<p class="info">电话：<a href="tel:${fi.mphone }" class="tel">${fi.mphone }</a>  微信：${fi.wechat }</p>
