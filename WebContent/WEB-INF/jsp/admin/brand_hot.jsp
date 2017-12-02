@@ -93,68 +93,9 @@
 			url:'${ctx }/admin/hotBrand/query',
 			saveUrl: '${ctx }/admin/hotBrand/add',
 			updateUrl: '${ctx }/admin/hotBrand/update',
-			destroyUrl: '${ctx }/admin/hotBrand/delete',
-			onBeforeEdit:hotBrandGridBeforeEdit
+			destroyUrl: '${ctx }/admin/hotBrand/delete'
 		});
-				
-		function hotBrandUpdate(){
-			if(!$("#hotBrand_w").window("options").closed){
-				var selRows = $("#hotBrand_grid").datagrid("getSelections");
-				$("#brokerTreeInput").combotree('setValue', selRows[0].broker.id);
-			}
-		}
-
-		var today = _sysCurrDate;
-		
-		var currhotBrandGridEditRowIndex;
-		
-		function hotBrandGridBeforeEdit(index){
-			currhotBrandGridEditRowIndex = index;
-		}
-		
-		
-		function liverTreeBeforeSelect(node){
-			return node.type == "liver";
-		}
-		
-		function liverTreeOnSelect(node){
-			var row = $('#hotBrand_grid').edatagrid("getSelected");
-			row.liverName = node.text;
-			var editors = $('#hotBrand_grid').edatagrid("getEditors",currhotBrandGridEditRowIndex);
-			for(var i in editors){
-				if(editors[i].field == "brokerId"){
-					$(editors[i].target).combotree("setValue",node.origin.broker.id);
-					row.brokerName = node.origin.broker.name;
-				}
-				else if(editors[i].field == "platform"){
-					$(editors[i].target).val(node.origin.platform);
-				}
-				else if(editors[i].field == "roomNo"){
-					$(editors[i].target).val(node.origin.roomNo);
-				}
-				else if(editors[i].field == "liveName"){
-					$(editors[i].target).val(node.origin.liveName);
-				}
-				else if(editors[i].field == "date"){
-					$(editors[i].target).datebox("setValue",today);
-				}
-			}
-		}
-		
-		
-		function userOrgTreeLoadFilter(data){
-			//去掉非经纪人
-			for(var i = data.length - 1; i >=0; i--){
-				if(data[i].userType != undefined && data[i].userType != "B"){
-					data.splice(i,1);
-				}
-			} 
-			return $.ad.standardIdPidNameArrayToEasyUITree(data);
-		}
-		
-		function brokerTreeBeforeSelect(node){
-			return node.userType != undefined && node.userType == "B";
-		}
+	
 	</script>
 	
 	<div id="dd" class="easyui-dialog" title="选择品牌" style="width:570px;height:480px;"
@@ -238,13 +179,6 @@
 		$('#my_grid').datagrid({
 			url:'${ctx }/admin/brand/query'
 		});
-				
-
-		var currmyGridEditRowIndex;
-		
-		function myGridBeforeEdit(index){
-			currmyGridEditRowIndex = index;
-		}
 
 	</script>
 	<%@ include file="/WEB-INF/jsp/frame/footer.jsp"%>
