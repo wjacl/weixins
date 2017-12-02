@@ -18,7 +18,7 @@
 	<div id="hotBrand_tb" style="padding: 5px; height: auto">
 		<div style="margin-bottom: 5px">
 			<app:author path="/admin/hotBrand/add">
-				<a href="#" onclick="javascript:$('#hotBrand_grid').edatagrid('addRow')" class="easyui-linkbutton"
+				<a href="#" onclick="javascript:$('#dd').dialog('open')" class="easyui-linkbutton"
 					iconCls="icon-add" plain="true"><s:message code='comm.add' /></a> 
 			</app:author>
 			<app:author path="/admin/hotBrand/delete">
@@ -33,7 +33,7 @@
 			<form id="hotBrand_query_form">
 				品牌名称
 				: <input class="easyui-textbox" style="width: 100px"
-					name="brand.name_like_string">
+					name="brandName_like_string">
 				开始时间：
 				: <input class="easyui-datebox" style="width: 100px"
 					name="startTime_after_date">
@@ -53,23 +53,24 @@
 			</form>
 		</div>
 	</div>
-
 	<table id="hotBrand_grid" 
 		data-options="rownumbers:true,singleSelect:true,pagination:true,multiSort:true,selectOnCheck:true,checkOnSelect:true,
-				sortName:'orderNo',sortOrder:'asc',
+				sortName:'orderno',sortOrder:'asc',
 				idField:'id',method:'post',toolbar:'#hotBrand_tb',loadFilter:hotBrandDataProcess">
 		<thead>
 			<tr>
 				<th data-options="field:'ck',checkbox:true"></th>
-				<th data-options="field:'brand',width:120,sortable:'true',formatter:brandFormatter">品牌名称</th>			
+				<th data-options="field:'brandName',width:120,sortable:'true'">品牌名称</th>	
 				<th
-					data-options="field:'startTime',width:120,align:'center',sortable:'true',editor:'datebox'">开始时间</th>
+					data-options="field:'logo',width:110,formatter:imageFormatter">Logo</th>			
 				<th
-					data-options="field:'startTime',width:120,align:'center',sortable:'true',editor:'datebox'">截止时间</th>	
+					data-options="field:'startTime',width:100,align:'center',editor:'datebox'">开始时间</th>
 				<th
-					data-options="field:'orderNo',width:80,editor:'numberbox'">排名</th>
+					data-options="field:'endTime',width:100,align:'center',editor:'datebox'">截止时间</th>	
 				<th
-					data-options="field:'remark',width:160,editor:{type:'textarea',
+					data-options="field:'orderno',align:'center',width:80,editor:'numberbox'">排名</th>
+				<th
+					data-options="field:'remark',width:300,editor:{type:'textarea',
 						options:{
 							validType:'length[0,400]'}}">说明</th>
 			</tr>
@@ -80,8 +81,12 @@
 			return data;
 		}
 		
-		function brandFormatter(value,row,index){
-			return value.name;
+		
+		function imageFormatter(value,row,index){
+			if(value != null && value != ""){
+				return "<img src=\"" + publicDownloadUrl + value + "\" width=\"100\">";
+			}
+			return '';
 		}
 		
 		$('#hotBrand_grid').edatagrid({
@@ -150,6 +155,97 @@
 		function brokerTreeBeforeSelect(node){
 			return node.userType != undefined && node.userType == "B";
 		}
+	</script>
+	
+	<div id="dd" class="easyui-dialog" title="选择品牌" style="width:570px;height:480px;"
+    data-options="resizable:false,modal:true,closed:true">	
+	<div id="my_tb" style="padding: 5px; height: auto">
+		<div>
+			<a href="#" onclick="javascript:$('#dd').dialog('close')" class="easyui-linkbutton"
+				iconCls="icon-undo" plain="true">取消</a>
+			<a href="#" onclick="javascript:addBrand()" class="easyui-linkbutton"
+				iconCls="icon-add" plain="true">确定</a>
+		</div>
+		<div>
+			<form id="my_query_form">		
+				<s:message code="liver.name" text="名称"/>
+				: <input class="easyui-textbox" style="width: 100px"
+					name="name_like_string">
+				<a
+					href="javascript:doQuery()"
+					class="easyui-linkbutton" iconCls="icon-search"><s:message
+						code="comm.query" /></a>
+				<input type="hidden" name="or_pinyin_like_string" />
+			</form>
+		</div>
+	</div>
+	<table id="my_grid" 
+		data-options="rownumbers:true,singleSelect:true,pagination:true,multiSort:true,selectOnCheck:true,
+				sortName:'pinyin',sortOrder:'asc',
+				idField:'id',method:'post',toolbar:'#my_tb',loadFilter:myDataProcess">
+		<thead>
+			<tr>
+				<th data-options="field:'ck',checkbox:true"></th>
+				<th
+					data-options="field:'name',width:100,sortable:'true'">名称</th>
+				<th
+					data-options="field:'logo',width:110,formatter:imageFormatter">Logo</th>	
+				<th
+					data-options="field:'ownerName',width:140">创建者</th>
+				<th
+					data-options="field:'createTime',sortable:'true',align:'center',width:120,formatter:dateFormatter">创建时间</th>	
+			</tr>
+		</thead>
+	</table>
+	</div>
+	<script type="text/javascript">	
+		function addBrand(){
+			var rows = $("#my_grid").datagrid("getChecked");
+			if(rows.length != 1){
+				$.sm.alert("请选择一个品牌！")
+			}
+			else{
+				// insert a row with default values
+				$('#hotBrand_grid').edatagrid('addRow',{
+					row:{
+						brandId:rows[0].id,
+						brandName:rows[0].name,
+						logo:rows[0].logo
+					}
+				});
+				$('#dd').dialog('close');
+			}
+		}
+	
+		function doQuery(){
+			$('input[name=\"or_pinyin_like_string\"]').val($('input[name=\"name_like_string\"]').val());
+			$.ad.gridQuery('my_query_form','my_grid')
+		}
+		
+		function myDataProcess(data){
+			return data;
+		}
+
+		
+		function dateFormatter(value,row,index){
+			if(value != null && value != ""){
+				return value.substring(0,10);
+			}
+			return '';
+		}
+		
+
+		$('#my_grid').datagrid({
+			url:'${ctx }/admin/brand/query'
+		});
+				
+
+		var currmyGridEditRowIndex;
+		
+		function myGridBeforeEdit(index){
+			currmyGridEditRowIndex = index;
+		}
+
 	</script>
 	<%@ include file="/WEB-INF/jsp/frame/footer.jsp"%>
 </body>

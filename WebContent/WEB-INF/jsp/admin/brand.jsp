@@ -13,8 +13,7 @@
 	<%@ include file="/WEB-INF/jsp/frame/header.jsp"%>
 	<h3>
 		品牌管理
-	</h3>
-	
+	</h3>	
 	<div id="my_tb" style="padding: 5px; height: auto">
 		<div style="margin-bottom: 5px">
 			<app:author path="/admin/brand/add">
@@ -42,7 +41,6 @@
 			</form>
 		</div>
 	</div>
-
 	<table id="my_grid" 
 		data-options="rownumbers:true,singleSelect:true,pagination:true,multiSort:true,selectOnCheck:true,checkOnSelect:true,
 				sortName:'pinyin',sortOrder:'asc',

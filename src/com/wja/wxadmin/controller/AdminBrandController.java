@@ -2,12 +2,14 @@ package com.wja.wxadmin.controller;
 
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.wja.base.common.OpResult;
 import com.wja.base.util.BeanUtil;
 import com.wja.base.util.Page;
 import com.wja.weixin.entity.Brand;
@@ -51,5 +53,39 @@ public class AdminBrandController {
         this.hotBrandService.query(params, page);
         BeanUtil.setCollFieldValues(page.getRows());
         return page;
+    }
+    
+    @RequestMapping({"hotBrand/add", "hotBrand/update"})
+    @ResponseBody
+    public OpResult saveHotBrand(HotBrand c)
+    {
+        HotBrand dbld = this.hotBrandService.findByBrandId(c.getBrandId());
+        boolean add = StringUtils.isBlank(c.getId());
+        if (add)
+        {
+            if (dbld != null)
+            {
+                return OpResult.addError("该品牌已存在，不能重复加热门，请进行修改！", c);
+            }
+            this.hotBrandService.add(c);
+            return OpResult.addOk(c);
+        }
+        else
+        {
+            if (dbld != null && !dbld.getId().equals(c.getId()))
+            {
+                return OpResult.updateError("该品牌已存在，不能重复加热门，请修改！", c);
+            }
+            BeanUtil.copyPropertiesIgnoreNull(c, dbld);
+            return OpResult.updateOk(this.hotBrandService.update(dbld));
+        }
+    }
+    
+    @RequestMapping("hotBrand/delete")
+    @ResponseBody
+    public OpResult deleteHotBrand(String[] id)
+    {
+        this.hotBrandService.delete(HotBrand.class, id);
+        return OpResult.deleteOk();
     }
 }

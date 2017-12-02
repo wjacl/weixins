@@ -8,4 +8,5 @@ import com.wja.weixin.entity.HotBrand;
 @Repository
 public interface HotBrandDao extends CommRepository<HotBrand, String>
 {
+    HotBrand findByBrandId(String id);
 }

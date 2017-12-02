@@ -4,9 +4,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Where;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -15,15 +14,22 @@ import com.alibaba.fastjson.annotation.JSONField;
 import com.wja.base.common.CommConstants;
 import com.wja.base.common.CommEntity;
 import com.wja.base.util.DateUtil;
+import com.wja.base.util.SetValue;
 
 @Entity
 @Table(name = "t_wx_brand_hot")
 @Where(clause = " valid = " + CommConstants.DATA_VALID)
 public class HotBrand extends CommEntity
 {
-    @OneToOne
-    @JoinColumn(name = "brand_id")
-    private Brand brand;
+    @Column(name = "brand_id",length = 32)
+    private String brandId;
+    
+    @Column(name = "brand_name",length = 30)
+    private String brandName;
+    
+    @Transient
+    @SetValue(clazz = Brand.class, id = "brandId", field = "logo")
+    private String logo;
     
     @DateTimeFormat(pattern = DateUtil.DATE)
     @JSONField(format = DateUtil.DATE)
@@ -37,17 +43,37 @@ public class HotBrand extends CommEntity
     
     @Column(length = 500)
     private String remark;
-    
-    public Brand getBrand()
+
+    public String getBrandId()
     {
-        return brand;
+        return brandId;
     }
-    
-    public void setBrand(Brand brand)
+
+    public void setBrandId(String brandId)
     {
-        this.brand = brand;
+        this.brandId = brandId;
     }
-    
+
+    public String getBrandName()
+    {
+        return brandName;
+    }
+
+    public void setBrandName(String brandName)
+    {
+        this.brandName = brandName;
+    }
+
+    public String getLogo()
+    {
+        return logo;
+    }
+
+    public void setLogo(String logo)
+    {
+        this.logo = logo;
+    }
+
     public Date getStartTime()
     {
         return startTime;

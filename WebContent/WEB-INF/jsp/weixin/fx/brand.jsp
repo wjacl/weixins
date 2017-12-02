@@ -30,13 +30,13 @@
 		    		<h5>热门品牌</h5>
 		    		<div>
 		    		<c:forEach items="${hots }" var="d">
-		    			<a href="brandView/${d.brand.id }">
+		    			<a href="brandView/${d.brandId }">
 		    				<c:choose>
-		    					<c:when test="${not empty d.brand.logo }">
-		    						<img alt="${d.brand.name }" src="${publicDownloadUrl }${d.brand.log}" height="40"/>
+		    					<c:when test="${not empty d.logo }">
+		    						<img alt="${d.brandName }" src="${publicDownloadUrl }${d.logo}" height="40"/>
 		    					</c:when>
 		    					<c:otherwise>
-		    						<img alt="${d.brand.name }"  height="40"/>
+		    						<img alt="${d.brandName }"  height="40"/>
 		    					</c:otherwise>
 		    				</c:choose>
 		    			</a>

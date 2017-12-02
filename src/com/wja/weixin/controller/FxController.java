@@ -156,7 +156,7 @@ public class FxController
     @RequestMapping("brand")
     public String brandDiscovery(Model model)
     {
-        Page<HotBrand> page = new Page<>(1, 100);
+        Page<HotBrand> page = new Page<>(1, 1000);
         page.setSort("orderno");
         page.setOrder("asc");
         
@@ -165,7 +165,9 @@ public class FxController
         params.put("startTime_lte_date", d);
         params.put("endTime_gte_date", d);
         
-        model.addAttribute("hots", this.hotBrandService.query(params, page).getRows());
+        page = this.hotBrandService.query(params, page);
+        BeanUtil.setCollFieldValues(page.getRows());
+        model.addAttribute("hots",page.getRows());
         
         return "weixin/fx/brand";
     }

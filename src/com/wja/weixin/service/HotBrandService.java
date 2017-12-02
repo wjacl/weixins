@@ -16,11 +16,15 @@ public class HotBrandService extends CommService<HotBrand>
 {
     
     @Autowired
-    private HotBrandDao HotBrandDao;
+    private HotBrandDao hotBrandDao;
     
     public Page<HotBrand> query(Map<String, Object> params, Page<HotBrand> page)
     {
         return page
-            .setPageData(this.HotBrandDao.findAll(new CommSpecification<HotBrand>(params), page.getPageRequest()));
+            .setPageData(this.hotBrandDao.findAll(new CommSpecification<HotBrand>(params), page.getPageRequest()));
+    }
+    
+    public HotBrand findByBrandId(String id){
+        return this.hotBrandDao.findByBrandId(id);
     }
 }
