@@ -1,0 +1,164 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib prefix="s" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="appfn" uri="http://wja.com/jsp/app/functions"%>
+<%@ taglib prefix="app" tagdir="/WEB-INF/tags" %>
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<%@ include file="/WEB-INF/jsp/frame/comm_css_js.jsp"%>
+</head>
+<body>
+	<%@ include file="/WEB-INF/jsp/frame/header.jsp"%>
+	<h3>
+		认证用户管理
+	</h3>
+	
+	<div id="fuser_tb" style="padding: 5px; height: auto">
+		<div style="margin-bottom: 5px">
+			<app:author path="/admin/fuser/add">
+				<a href="#" onclick="javascript:$('#dd').dialog('open')" class="easyui-linkbutton"
+					iconCls="icon-add" plain="true"><s:message code='comm.add' /></a> 
+			</app:author>
+			<app:author path="/admin/fuser/delete">
+				<a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="javascript:$('#fuser_grid').edatagrid('destroyRow')"><s:message code='comm.remove' /></a>
+			</app:author>
+			<app:author path="/admin/fuser/add;/admin/fuser/update">
+				<a href="#" class="easyui-linkbutton" iconCls="icon-save" plain="true" onclick="javascript:$('#fuser_grid').edatagrid('saveRow')"><s:message code='comm.save' /></a>
+				<a href="#" class="easyui-linkbutton" iconCls="icon-undo" plain="true" onclick="javascript:$('#fuser_grid').edatagrid('cancelRow')"><s:message code='comm.cancel' /></a>
+			</app:author>
+		</div>
+		<div>
+			<form id="fuser_query_form">
+				名称
+				: <input class="easyui-textbox" style="width: 120px"
+					name="name_like_string">
+				经营类别:
+				<input class="easyui-combobox" name="category_in_String"
+					style="width: 80px;"
+					data-options="
+	                    url:'${ctx }/dict/get?pvalue=follwer.category',
+	                    method:'get',
+	                    valueField:'value',
+	                    textField:'name',
+	                    panelHeight:'auto',				
+	                    multiple:true,
+	                    editable:false
+                    ">
+                	状态:
+				<select class="easyui-combobox" name="status_in_intt" multiple="multiple" style="width:120px;">
+				    <option value="6">审核通过</option>
+				    <option value="7">待审核</option>
+				    <option value="8">审核未通过</option>
+				    <option value="0">编辑中</option>
+				    <option value="1">已选好类别</option>
+				    <option value="2">填写好基本信息</option>
+				    <option value="3">填写好简介</option>
+				    <option value="4">已设置好品牌</option>
+				    <option value="5">保证金已支付</option>
+				</select>
+				注册时间
+				: <input class="easyui-datebox" style="width: 100px"
+					name="createTime_after_date">
+					-
+					<input class="easyui-datebox" style="width: 100px"
+					name="createTime_before_date">
+				<a
+					href="javascript:$.ad.gridQuery('fuser_query_form','fuser_grid')"
+					class="easyui-linkbutton" iconCls="icon-search"><s:message
+						code="comm.query" /></a>
+			</form>
+		</div>
+	</div>
+	<table id="fuser_grid" 
+		data-options="rownumbers:true,singleSelect:true,pagination:true,multiSort:true,selectOnCheck:true,height:510,
+				sortName:'pinyin',sortOrder:'asc',
+				idField:'id',method:'post',toolbar:'#fuser_tb'">
+		<thead>
+			<tr>
+				<th data-options="field:'ck',checkbox:true"></th>
+				<th data-options="field:'name',width:120">名称</th>	
+				<th
+					data-options="field:'logo',width:80,formatter:imageFormatter">头像</th>	
+				<th
+					data-options="field:'category',width:100,formatter:categoryFormatter">经营类别</th>			
+				<th
+					data-options="field:'createTime',width:100,align:'center'">注册时间</th>
+				<th
+					data-options="field:'status',width:100,formatter:statusFormatter">状态</th>
+				<th
+					data-options="field:'mphone',align:'center',width:100">手机号</th>
+				<th
+					data-options="field:'wechat',align:'center',width:100">微信号</th>
+				<th
+					data-options="field:'address',width:240">地址</th>	
+			</tr>
+		</thead>
+	</table>
+	<script type="text/javascript">	
+		function imageFormatter(value,row,index){
+			if(value != null && value != ""){
+				return "<img src=\"" + publicDownloadUrl + value + "\" width=\"70\" width=\"70\" >";
+			}
+			return '';
+		}
+		function categoryFormatter(value,row,index){
+			switch(value){
+				case '1':
+					return '厂家';
+				case '2':
+					return '商家';
+				case '3':
+					return '专家';
+				case '4':
+					return '安装师傅';
+				case '5':
+					return '自然人';
+				case '6':
+					return '其他';
+			}
+			return "";
+		}
+		var status=["编辑中","已选经营类别","已填基本信息","已填简介","已选品牌","已付保证金","审核通过","待审核","审核未通过"];
+		function statusFormatter(value,row,index){
+			switch(value){
+				case 0:
+					return "编辑中";
+				case 1:
+					return "已选经营类别";
+				case 2:
+					return "已填基本信息";
+				case 3:
+					return "已填简介";
+				case 4:
+					return "已选品牌";
+				case 5:
+					return "已付保证金";
+				case 6:
+					return "审核通过";
+				case 7:
+					return "待审核";
+				case 8:
+					return "审核未通过";
+			}
+			return "";
+		}
+		
+		$('#fuser_grid').datagrid({
+			url:'${ctx }/admin/fuser/query'
+		});
+	
+	</script>
+	
+	<div id="dd" class="easyui-dialog" title="选择专家" style="width:640px;height:520px;"
+    data-options="resizable:false,modal:true,closed:true">	
+	
+	</div>
+	<script type="text/javascript">	
+		
+
+	</script>
+	<%@ include file="/WEB-INF/jsp/frame/footer.jsp"%>
+</body>
+</html>

@@ -30,7 +30,7 @@
 		    		<h5>推荐专家</h5>
 		    		<div>
 		    		<c:forEach items="${hots }" var="d">
-		    			<li onclick="doView('${d.expert.openId}')" class="hot">${d.expert.name}</h5>
+		    			<li onclick="doView('${d.expertId}')" class="hot">${d.expertName}</h5>
 		    		</c:forEach>
 		    		</div>
 		        </div>

@@ -23,4 +23,8 @@ public class RecomExpertService extends CommService<RecomExpert>
         return page
             .setPageData(this.rcomExpertDao.findAll(new CommSpecification<RecomExpert>(params), page.getPageRequest()));
     }
+    
+    public RecomExpert findByExpertId(String eid){
+        return this.rcomExpertDao.findByExpertId(eid);
+    }
 }

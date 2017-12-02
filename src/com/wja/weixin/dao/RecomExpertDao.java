@@ -8,4 +8,5 @@ import com.wja.weixin.entity.RecomExpert;
 @Repository
 public interface RecomExpertDao extends CommRepository<RecomExpert, String>
 {
+    RecomExpert findByExpertId(String eid);
 }

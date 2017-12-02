@@ -138,3 +138,32 @@ INSERT INTO t_sys_role_priv(r_id,pr_id) VALUES('admin','busi-hotBrand-query');
 INSERT INTO t_sys_role_priv(r_id,pr_id) VALUES('admin','busi-hotBrand-add');
 INSERT INTO t_sys_role_priv(r_id,pr_id) VALUES('admin','busi-hotBrand-update');
 INSERT INTO t_sys_role_priv(r_id,pr_id) VALUES('admin','busi-hotBrand-delete');
+
+
+INSERT INTO t_sys_privilege(pr_id,pr_name,Path,p_pr_id,pr_type,valid,Order_No)
+VALUES('busi-recomExpert','推荐专家管理','/admin/recomExpert/manage','busi','1',1,1131);
+INSERT INTO t_sys_privilege(pr_id,pr_name,Path,p_pr_id,pr_type,valid,Order_No)
+VALUES('busi-expert-query','专家查询','/admin/expert/query','busi-recomExpert','0',1,1132);
+INSERT INTO t_sys_privilege(pr_id,pr_name,Path,p_pr_id,pr_type,valid,Order_No)
+VALUES('busi-recomExpert-query','查询','/admin/recomExpert/query','busi-recomExpert','0',1,1132);
+INSERT INTO t_sys_privilege(pr_id,pr_name,Path,p_pr_id,pr_type,valid,Order_No)
+VALUES('busi-recomExpert-add','新增','/admin/recomExpert/add','busi-recomExpert','0',1,1133);
+INSERT INTO t_sys_privilege(pr_id,pr_name,Path,p_pr_id,pr_type,valid,Order_No)
+VALUES('busi-recomExpert-update','修改','/admin/recomExpert/update','busi-recomExpert','0',1,1134);
+INSERT INTO t_sys_privilege(pr_id,pr_name,Path,p_pr_id,pr_type,valid,Order_No)
+VALUES('busi-recomExpert-delete','删除','/admin/recomExpert/delete','busi-recomExpert','0',1,1135);
+
+INSERT INTO t_sys_role_priv(r_id,pr_id) VALUES('admin','busi-recomExpert');
+INSERT INTO t_sys_role_priv(r_id,pr_id) VALUES('admin','busi-expert-query');
+INSERT INTO t_sys_role_priv(r_id,pr_id) VALUES('admin','busi-recomExpert-query');
+INSERT INTO t_sys_role_priv(r_id,pr_id) VALUES('admin','busi-recomExpert-add');
+INSERT INTO t_sys_role_priv(r_id,pr_id) VALUES('admin','busi-recomExpert-update');
+INSERT INTO t_sys_role_priv(r_id,pr_id) VALUES('admin','busi-recomExpert-delete');
+
+INSERT INTO t_sys_privilege(pr_id,pr_name,Path,p_pr_id,pr_type,valid,Order_No)
+VALUES('busi-fuser','认证用户管理','/admin/fuser/manage','busi','1',1,1141);
+INSERT INTO t_sys_privilege(pr_id,pr_name,Path,p_pr_id,pr_type,valid,Order_No)
+VALUES('busi-fuser-query','查询','/admin/fuser/query','busi-fuser','0',1,1142);
+
+INSERT INTO t_sys_role_priv(r_id,pr_id) VALUES('admin','busi-fuser');
+INSERT INTO t_sys_role_priv(r_id,pr_id) VALUES('admin','busi-fuser-query');
