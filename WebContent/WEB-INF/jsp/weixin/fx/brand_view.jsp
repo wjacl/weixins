@@ -9,31 +9,7 @@
 	<title>${b.name }</title>
 	<%@ include file="/WEB-INF/jsp/weixin/comm_css.jsp" %>
 	<link href="${ctx }/js/froala-editor/css/froala_style.min.css" rel="stylesheet" type="text/css" />
-	<style type="text/css">
-		.title{
-			font-size:17px;
-			font-weight: 700;
-			line-height: 25px;
-			display:inline-block;
-		}
-		.info {	
-			line-height: 20px;
-			font-size:14px;
-		}
-		.categ {
-			margin-left:10px;
-			font-size:12px;
-		}
-		.tel{
-			color:black;
-		}
-		.gz_button {
-			line-height:25px;padding:0 5px;float:right;
-		}
-		.bbt{
-			line-height:25px;padding:0 5px;
-		}
-	</style>
+	<link rel="stylesheet" href="${ctx }/css/weui.list.css"/>
 </head>
 <body ontouchstart>
 <div class="page">
@@ -74,7 +50,6 @@
 </body>
 <%@ include file="/WEB-INF/jsp/weixin/comm_js.jsp" %>
 <script>
-var self = ${openId == fi.openId};
 $(function(){
     $('.weui-navbar__item').on('click', function () {
         $(this).addClass('weui-bar__item_on').siblings('.weui-bar__item_on').removeClass('weui-bar__item_on');
@@ -89,35 +64,6 @@ $(function(){
     });
 });
 
-	function dogz(id,obj){
-		var op = $(obj).data("op");
-		$.getJSON("gz",{bgzid:id,op:op},function(data){
-			if(Constants.ResultStatus_Ok == data.status){
-				if(op == "gz"){
-					weui.toast('关注成功', 2000);
-					$(obj).html("取消关注");
-					$(obj).removeClass("weui-btn_plain-primary");
-					$(obj).addClass("weui-btn_warn");
-					$(obj).data("op","qx");
-				}
-				else{
-					weui.toast('取消关注成功', 2000);
-					$(obj).html("+关注");
-					$(obj).removeClass("weui-btn_warn");
-					$(obj).addClass("weui-btn_plain-primary");
-					$(obj).data("op","gz");
-				}
-			}
-			else{
-				if(data.mess){
-					weui.alert(data.mess);
-				}
-				else{
-					weui.alert("操作失败，请重试！");
-				}
-			}
-		});
-	}
 </script>
 <script>
 var pageQueryData = {
@@ -130,28 +76,6 @@ var pageQueryData = {
 
 function doView(id){
 	location.href = "view/" + id;
-}
-
-function doDel(id){
-	weui.confirm('您确定删除？', function(){ 
-		var loading = weui.loading('提交中...');
-		//将文件加入到表单中提交
-		$.getJSON(ctx + "/wx/web/prod/del",{id:id},function(data){
-			loading.hide();
-			if(Constants.ResultStatus_Ok == data.status){
-				weui.toast('删除成功!', 3000);
-				setTimeout($("#" + id).remove(),4000);
-			}
-			else{
-				if(data.mess){
-					weui.alert(data.mess);
-				}
-				else{
-					weui.alert("提交失败，请重试！");
-				}
-			}
-		});
-	});
 }
 
  	function loadPageData(me){
@@ -173,25 +97,43 @@ function doDel(id){
 						result += '<div class="weui-cell" id="' + row.id + '">';
                         
                     	result += '<div class=weui-cell__hd" style="padding-top:8px;">';
-                    	if(row.img == null || row.img == ""){
+                    	if(row.logo == null || row.logo == ""){
                     		result += '<img src="${ctx}/images/mms.png" height="70" width="70">';
                     	}
                     	else {
-                    		result += '<img src="'+ publicDownloadUrl + row.img.split(";")[0] + '" height="70" width="70">';
+                    		result += '<img src="'+ publicDownloadUrl + row.logo + '" height="70" width="70">';
                     	}
                     	result += '</div>';
                     	result += '<div class="weui-cell__bd" onclick="doView(\'' + row.id + '\')" style="margin-left:5px;">';
                     	result += '<div>';
-                    	result += '<p class="title">' + row.title + '</p>';
+                    	result += '<p class="title">' + row.name + '</p>';
+                    	result += '<span class="categ">';
+                    	var cate = "";
+                    	switch(row.category){
+                    		case '1' :
+                    			cate = "厂家";
+                    			break;
+                    		case '2' :
+                    			cate = "商家";
+                    			break;
+                    		case '3' :
+                    			cate = "专家";
+                    			break;
+                    		case '4' :
+                    			cate = "安装师傅";
+                    			break;
+                    		case '5' :
+                    			cate = "自然人";
+                    			break;
+                    		case '6' :
+                    			cate = "其他";
+                    			break;
+                    	}
+    					result += cate + '</span>';	
                    		result += '</div>';
-                   		result += '<p class="info">发布时间：' + row.createTime.substring(0,16) + '</p>';
+                   		result += '<p class="info">地址：' + row.address + '</p>';
+                   		result += '<p class="info">电话：<a href="tel:' + row.mphone + '" class="tel">' + row[5] + '</a>  微信：' + row.wechat + '</p>';
                    		result += '</div>';
-                   		if(self){
-	                    	result += '<div class="weui-cell__ft" style="width:40px">';
-                    		result += '<a href="${ctx}/wx/web/prod/edit/' + row.id + '" class="weui-btn weui-btn_mini weui-btn_plain-primary bbt">修改</a>';
-                    		result += '<a href="javascript:;" onclick="doDel(\'' + row.id + '\')" class="weui-btn weui-btn_mini weui-btn_plain-primary bbt">删除</a>';
-	                     	result += '</div>';
-                   		}
                      	result += '</div>';
                     }
 
