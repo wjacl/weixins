@@ -17,16 +17,12 @@
 	
 	<div id="fuser_tb" style="padding: 5px; height: auto">
 		<div style="margin-bottom: 5px">
-			<app:author path="/admin/fuser/add">
-				<a href="#" onclick="javascript:$('#dd').dialog('open')" class="easyui-linkbutton"
-					iconCls="icon-add" plain="true"><s:message code='comm.add' /></a> 
+			<app:author path="/admin/fuser/view">
+				<a href="#" onclick="javascript:doView()" class="easyui-linkbutton"
+					iconCls="icon-search" plain="true">查看</a> 
 			</app:author>
-			<app:author path="/admin/fuser/delete">
-				<a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="javascript:$('#fuser_grid').edatagrid('destroyRow')"><s:message code='comm.remove' /></a>
-			</app:author>
-			<app:author path="/admin/fuser/add;/admin/fuser/update">
-				<a href="#" class="easyui-linkbutton" iconCls="icon-save" plain="true" onclick="javascript:$('#fuser_grid').edatagrid('saveRow')"><s:message code='comm.save' /></a>
-				<a href="#" class="easyui-linkbutton" iconCls="icon-undo" plain="true" onclick="javascript:$('#fuser_grid').edatagrid('cancelRow')"><s:message code='comm.cancel' /></a>
+			<app:author path="/admin/fuser/tk">
+				<a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="javascript:showtk()">退款</a>
 			</app:author>
 		</div>
 		<div>
@@ -72,7 +68,7 @@
 		</div>
 	</div>
 	<table id="fuser_grid" 
-		data-options="rownumbers:true,singleSelect:true,pagination:true,multiSort:true,selectOnCheck:true,height:510,
+		data-options="rownumbers:true,singleSelect:true,pagination:true,multiSort:true,selectOnCheck:true,
 				sortName:'pinyin',sortOrder:'asc',
 				idField:'id',method:'post',toolbar:'#fuser_tb'">
 		<thead>
@@ -82,9 +78,9 @@
 				<th
 					data-options="field:'logo',width:80,formatter:imageFormatter">头像</th>	
 				<th
-					data-options="field:'category',width:100,formatter:categoryFormatter">经营类别</th>			
+					data-options="field:'category',width:80,align:'center',formatter:categoryFormatter">经营类别</th>			
 				<th
-					data-options="field:'createTime',width:100,align:'center'">注册时间</th>
+					data-options="field:'createTime',width:90,align:'center',formatter:createTimeFormatter">注册时间</th>
 				<th
 					data-options="field:'status',width:100,formatter:statusFormatter">状态</th>
 				<th
@@ -92,7 +88,7 @@
 				<th
 					data-options="field:'wechat',align:'center',width:100">微信号</th>
 				<th
-					data-options="field:'address',width:240">地址</th>	
+					data-options="field:'address'">地址</th>	
 			</tr>
 		</thead>
 	</table>
@@ -100,6 +96,12 @@
 		function imageFormatter(value,row,index){
 			if(value != null && value != ""){
 				return "<img src=\"" + publicDownloadUrl + value + "\" width=\"70\" width=\"70\" >";
+			}
+			return '';
+		}
+		function createTimeFormatter(value,row,index){
+			if(value != null && value != ""){
+				return value.substring(0,10);
 			}
 			return '';
 		}
@@ -149,11 +151,79 @@
 			url:'${ctx }/admin/fuser/query'
 		});
 	
+		function doView(){
+			var rows = $("#fuser_grid").datagrid("getChecked");
+			if(rows.length != 1){
+				$.sm.alert("请选择一个认证用户");
+				return;
+			}
+			else{
+				window.open("${ctx }/admin/fuser/view/" + rows[0].id,"_blank");
+			}
+		}
+		
+		var tkid = null;
+		
+		function showtk(){
+			var rows = $("#fuser_grid").datagrid("getChecked");
+			if(rows.length != 1){
+				$.sm.alert("请选择一个认证用户");
+				return;
+			}
+			else{
+				tkid = rows[0].id;
+				$.getJSON("getTk",{id : tkid},function(data){
+					var bzj = 0;
+					var balance = 0;
+					if(data.openId != tkid){
+						return;
+					}
+					if(data.bzj){
+						bzj = data.bzj;
+					}
+					if(data.balance){
+						balance = data.balance;
+					}
+					if(bzj + balance == 0){
+						$.sm.alert("该用户没有款需要退！");
+						return;
+					}
+					
+					$("#tk_bzj").html(bzj);
+					$("#tk_balance").html(balance);
+					
+					$("#tk_name").html(rows[0].name);
+					$('#dd').dialog('open');
+				});
+			}
+		}
+		
+		function dotk(){
+			$.sm.confirm("您确定进行退款吗？",function(){
+				$.getJSON("doTk",{id : tkid},function(data){
+					$.sm.handleResult(data);
+					$('#dd').dialog('close');
+				});
+			});
+		}
 	</script>
 	
-	<div id="dd" class="easyui-dialog" title="选择专家" style="width:640px;height:520px;"
+	<div id="dd" class="easyui-dialog" title="退款" style="width:440px;height:230px;"
     data-options="resizable:false,modal:true,closed:true">	
-	
+		<form id="ff" method="post">
+	        <div  style="text-align:center;padding:5px">
+	    		<label>名称:<span id="tk_name"></span></label>
+	        </div>
+	        <div  style="text-align:center;padding:5px">
+	    		<label>保证金:<span id="tk_bzj"></span></label>
+	        </div>
+	        <div  style="text-align:center;padding:5px">
+	    		<label>余额:<span id="tk_balance"></span></label>
+	        </div>
+	        <div style="text-align:center;padding:15px">
+	    		<a href="javascript:void(0)" class="easyui-linkbutton" onclick="dotk()">退 款</a>
+	        </div>
+	    </form>
 	</div>
 	<script type="text/javascript">	
 		

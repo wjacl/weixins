@@ -1,12 +1,15 @@
 package com.wja.wxadmin.controller;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.wja.base.util.BeanUtil;
 import com.wja.base.util.CollectionUtil;
+import com.wja.base.util.DateUtil;
 import com.wja.base.util.Page;
 import com.wja.weixin.entity.FollwerInfo;
 
@@ -81,7 +84,9 @@ class Fvo
     @Column(length = 2)
     private int status = 0;
     
-
+    @JSONField(format = DateUtil.DATE_TIME)
+    private Date createTime;
+    
     /**
      * 被关注数
      */
@@ -207,6 +212,16 @@ class Fvo
     public void setBgzs(int bgzs)
     {
         this.bgzs = bgzs;
+    }
+
+    public Date getCreateTime()
+    {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime)
+    {
+        this.createTime = createTime;
     }
     
 }

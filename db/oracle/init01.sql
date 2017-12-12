@@ -164,6 +164,12 @@ INSERT INTO t_sys_privilege(pr_id,pr_name,Path,p_pr_id,pr_type,valid,Order_No)
 VALUES('busi-fuser','认证用户管理','/admin/fuser/manage','busi','1',1,1141);
 INSERT INTO t_sys_privilege(pr_id,pr_name,Path,p_pr_id,pr_type,valid,Order_No)
 VALUES('busi-fuser-query','查询','/admin/fuser/query','busi-fuser','0',1,1142);
+INSERT INTO t_sys_privilege(pr_id,pr_name,Path,p_pr_id,pr_type,valid,Order_No)
+VALUES('busi-fuser-view','查看','/admin/fuser/view','busi-fuser','0',1,1143);
+INSERT INTO t_sys_privilege(pr_id,pr_name,Path,p_pr_id,pr_type,valid,Order_No)
+VALUES('busi-fuser-tk','退款','/admin/fuser/tk','busi-fuser','0',1,1144);
 
 INSERT INTO t_sys_role_priv(r_id,pr_id) VALUES('admin','busi-fuser');
 INSERT INTO t_sys_role_priv(r_id,pr_id) VALUES('admin','busi-fuser-query');
+INSERT INTO t_sys_role_priv(r_id,pr_id) VALUES('admin','busi-fuser-view');
+INSERT INTO t_sys_role_priv(r_id,pr_id) VALUES('admin','busi-fuser-tk');
