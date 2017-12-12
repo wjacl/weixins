@@ -6,22 +6,22 @@
 				{
 					"name" : "收信息",
 					"type" : "view",
-					"url" : "http://18494w50i7.51mypc.cn/weixins/wx/web/fb/toMyMess"
+					"url" : "http://www.cshyc.com/wx/web/fb/toMyMess"
 				},
 				{
 					"name" : "发信息",
 					"type" : "view",
-					"url" : "http://18494w50i7.51mypc.cn/weixins/wx/web/fb/mess"
+					"url" : "http://www.cshyc.com/wx/web/fb/mess"
 				},
 				{
 					"name" : "派单",
 					"type" : "view",
-					"url" : "http://18494w50i7.51mypc.cn/weixins/wx/web/pd/pd"
+					"url" : "http://www.cshyc.com/wx/web/pd/pd"
 				},
 				{
 					"name" : "历史发布",
 					"type" : "view",
-					"url" : "http://18494w50i7.51mypc.cn/weixins/wx/web/fb/toMyfb"
+					"url" : "http://www.cshyc.com/wx/web/fb/toMyfb"
 				}
 			]
 		},
@@ -31,17 +31,17 @@
 				{
 					"name" : "附近",
 					"type" : "view",
-					"url" : "http://18494w50i7.51mypc.cn/weixins/wx/web/fx/fx"
+					"url" : "http://www.cshyc.com/wx/web/fx/fx"
 				},
 				{
 					"name" : "品牌",
 					"type" : "view",
-					"url" : "http://18494w50i7.51mypc.cn/weixins/wx/web/fx/brand"
+					"url" : "http://www.cshyc.com/wx/web/fx/brand"
 				},
 				{
 					"name" : "专家",
 					"type" : "view",
-					"url" : "http://18494w50i7.51mypc.cn/weixins/wx/web/fx/zj"
+					"url" : "http://www.cshyc.com/wx/web/fx/zj"
 				}
 			]	
 		},
@@ -51,27 +51,27 @@
 				{
 					"name" : "认证",
 					"type" : "view",
-					"url" : "http://18494w50i7.51mypc.cn/weixins/wx/web/auth/auth"
+					"url" : "http://www.cshyc.com/wx/web/auth/auth"
 				},
 				{
 					"name" : "费用",
 					"type" : "view",
-					"url" : "http://18494w50i7.51mypc.cn/weixins/wx/web/fee/view"
+					"url" : "http://www.cshyc.com/wx/web/fee/view"
 				},
 				{
 					"name" : "我的关注",
 					"type" : "view",
-					"url" : "http://18494w50i7.51mypc.cn/weixins/wx/web/me/mygz"
+					"url" : "http://www.cshyc.com/wx/web/me/mygz"
 				},
 				{
 					"name" : "足迹",
 					"type" : "view",
-					"url" : "http://18494w50i7.51mypc.cn/weixins/wx/web/me/myview"
+					"url" : "http://www.cshyc.com/wx/web/me/myview"
 				},
 				{
 					"name" : "直购",
 					"type" : "view",
-					"url" : "http://18494w50i7.51mypc.cn/weixins/wx/web/me/zg"
+					"url" : "http://www.cshyc.com/wx/web/me/zg"
 				}
 			]	
 		}

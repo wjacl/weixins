@@ -46,7 +46,7 @@
     </init-param>
     <init-param>
       <param-name>except-uri-patterns</param-name>
-      <param-value>/index.jsp;/js/.*;/css/.*;/images/.*;/html/.*;/user/regist;/dict/get;/user/unameCheck;/weixin/mess;/wx/.*</param-value>
+      <param-value>/index.jsp;/js/.*;/css/.*;/images/.*;/html/.*;/user/regist;/dict/get;/user/unameCheck;/weixin/mess;/wx/.*;/MP_verify_EHGTALIWQCHL9V8l.txt</param-value>
     </init-param>
   </filter>
   <filter-mapping>
@@ -62,7 +62,7 @@
     </init-param>
     <init-param>
       <param-name>except-uri-patterns</param-name>
-      <param-value>/index;/logout;/jsp/form.jsp;/login;/js/.*;/css/.*;/images/.*;/html/.*;/weixin/mess;/wx/.*</param-value>
+      <param-value>/index;/logout;/jsp/form.jsp;/login;/js/.*;/css/.*;/images/.*;/html/.*;/weixin/mess;/wx/.*;/MP_verify_EHGTALIWQCHL9V8l.txt</param-value>
     </init-param>
   </filter>
   <filter-mapping>

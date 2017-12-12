@@ -119,7 +119,7 @@ public class AdminFollwerController {
         return a == null ? new Account() : a;
     }
     
-    @RequestMapping("fuser/getTk")
+    @RequestMapping("fuser/doTk")
     @ResponseBody
     public Object doTk(String id){
         Account a = this.tradeService.getAccount(id);

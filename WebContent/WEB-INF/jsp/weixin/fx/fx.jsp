@@ -52,15 +52,15 @@
 var map,center,markersArray = [];
 var bounds;
 function init() {
-	/* wx.getLocation({
+	wx.getLocation({
 	    type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
 	    success: function (res) {
 	    	center = new qq.maps.LatLng(res.latitude,res.longitude)
 	    	initMap();
 	    }
-	}); */
-	center = new qq.maps.LatLng(39.916527,116.397128);
-	initMap();
+	}); 
+	/* center = new qq.maps.LatLng(39.916527,116.397128);
+	initMap(); */
 }
 
 function initMap(){
