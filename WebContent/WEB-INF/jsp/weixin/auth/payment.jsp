@@ -78,16 +78,24 @@
 		        	</div>
 	        	</div>
 	        </div> 
+            <div class="weui-cell">
+                <div class="weui-cell__hd">
+                    <label class="weui-label">支付金额：</label>
+                </div>
+                <div class="weui-cell__bd">
+        		<form action="../bzjPay" method="Post" id="xform">
+                	<input class="weui-input" type="number" name="amount" value="${not empty bzjce ? bzjce : currBzj }" required  
+                		placeholder="请输入支付金额" emptyTips="请输入支付金额">
+        		</form> 
+                </div>
+            </div> 
         </div> 
-        <form action="../bzjPay" method="Post" id="xform">
 	       	<label for="weuiAgree" class="weui-agree">
 	            <input id="weuiAgree" name="xyAgree" type="checkbox" class="weui-agree__checkbox"/>
 	            <span class="weui-agree__text">
 	                	阅读并同意<a href="javascript:void(0);">《平台服务认证协议》</a>
 	            </span>
-	        </label> 
-	        <input type="hidden" name="amount" value="${currBzj }"/>
-        </form>        
+	        </label>        
         <div class="weui-cell no-top-line weui-btn-area_inline">
            	<a class="weui-btn weui-btn_primary" href="javascript:;" id="xsubmit">微信支付</a>
         </div>

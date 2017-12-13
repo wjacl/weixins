@@ -78,7 +78,7 @@
 	        </div>
 	     </div>
 	     
-	   <div id="authorDiv" style='display:${fi.brandType == "1" ? "block":"none"}'> 
+	   <div id="authorDiv" style='display:${fi.brandType == "1" || fi.brandType == "2" ? "block":"none"}'> 
  		<h5 style="margin-top:10px;padding-left:10px;">品牌授权书拍照上传（请上传，否则认证审核会通不过）</h5>
 	     <div class="weui-cells" style="margin-top:5px">
             <div class="weui-cell" id="uploader">
@@ -232,12 +232,15 @@
 		if(value == 1 || value == 2){
 			toBrandChoose();
 			$("#chooseDiv").show();
+
+			$("#authorDiv").show();
+			/* 
 			if(value == 1){
 				$("#authorDiv").show();
 			}
 			else{
 				$("#authorDiv").hide();
-			}
+			} */
 		}
 		else{
 			$("#chooseDiv").hide();
@@ -285,9 +288,9 @@
             		brsary.push($(brs[i]).text());
             	}
             	var brandType = $("input[name='brandType']:checked").val();
-            	if(brandType == 1){//代理需上传授权书
+            	if(brandType == 1 || brandType == 2){//代理需上传授权书
             		if(brsary.length > imgUploader.uploadCount && $("input[name='saveType']").val() != "zancun"){
-            			weui.alert("代理品牌，请上传品牌授权书图片！每个品牌至少一张图片。")
+            			weui.alert("代理/自有品牌，请上传品牌授权书图片！每个品牌至少一张图片。")
             			return;
             		}
             	}

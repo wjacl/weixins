@@ -121,18 +121,24 @@ public class AuthController
         // 去保证金支付
         if ("payment".equals(page))
         {
-            // 判断是否已交过
-            Account a = this.tradeService.getAccount(openId);
-            if (a == null || a.getBzj() == null || a.getBzj().compareTo(new BigDecimal(0)) != 1)
+
+            List<Dict> list = this.ds.getByPid(WXContants.Dict.PID_BZJ_STANDARD);
+            BigDecimal bzjs = null;
+            for (Dict d : list)
             {
-                List<Dict> list = this.ds.getByPid(WXContants.Dict.PID_BZJ_STANDARD);
-                for (Dict d : list)
+                model.addAttribute(d.getId(), d.getValue());
+                if (("bzjs" + fi.getCategory()).equals(d.getId()))
                 {
-                    model.addAttribute(d.getId(), d.getValue());
-                    if (("bzjs" + fi.getCategory()).equals(d.getId()))
-                    {
-                        model.addAttribute("currBzj", d.getValue());
-                    }
+                    model.addAttribute("currBzj", d.getValue());
+                    bzjs = new BigDecimal(d.getValue());
+                }
+            }
+            // 判断是否已交足保证金
+            Account a = this.tradeService.getAccount(openId);
+            if (bzjs.compareTo(new BigDecimal(0))  == 1 && (a == null || a.getBzj() == null || a.getBzj().compareTo(bzjs) == -1))
+            {
+                if(a != null && a.getBzj() != null){
+                    model.addAttribute("bzjce", bzjs.subtract(a.getBzj()));
                 }
             }
             else
@@ -266,13 +272,13 @@ public class AuthController
     @ResponseBody
     public Object bzjPay(BigDecimal amount, HttpServletRequest req)
     {
-        String openId = RequestThreadLocal.openId.get();
+        /*String openId = RequestThreadLocal.openId.get();
         FollwerInfo fi = this.follwerInfoService.get(FollwerInfo.class, openId);
         Dict dt = this.ds.get(Dict.class, "bzjs" + fi.getCategory());
         if (!dt.getValue().equals(amount.toPlainString()))
         {
             return OpResult.error("amountError", null);
-        }
+        }*/
         try
         {
             return OpResult.ok().setData(this.tradeService.generateJsPayParam(req.getRemoteAddr(),
@@ -292,10 +298,21 @@ public class AuthController
     public String bjzPayOk()
     {
         String openId = RequestThreadLocal.openId.get();
-        Account a = this.tradeService.getAccount(openId);
-        if (a != null && a.getBzj() != null)
+        FollwerInfo fi = this.follwerInfoService.get(FollwerInfo.class, openId);
+        List<Dict> list = this.ds.getByPid(WXContants.Dict.PID_BZJ_STANDARD);
+        BigDecimal bzjs = null;
+        for (Dict d : list)
         {
-            FollwerInfo fi = this.follwerInfoService.get(FollwerInfo.class, openId);
+            if (("bzjs" + fi.getCategory()).equals(d.getId()))
+            {
+                bzjs = new BigDecimal(d.getValue());
+                break;
+            }
+        }
+        
+        Account a = this.tradeService.getAccount(openId);
+        if (a != null && a.getBzj() != null && a.getBzj().compareTo(bzjs) != -1)
+        {
             fi.setStatus(FollwerInfo.STATUS_CERT_OK);
             this.follwerInfoService.update(fi);
             return "redirect:auth";

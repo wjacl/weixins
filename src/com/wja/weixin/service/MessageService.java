@@ -27,6 +27,7 @@ import com.wja.weixin.common.WXContants;
 import com.wja.weixin.dao.MessReceiveRecordDao;
 import com.wja.weixin.dao.MessageDao;
 import com.wja.weixin.dao.MessageQueryDao;
+import com.wja.weixin.entity.FollwerInfo;
 import com.wja.weixin.entity.GzRecord;
 import com.wja.weixin.entity.MessReceiveRecord;
 import com.wja.weixin.entity.Message;
@@ -126,10 +127,32 @@ public class MessageService extends CommService<Message>
                 msg.setUrl(AppContext.getSysParam(WXContants.SysParam.AUTH_NOTIFY_AUDIT_TEMPLATE_URL));
                 List<TemplateMsgData> data = new ArrayList<>();
                 msg.setData(data);
+                /*
+                {{first.DATA}}
+                                            提交人：{{keyword1.DATA}}
+                                            联系方式：{{keyword2.DATA}}
+                {{remark.DATA}}
+                */
                 TemplateMsgData d = new TemplateMsgData();
-                d.setName("name");
+                d.setName("first");
+                d.setValue("新的认证待审核！");
+                data.add(d);
+                
+                d = new TemplateMsgData();
+                d.setName("keyword1");
                 d.setValue(m.getContent());
                 data.add(d);
+                
+                d = new TemplateMsgData();
+                d.setName("keyword2");
+                d.setValue("");
+                data.add(d);
+                
+                d = new TemplateMsgData();
+                d.setName("remark");
+                d.setValue("点击本通知，进入审核页面");
+                data.add(d);
+                
                 String[] toIds = m.getToIds().split(";");
                 for(String id : toIds){
                     msg.setTouser(id);
@@ -155,10 +178,45 @@ public class MessageService extends CommService<Message>
                 msg.setTemplateId(AppContext.getSysParam(WXContants.SysParam.WORK_ORDER_TEMPLATE_ID));
                 msg.setUrl(AppContext.getSysParam(WXContants.SysParam.WORK_ORDER_TEMPLATE_URL));
                 List<TemplateMsgData> data = new ArrayList<>();
+                /*
+                {{first.DATA}}
+                                            服务类型：{{keyword1.DATA}}
+                                            客户姓名：{{keyword2.DATA}}
+                                            注册手机号：{{keyword3.DATA}}
+                                            工单状态：{{keyword4.DATA}}
+                {{remark.DATA}}
+                */
                 TemplateMsgData d = new TemplateMsgData();
-                d.setName("workOrder");
-                d.setValue(m.getTitle());
+                d.setName("first");
+                d.setValue("您有新的工单需处理！");
                 data.add(d);
+                
+                d = new TemplateMsgData();
+                d.setName("keyword1");
+                d.setValue("安装");
+                data.add(d);
+
+                FollwerInfo fi = follwerInfoService.get(FollwerInfo.class, m.getPubId());
+                d = new TemplateMsgData();
+                d.setName("keyword2");
+                d.setValue(fi.getName());
+                data.add(d);
+
+                d = new TemplateMsgData();
+                d.setName("keyword3");
+                d.setValue(fi.getMphone());
+                data.add(d);
+                
+                d = new TemplateMsgData();
+                d.setName("keyword4");
+                d.setValue("待处理");
+                data.add(d);
+                
+                d = new TemplateMsgData();
+                d.setName("remark");
+                d.setValue("请及时接单！");
+                data.add(d);
+                
                 msg.setData(data);
                 String[] toIds = m.getToIds().split(";");
                 for(String id : toIds){
@@ -186,10 +244,38 @@ public class MessageService extends CommService<Message>
                 msg.setTemplateId(AppContext.getSysParam(WXContants.SysParam.PROD_FB_SEND_TEMPLATE_ID));
                 msg.setUrl(AppContext.getSysParam(WXContants.SysParam.PROD_FB_SEND_TEMPLATE_URL));
                 List<TemplateMsgData> data = new ArrayList<>();
+                /*
+                {{first.DATA}}
+                                            信息类别：{{keyword1.DATA}}
+                                            信息名称：{{keyword2.DATA}}
+                                            信息简介：{{keyword3.DATA}}
+                {{remark.DATA}}
+                */
                 TemplateMsgData d = new TemplateMsgData();
-                d.setName("prod");
+                d.setName("first");
                 d.setValue(m.getTitle());
                 data.add(d);
+                
+                d = new TemplateMsgData();
+                d.setName("keyword1");
+                d.setValue("新产品送达");
+                data.add(d);
+
+                d = new TemplateMsgData();
+                d.setName("keyword2");
+                d.setValue(m.getTitle());
+                data.add(d);
+
+                d = new TemplateMsgData();
+                d.setName("keyword3");
+                d.setValue("");
+                data.add(d);
+                
+                d = new TemplateMsgData();
+                d.setName("remark");
+                d.setValue("点击本通知，查看产品。");
+                data.add(d);
+                
                 msg.setData(data);
                 rangeSend(m,msg);
             }catch(Exception e){
@@ -212,11 +298,40 @@ public class MessageService extends CommService<Message>
                 msg.setTemplateId(AppContext.getSysParam(WXContants.SysParam.MESS_FB_SEND_TEMPLATE_ID));
                 msg.setUrl(AppContext.getSysParam(WXContants.SysParam.MESS_FB_SEND_TEMPLATE_URL));
                 List<TemplateMsgData> data = new ArrayList<>();
+                msg.setData(data);
+
+                /*
+                {{first.DATA}}
+                                            信息类别：{{keyword1.DATA}}
+                                            信息名称：{{keyword2.DATA}}
+                                            信息简介：{{keyword3.DATA}}
+                {{remark.DATA}}
+                */
                 TemplateMsgData d = new TemplateMsgData();
-                d.setName("title");
+                d.setName("first");
                 d.setValue(m.getTitle());
                 data.add(d);
-                msg.setData(data);
+                
+                d = new TemplateMsgData();
+                d.setName("keyword1");
+                d.setValue("新消息");
+                data.add(d);
+
+                d = new TemplateMsgData();
+                d.setName("keyword2");
+                d.setValue(m.getTitle());
+                data.add(d);
+
+                d = new TemplateMsgData();
+                d.setName("keyword3");
+                d.setValue("");
+                data.add(d);
+                
+                d = new TemplateMsgData();
+                d.setName("remark");
+                d.setValue("点击本通知，查看消息。");
+                data.add(d);
+                
                 rangeSend(m,msg);
             }catch(Exception e){
                 Log.error("异步发送消息模板通知异常", e);
