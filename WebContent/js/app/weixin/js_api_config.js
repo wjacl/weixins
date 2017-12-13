@@ -51,7 +51,7 @@ var jsApiConfig = {
 			async: false,
 			success:function(data){
 				 wx.config({
-				      debug: true,
+				      debug: false,
 				      appId: data.appid,
 				      timestamp: data.timeStamp,
 				      nonceStr: data.nonceStr,

@@ -55,14 +55,6 @@
 			                					<a href="javascript:;" data="a" data-id="${w.workerId}" data-usua="usua" onclick="chooseAmount(this,'${w.workerId}')" class="weui-btn weui-btn_mini weui-btn_default">${w.workerName }</a>
 			                				</c:forEach>
 			                			</c:if>
-			                			<a href="javascript:;" data="a" onclick="chooseAmount(this,1)" class="weui-btn weui-btn_mini weui-btn_default">厂家</a>
-			                			<a href="javascript:;" data="a" onclick="chooseAmount(this,1)" class="weui-btn weui-btn_mini weui-btn_default">厂家厂家厂家</a>
-			                			<a href="javascript:;" data="a" onclick="chooseAmount(this,1)" class="weui-btn weui-btn_mini weui-btn_default">厂家</a>
-			                			<a href="javascript:;" data="a" onclick="chooseAmount(this,1)" class="weui-btn weui-btn_mini weui-btn_default">厂家</a>
-			                			<a href="javascript:;" data="a" onclick="chooseAmount(this,1)" class="weui-btn weui-btn_mini weui-btn_default">厂家</a>
-			                			<a href="javascript:;" data="a" onclick="chooseAmount(this,1)" class="weui-btn weui-btn_mini weui-btn_default">厂家</a>
-			                			<a href="javascript:;" data="a" onclick="chooseAmount(this,1)" class="weui-btn weui-btn_mini weui-btn_default">厂家</a>
-			                			<a href="javascript:;" data="a" onclick="chooseAmount(this,1)" class="weui-btn weui-btn_mini weui-btn_default">厂家</a>
 			                			<a href="javascript:;" data="a"  onclick="doChooseWorker()" class="weui-btn weui-btn_mini weui-btn_primary">选择其他</a>
 	        						</div>
 			                    </div>
@@ -206,21 +198,22 @@
 		}
 	}
 </script>
+<%@ include file="/WEB-INF/jsp/weixin/js_sdk_config.jsp" %>
 <script charset="utf-8" src="http://map.qq.com/api/js?v=2.exp"></script>
 <script>
 
 var map,center,markersArray = [];
 var bounds;
 function init() {
-	/* wx.getLocation({
+	wx.getLocation({
 	    type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
 	    success: function (res) {
 	    	center = new qq.maps.LatLng(res.latitude,res.longitude)
 	    	initMap();
 	    }
-	}); */
-	center = new qq.maps.LatLng(28.22821,112.93881);
-	initMap();
+	}); 
+	/* center = new qq.maps.LatLng(28.22821,112.93881);
+	initMap(); */
 }
 
 function initMap(){
