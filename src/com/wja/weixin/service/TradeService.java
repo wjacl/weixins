@@ -3,6 +3,7 @@ package com.wja.weixin.service;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,13 +13,9 @@ import org.springframework.stereotype.Service;
 import org.sword.wechat4j.pay.H5PayParam;
 import org.sword.wechat4j.pay.PayManager;
 import org.sword.wechat4j.pay.protocol.pay_result_notify.PayResultNotifyResponse;
-import org.sword.wechat4j.pay.protocol.unifiedorder.UnifiedorderRequest;
-import org.sword.wechat4j.pay.protocol.unifiedorder.UnifiedorderResponse;
-import org.sword.wechat4j.util.RandomStringGenerator;
 
 import com.wja.base.common.CommSpecification;
 import com.wja.base.common.service.IDService;
-import com.wja.base.util.BeanUtil;
 import com.wja.base.util.Log;
 import com.wja.base.util.Page;
 import com.wja.base.web.AppContext;
@@ -29,6 +26,7 @@ import com.wja.weixin.dao.WeiXinTradeRecordDao;
 import com.wja.weixin.entity.Account;
 import com.wja.weixin.entity.TradeRecord;
 import com.wja.weixin.entity.WeiXinTradeRecord;
+import com.wja.weixin.pay.WXPayHelper;
 
 @Service
 public class TradeService
@@ -103,36 +101,46 @@ public class TradeService
      * @return
      * @see [类、类#方法、类#成员]
      */
-    public UnifiedorderRequest getAnUnifiedorderRequest(String userIp, BigDecimal amount, String attach, String body,
+    public Map<String, String> getAnUnifiedorderRequest(String userIp, BigDecimal amount, String attach, String body,
         String detail)
     {
-        UnifiedorderRequest request = new UnifiedorderRequest();
-        request.setNonce_str(RandomStringGenerator.generate());
-        request.setBody(body);
-        request.setDetail(detail);
-        request.setAttach(attach);
-        request.setOut_trade_no(idService.getAnYMDHMSid());
-        request.setTotal_fee(amount.multiply(new BigDecimal(100)).intValue());
-        request.setSpbill_create_ip(userIp);
-        request.setNotify_url(AppContext.getSysParam("wx.pay.notify_url"));
-        request.setTime_start(this.sdf.format(new Date()));
-        request.setOpenid(RequestThreadLocal.openId.get());
-        return request;
+
+        HashMap<String, String> data = new HashMap<String, String>();
+        data.put("body", body);
+        if(detail != null){
+            data.put("detail", detail);
+        }
+        data.put("attach", attach);
+        data.put("out_trade_no", idService.getAnYMDHMSid());
+        data.put("fee_type", "CNY");
+        data.put("total_fee", amount.multiply(new BigDecimal(100)).intValue() + "");
+        data.put("spbill_create_ip", userIp);
+        data.put("notify_url", AppContext.getSysParam("wx.pay.notify_url"));
+        data.put("trade_type", "JSAPI");
+        data.put("openid", RequestThreadLocal.openId.get());
+        data.put("time_start", this.sdf.format(new Date()));
+
+        return data;
     }
     
     public H5PayParam generateJsPayParam(String userIp, BigDecimal amount, String attach, String body, String detail)
         throws Exception
     {
         // 生成交易数据
-        UnifiedorderRequest request = this.getAnUnifiedorderRequest(userIp, amount, attach, body, detail);
-        UnifiedorderResponse response = PayManager.unifiedorder(request);
+        Map<String, String> request = this.getAnUnifiedorderRequest(userIp, amount, attach, body, detail);
+        Map<String, String> response = WXPayHelper.doUnifiedOrder(request);
+        
+        String prepayid = response.get("prepay_id");
         H5PayParam param = PayManager.buildH5PayConfig(System.currentTimeMillis() / 1000 + "",
-            request.getNonce_str(),
-            response.getPrepay_id());
+            request.get("nonce_str"),prepayid);
         // 保存微信交易订单数据
         WeiXinTradeRecord wtr = new WeiXinTradeRecord();
-        BeanUtil.copyPropertiesIgnoreNull(request, wtr);
-        wtr.setPrepayId(response.getPrepay_id());
+        wtr.setAttach(request.get("attach"));
+        wtr.setOpenid(request.get("openid"));
+        wtr.setOut_trade_no(request.get("out_trade_no"));
+        wtr.setTime_start(request.get("time_start"));
+        wtr.setTotal_fee(Integer.parseInt(request.get("total_fee")));
+        wtr.setPrepayId(prepayid);
         this.wxtrDao.save(wtr);
         return param;
     }

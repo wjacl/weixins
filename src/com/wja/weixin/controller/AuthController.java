@@ -139,6 +139,7 @@ public class AuthController
             {
                 if(a != null && a.getBzj() != null){
                     model.addAttribute("bzjce", bzjs.subtract(a.getBzj()));
+                    model.addAttribute("bzjyj", (a == null || a.getBzj() == null) ? 0 : a.getBzj());
                 }
             }
             else
@@ -279,6 +280,10 @@ public class AuthController
         {
             return OpResult.error("amountError", null);
         }*/
+        if(amount == null || amount.compareTo(new BigDecimal(0)) != 1){
+            return OpResult.error("支付金额不正确", null);
+        }
+        
         try
         {
             return OpResult.ok().setData(this.tradeService.generateJsPayParam(req.getRemoteAddr(),

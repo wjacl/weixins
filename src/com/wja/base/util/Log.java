@@ -14,4 +14,12 @@ public class Log
     public static void error(String message){
         LOGGER.error(message);
     }
+    
+    public static void info(String msg){
+        LOGGER.info(msg);
+    }
+    
+    public static void debug(String msg){
+        LOGGER.debug(msg);
+    }
 }

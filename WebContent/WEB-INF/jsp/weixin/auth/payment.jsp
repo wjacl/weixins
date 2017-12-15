@@ -77,7 +77,15 @@
 		        		<p>保证金说明：</p><p>保证金说明：</p><p>保证金说明：</p>
 		        	</div>
 	        	</div>
-	        </div> 
+	        </div>
+            <div class="weui-cell">
+                <div class="weui-cell__hd">
+                    <label class="weui-label">已交金额：</label>
+                </div>
+                <div class="weui-cell__bd">
+                	<label>${bzjyj }元</label>
+                </div>
+            </div> 
             <div class="weui-cell">
                 <div class="weui-cell__hd">
                     <label class="weui-label">支付金额：</label>
@@ -118,6 +126,10 @@
 				return;
 			}
 			
+			if($("input[name='amount']").val() == "" || $("input[name='amount']").val() == 0){
+				weui.alert("请输入支付金额！");
+				return;
+			}
 			// $("#xform").submit();
 			var loading = weui.loading('提交中...');
 			//将文件加入到表单中提交

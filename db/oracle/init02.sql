@@ -6,6 +6,9 @@ INSERT INTO t_sys_param(ID,name,VALUE,remark)
 VALUES('wx.download.public.url','公众号网页公开文件的下载url','/weixins/wx/pubget','公众号网页公开文件的下载url');
 
 INSERT INTO t_sys_param(ID,name,VALUE,remark)
+VALUES('wx.pay.notify_url','微信支付回调url','http://www.cshyc.com/wx/comm/trade/notify','微信支付回调url');
+
+INSERT INTO t_sys_param(ID,name,VALUE,remark)
 VALUES('bzj.pay.body','保证金微信支付显示内容','保证金支付','保证金微信支付显示内容');
 
 INSERT INTO t_sys_param(ID,name,VALUE,remark)
