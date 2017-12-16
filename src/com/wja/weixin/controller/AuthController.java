@@ -55,6 +55,11 @@ public class AuthController
     @Autowired
     private MessageService messageService;
     
+    @RequestMapping("protocol")
+    public String protocol(){
+        return "weixin/auth/protocol";
+    }
+    
     @RequestMapping("auth")
     public String auth(Model model){
         String openId = RequestThreadLocal.openId.get();

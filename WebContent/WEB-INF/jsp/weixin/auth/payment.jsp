@@ -97,13 +97,7 @@
         		</form> 
                 </div>
             </div> 
-        </div> 
-	       	<label for="weuiAgree" class="weui-agree">
-	            <input id="weuiAgree" name="xyAgree" type="checkbox" class="weui-agree__checkbox"/>
-	            <span class="weui-agree__text">
-	                	阅读并同意<a href="javascript:void(0);">《平台服务认证协议》</a>
-	            </span>
-	        </label>        
+        </div>        
         <div class="weui-cell no-top-line weui-btn-area_inline">
            	<a class="weui-btn weui-btn_primary" href="javascript:;" id="xsubmit">微信支付</a>
         </div>
@@ -121,11 +115,6 @@
 <script>
 	$(function(){
 		$("#xsubmit").on("click",function(){
-			if(!$("#weuiAgree").is(":checked")){
-				weui.alert("请阅读并同意《平台服务认证协议》！");
-				return;
-			}
-			
 			if($("input[name='amount']").val() == "" || $("input[name='amount']").val() == 0){
 				weui.alert("请输入支付金额！");
 				return;
