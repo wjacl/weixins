@@ -139,8 +139,8 @@ public class AuthController
             {
                 if(a != null && a.getBzj() != null){
                     model.addAttribute("bzjce", bzjs.subtract(a.getBzj()));
-                    model.addAttribute("bzjyj", (a == null || a.getBzj() == null) ? 0 : a.getBzj());
                 }
+                model.addAttribute("bzjyj", (a == null || a.getBzj() == null) ? 0 : a.getBzj());
             }
             else
             {
