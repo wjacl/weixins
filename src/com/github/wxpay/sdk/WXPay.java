@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.github.wxpay.sdk.WXPayConstants.SignType;
+import com.wja.base.util.Log;
 
 public class WXPay {
 
@@ -162,8 +163,9 @@ public class WXPay {
                                      int connectTimeoutMs, int readTimeoutMs) throws Exception {
         String msgUUID = reqData.get("nonce_str");
         String reqBody = WXPayUtil.mapToXml(reqData);
-
+        Log.info("微信支付请求数据：\n" + reqBody);
         String resp = this.wxPayRequest.requestWithoutCert(urlSuffix, msgUUID, reqBody, connectTimeoutMs, readTimeoutMs, autoReport);
+        Log.info("微信支付响应数据：\n" + resp);
         return resp;
     }
 

@@ -101,7 +101,7 @@
                 </div>
 			</div>
 			<div>
-				<h5 style="margin-bottom:10px;padding-left:10px;">下载品牌授权书模板 <a href="brandAuthTemplate" style="color:blue;">请点我</a></h5>
+				<h5 style="margin-bottom:10px;padding-left:10px;">下载品牌授权书模板 <a href="${ctx }/css/brandAuthorTemplate.docx" style="color:blue;">请点我</a></h5>
 			</div>
         </div>
         </div>
