@@ -27,7 +27,7 @@ public class WeiXinTradeRecord
     @Column(length = 14)
     private String time_end;
     
-    @Column(length = 32)
+    @Column(length = 40)
     private String prepayId;
     
     @Column(length = 32)

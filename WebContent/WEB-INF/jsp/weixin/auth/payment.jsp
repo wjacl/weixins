@@ -125,21 +125,30 @@
 			$('#xform').ajaxSubmit({dataType:"json",success:function(data){
 				loading.hide();
 				if(Constants.ResultStatus_Ok == data.status){
-					wx.chooseWXPay(
-							$.extend({},data.data,{
-							    success: function (res) {
-							        // 支付成功后的回调函数
-							        //查询后台结果
-							        $.getJSON(ctx + "wx/web/trade/check?" + data.data.package,function(res){
-							        	if(Constants.ResultStatus_Ok == res.status){
-							        		location.href=ctx + "wx/web/auth/bzjPayOk";
-							        	}
-							        	else {
-							        		weui.alert(res.mess);
-							        	}
-							        });
-							    }
-					}));
+					var dd = data.data;
+					wx.chooseWXPay({
+						timestamp: dd.timeStamp, // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
+						nonceStr: dd.nonceStr, // 支付签名随机串，不长于 32 位
+						package: dd.packageWithPrepayId, // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=\*\*\*）
+						signType: dd.signType, // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
+						paySign: dd.paySign, // 支付签名
+						success: function (res) {
+					        // 支付成功后的回调函数
+					        //查询后台结果
+					        $.getJSON(ctx + "wx/web/trade/check?" + data.data.package,function(res){
+					        	if(Constants.ResultStatus_Ok == res.status){
+					        		location.href=ctx + "wx/web/auth/bzjPayOk";
+					        	}
+					        	else {
+					        		weui.alert(res.mess);
+					        	}
+					        });
+					    },
+					    fail: function(res) {
+				            //接口调用失败时执行的回调函数。
+				            alert(JSON.stringify(res));
+				        }
+					});
 				}
 				else{
 					if(data.mess == "amountError"){
