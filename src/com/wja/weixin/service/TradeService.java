@@ -155,8 +155,8 @@ public class TradeService
         hparam.put("nonceStr", nonceStr);
         hparam.put("package", "prepay_id=" + prepayid);
         hparam.put("signType", WXPayConstants.MD5);
-        hparam.put("paySign", WXPayUtil.generateMD5Signature(hparam));
-        //hparam.put("paySign", WXPayUtil.generateSignature(hparam, Config.instance().getMchKey()));
+        //hparam.put("paySign", WXPayUtil.generateMD5Signature(hparam));
+        hparam.put("paySign", WXPayUtil.generateSignature(hparam, Config.instance().getMchKey()));
         return hparam;
     }
     
