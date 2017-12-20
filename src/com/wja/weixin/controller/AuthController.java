@@ -276,7 +276,7 @@ public class AuthController
     
     @RequestMapping("bzjPay")
     @ResponseBody
-    public Object bzjPay(BigDecimal amount, HttpServletRequest req)
+    public Object bzjPay(BigDecimal amount, String timeStamp,String nonceStr,HttpServletRequest req)
     {
         /*String openId = RequestThreadLocal.openId.get();
         FollwerInfo fi = this.follwerInfoService.get(FollwerInfo.class, openId);
@@ -295,7 +295,7 @@ public class AuthController
                 amount,
                 TradeRecord.BusiType.BZJ,
                 AppContext.getSysParam("bzj.pay.body"),
-                null));
+                null,timeStamp,nonceStr));
         }
         catch (Exception e)
         {

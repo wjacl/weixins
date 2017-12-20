@@ -58,7 +58,7 @@ public class TradeController
     
     @RequestMapping("docz")
     @ResponseBody
-    public Object doCz(BigDecimal amount, HttpServletRequest req)
+    public Object doCz(BigDecimal amount, String timeStamp,String nonceStr, HttpServletRequest req)
     {
         if (amount == null || amount.compareTo(new BigDecimal(0)) != 1
             || amount.compareTo(new BigDecimal(999999.99)) == 1)
@@ -72,7 +72,7 @@ public class TradeController
                 amount,
                 TradeRecord.BusiType.CZ,
                 AppContext.getSysParam("wx.cz.body"),
-                null));
+                null,timeStamp,nonceStr));
         }
         catch (Exception e)
         {

@@ -50,6 +50,8 @@ var jsApiConfig = {
 			dataType:"json",
 			async: false,
 			success:function(data){
+				jsApiConfig.timestamp = data.timeStamp;
+				jsApiConfig.nonceStr=data.nonceStr;
 				 wx.config({
 				      debug: false,
 				      appId: data.appid,

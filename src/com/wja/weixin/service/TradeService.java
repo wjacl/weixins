@@ -10,10 +10,11 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.sword.wechat4j.pay.H5PayParam;
-import org.sword.wechat4j.pay.PayManager;
+import org.sword.wechat4j.common.Config;
 import org.sword.wechat4j.pay.protocol.pay_result_notify.PayResultNotifyResponse;
 
+import com.github.wxpay.sdk.WXPayConstants;
+import com.github.wxpay.sdk.WXPayUtil;
 import com.wja.base.common.CommSpecification;
 import com.wja.base.common.service.IDService;
 import com.wja.base.util.Log;
@@ -123,7 +124,7 @@ public class TradeService
         return data;
     }
     
-    public H5PayParam generateJsPayParam(String userIp, BigDecimal amount, String attach, String body, String detail)
+    public  Map<String, String> generateJsPayParam(String userIp, BigDecimal amount, String attach, String body, String detail, String timeStamp,String nonceStr)
         throws Exception
     {
         // 生成交易数据
@@ -131,8 +132,9 @@ public class TradeService
         Map<String, String> response = WXPayHelper.doUnifiedOrder(request);
         
         String prepayid = response.get("prepay_id");
-        H5PayParam param = PayManager.buildH5PayConfig(System.currentTimeMillis() / 1000 + "",
-            request.get("nonce_str"),prepayid);
+        /*H5PayParam param = PayManager.buildH5PayConfig(System.currentTimeMillis() / 1000 + "",
+            request.get("nonce_str"),prepayid);*/
+        
         // 保存微信交易订单数据
         WeiXinTradeRecord wtr = new WeiXinTradeRecord();
         wtr.setAttach(request.get("attach"));
@@ -142,7 +144,20 @@ public class TradeService
         wtr.setTotal_fee(Integer.parseInt(request.get("total_fee")));
         wtr.setPrepayId(prepayid);
         this.wxtrDao.save(wtr);
-        return param;
+        //return param;
+
+        /*
+         appId, timeStamp, nonceStr, package, signType
+         */
+        Map<String, String> hparam = new HashMap<>();
+        hparam.put("appId", Config.instance().getAppid());
+        hparam.put("timeStamp", timeStamp);
+        hparam.put("nonceStr", nonceStr);
+        hparam.put("package", "prepay_id=" + prepayid);
+        hparam.put("signType", WXPayConstants.MD5);
+        hparam.put("paySign", WXPayUtil.generateMD5Signature(hparam));
+        //hparam.put("paySign", WXPayUtil.generateSignature(hparam, Config.instance().getMchKey()));
+        return hparam;
     }
     
     public WeiXinTradeRecord getWeiXinTradeRecordByPrepayId(String prepayId)

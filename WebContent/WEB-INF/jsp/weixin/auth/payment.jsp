@@ -115,21 +115,24 @@
 <script>
 	$(function(){
 		$("#xsubmit").on("click",function(){
-			if($("input[name='amount']").val() == "" || $("input[name='amount']").val() == 0){
+			var amount = $("input[name='amount']").val();
+			if(amount == "" || amount == 0){
 				weui.alert("请输入支付金额！");
 				return;
 			}
 			// $("#xform").submit();
 			var loading = weui.loading('提交中...');
 			//将文件加入到表单中提交
-			$('#xform').ajaxSubmit({dataType:"json",success:function(data){
+			//$('#xform').ajaxSubmit({dataType:"json",success:function(data){
+			$.getJSON(ctx + "/wx/web/auth/bzjPay",{amount:amount,timeStamp:jsApiConfig.timestamp,nonceStr:jsApiConfig.nonceStr},function(data){
 				loading.hide();
 				if(Constants.ResultStatus_Ok == data.status){
 					var dd = data.data;
 					wx.chooseWXPay({
+						appId:dd.appId,
 						timestamp: dd.timeStamp, // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
 						nonceStr: dd.nonceStr, // 支付签名随机串，不长于 32 位
-						package: dd.packageWithPrepayId, // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=\*\*\*）
+						package: dd.package, // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=\*\*\*）
 						signType: dd.signType, // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
 						paySign: dd.paySign, // 支付签名
 						success: function (res) {
@@ -164,7 +167,7 @@
 						weui.alert("提交失败，请重试！");
 					}
 				}
-			}});
+			});
 		})
 	})
 	

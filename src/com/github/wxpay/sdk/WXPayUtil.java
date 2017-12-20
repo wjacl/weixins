@@ -226,6 +226,24 @@ public class WXPayUtil {
         }
     }
 
+    public static String generateMD5Signature(final Map<String, String> data) throws Exception {
+        Log.info(data.toString());
+        Set<String> keySet = data.keySet();
+        String[] keyArray = keySet.toArray(new String[keySet.size()]);
+        Arrays.sort(keyArray);
+        StringBuilder sb = new StringBuilder();
+        for (String k : keyArray) {
+            if (k.equals(WXPayConstants.FIELD_SIGN)) {
+                continue;
+            }
+            if (data.get(k) != null && data.get(k).trim().length() > 0)
+            {
+                sb.append(k).append("=").append(data.get(k).trim()).append("&");
+            }
+        }
+        
+        return MD5(sb.toString()).toUpperCase();     
+    }
 
     /**
      * 获取随机字符串 Nonce Str
