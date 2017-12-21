@@ -76,7 +76,7 @@ public class WeiXinTradeNotifyController
                         }
                         else
                         {
-                            return OpResult.error("支付为完成", res.getTrade_state());
+                            return OpResult.error("支付未完成", res.getTrade_state());
                         }
                     }
                     catch (SignatureException | PayApiException | PayBusinessException e)

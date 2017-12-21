@@ -110,8 +110,7 @@
 </div>
 </body>
 <%@ include file="/WEB-INF/jsp/weixin/comm_js.jsp" %>
-<script type="text/javascript" src="${ctx }/js/jquery.form.min.js"></script>
-<%@ include file="/WEB-INF/jsp/weixin/js_sdk_config.jsp" %>
+<script type="text/javascript" src="${ctx }/js/app/weixin/wxpay.js"></script>
 <script>
 	$(function(){
 		$("#xsubmit").on("click",function(){
@@ -120,38 +119,25 @@
 				weui.alert("请输入支付金额！");
 				return;
 			}
-			// $("#xform").submit();
 			var loading = weui.loading('提交中...');
-			//将文件加入到表单中提交
-			//$('#xform').ajaxSubmit({dataType:"json",success:function(data){
-			$.getJSON(ctx + "/wx/web/auth/bzjPay",{amount:amount,timeStamp:jsApiConfig.timestamp,nonceStr:jsApiConfig.nonceStr},function(data){
+			$.getJSON(ctx + "/wx/web/auth/bzjPay",{amount:amount},function(data){
 				loading.hide();
 				if(Constants.ResultStatus_Ok == data.status){
-					var dd = data.data;
-					wx.chooseWXPay({
-						appId:dd.appId,
-						timestamp: dd.timeStamp, // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
-						nonceStr: dd.nonceStr, // 支付签名随机串，不长于 32 位
-						package: dd.package, // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=\*\*\*）
-						signType: dd.signType, // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
-						paySign: dd.paySign, // 支付签名
-						success: function (res) {
-					        // 支付成功后的回调函数
-					        //查询后台结果
-					        $.getJSON(ctx + "wx/web/trade/check?" + data.data.package,function(res){
-					        	if(Constants.ResultStatus_Ok == res.status){
-					        		location.href=ctx + "wx/web/auth/bzjPayOk";
-					        	}
-					        	else {
-					        		weui.alert(res.mess);
-					        	}
-					        });
-					    },
-					    fail: function(res) {
-				            //接口调用失败时执行的回调函数。
-				            alert(JSON.stringify(res));
-				        }
-					});
+					wxpay.data = data.data;
+					wxpay.success = function (dres) {
+				        // 支付成功后的回调函数
+				        //查询后台结果
+				        $.getJSON(ctx + "/wx/web/trade/check?"+wxpay.data.package,function(res){
+				        	if(Constants.ResultStatus_Ok == res.status){
+				        		location.href=ctx + "/wx/web/auth/bzjPayOk";
+				        	}
+				        	else {
+				        		weui.alert(res.mess);
+				        	}
+				        });
+				    };
+				    
+					callpay();
 				}
 				else{
 					if(data.mess == "amountError"){

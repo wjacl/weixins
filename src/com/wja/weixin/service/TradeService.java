@@ -151,12 +151,13 @@ public class TradeService
          */
         Map<String, String> hparam = new HashMap<>();
         hparam.put("appId", Config.instance().getAppid());
-        hparam.put("timeStamp", timeStamp);
-        hparam.put("nonceStr", nonceStr);
+        hparam.put("timeStamp", System.currentTimeMillis() / 1000 + "");
+        hparam.put("nonceStr", WXPayUtil.generateNonceStr());
         hparam.put("package", "prepay_id=" + prepayid);
         hparam.put("signType", WXPayConstants.MD5);
         //hparam.put("paySign", WXPayUtil.generateMD5Signature(hparam));
         hparam.put("paySign", WXPayUtil.generateSignature(hparam, Config.instance().getMchKey()));
+        Log.info(hparam.toString());
         return hparam;
     }
     

@@ -45,7 +45,8 @@ public class WXPay {
             this.signType = SignType.MD5; // 沙箱环境
         }
         else {
-            this.signType = SignType.HMACSHA256;
+            //this.signType = SignType.HMACSHA256;
+            this.signType = SignType.MD5;
         }
         this.wxPayRequest = new WXPayRequest(config);
     }
