@@ -84,7 +84,7 @@
     <filter-class>com.wja.weixin.filter.NeedAuthedFilter</filter-class>
     <init-param>
       <param-name>include-uri-patterns</param-name>
-      <param-value>/wx/web/fee/*;/wx/web/fb/mess;/wx/web/fb/messfb;/wx/web/fb/prodfb</param-value>
+      <param-value>/wx/web/fee/.*;/wx/web/fb/mess;/wx/web/fb/messfb;/wx/web/fb/prodfb;/wx/web/pd/.*</param-value>
     </init-param>
   </filter>
   <filter-mapping>
