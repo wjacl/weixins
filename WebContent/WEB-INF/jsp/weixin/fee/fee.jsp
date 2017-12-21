@@ -137,7 +137,7 @@
  		}
  		for(var i=0; i < tjArray.length; i++){
  			if(tjArray[i][0] == month){
- 				return "消费支出：￥" + tjArray[i][1] + "&nbsp;&nbsp;充值：￥" + tjArray[i][2];
+ 				return "消费支出：￥" + tjArray[i][2] + "&nbsp;&nbsp;充值：￥" + tjArray[i][1];
  			}
  		}
  	}

@@ -13,7 +13,7 @@ import com.wja.weixin.entity.TradeRecord;
 public interface TradeRecordDao extends CommRepository<TradeRecord, String>
 {
     @Query("select CONCAT(cast(year(createTime) as string),cast(month(createTime) as string)) as m,"
-        + " sum(case ioType when 'i' then amount end)," + " sum(case ioType when 'o' then amount end) "
+        + " sum(case ioType when 'i' then amount else 0 end)," + " sum(case ioType when 'o' then amount else 0 end) "
         + " from TradeRecord where valid = '1' "
         + " and openId = ?1 and createTime >= ?2 and createTime < ?3 group by CONCAT(cast(year(createTime) as string),cast(month(createTime) as string))"
         + " order by m desc")

@@ -46,7 +46,7 @@
 </div>
 </body>
 <%@ include file="/WEB-INF/jsp/weixin/comm_js.jsp" %>
-<%@ include file="/WEB-INF/jsp/weixin/js_sdk_config.jsp" %>
+<script type="text/javascript" src="${ctx }/js/app/weixin/wxpay.js"></script>
 <script>
 	var choosedAmount = 0;
 	function chooseAmount(obj,amount){
@@ -79,21 +79,21 @@
 			$.getJSON(ctx + "/wx/web/fee/docz",{amount:choosedAmount},function(data){
 				loading.hide();
 				if(Constants.ResultStatus_Ok == data.status){
-					wx.chooseWXPay(
-							$.extend({},data.data,{
-							    success: function (res) {
-							        // 支付成功后的回调函数
-							        //查询后台结果
-							        $.getJSON(ctx + "wx/web/trade/check?" + data.data.package,function(res){
-							        	if(Constants.ResultStatus_Ok == res.status){
-							        		location.href=ctx + "wx/web/fee/czok";
-							        	}
-							        	else {
-							        		weui.alert(res.mess);
-							        	}
-							        });
-							    }
-					}));
+					wxpay.data = data.data;
+					wxpay.success = function (dres) {
+					        // 支付成功后的回调函数
+					        //查询后台结果
+					        $.getJSON(ctx + "/wx/web/trade/check?" + data.data.package,function(res){
+					        	if(Constants.ResultStatus_Ok == res.status){
+					        		location.href=ctx + "/wx/web/fee/czok";
+					        	}
+					        	else {
+					        		weui.alert(res.mess);
+					        	}
+					        });
+					    };
+
+					callpay();
 				}
 				else{
 					if(data.mess){

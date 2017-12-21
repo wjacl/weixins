@@ -276,15 +276,9 @@ public class AuthController
     
     @RequestMapping("bzjPay")
     @ResponseBody
-    public Object bzjPay(BigDecimal amount, String timeStamp,String nonceStr,HttpServletRequest req)
+    public Object bzjPay(BigDecimal amount, HttpServletRequest req)
     {
-        /*String openId = RequestThreadLocal.openId.get();
-        FollwerInfo fi = this.follwerInfoService.get(FollwerInfo.class, openId);
-        Dict dt = this.ds.get(Dict.class, "bzjs" + fi.getCategory());
-        if (!dt.getValue().equals(amount.toPlainString()))
-        {
-            return OpResult.error("amountError", null);
-        }*/
+        
         if(amount == null || amount.compareTo(new BigDecimal(0)) != 1){
             return OpResult.error("支付金额不正确", null);
         }
@@ -295,7 +289,7 @@ public class AuthController
                 amount,
                 TradeRecord.BusiType.BZJ,
                 AppContext.getSysParam("bzj.pay.body"),
-                null,timeStamp,nonceStr));
+                null));
         }
         catch (Exception e)
         {

@@ -124,7 +124,7 @@ public class TradeService
         return data;
     }
     
-    public  Map<String, String> generateJsPayParam(String userIp, BigDecimal amount, String attach, String body, String detail, String timeStamp,String nonceStr)
+    public  Map<String, String> generateJsPayParam(String userIp, BigDecimal amount, String attach, String body, String detail)
         throws Exception
     {
         // 生成交易数据
@@ -132,8 +132,6 @@ public class TradeService
         Map<String, String> response = WXPayHelper.doUnifiedOrder(request);
         
         String prepayid = response.get("prepay_id");
-        /*H5PayParam param = PayManager.buildH5PayConfig(System.currentTimeMillis() / 1000 + "",
-            request.get("nonce_str"),prepayid);*/
         
         // 保存微信交易订单数据
         WeiXinTradeRecord wtr = new WeiXinTradeRecord();
@@ -144,18 +142,13 @@ public class TradeService
         wtr.setTotal_fee(Integer.parseInt(request.get("total_fee")));
         wtr.setPrepayId(prepayid);
         this.wxtrDao.save(wtr);
-        //return param;
 
-        /*
-         appId, timeStamp, nonceStr, package, signType
-         */
         Map<String, String> hparam = new HashMap<>();
         hparam.put("appId", Config.instance().getAppid());
         hparam.put("timeStamp", System.currentTimeMillis() / 1000 + "");
         hparam.put("nonceStr", WXPayUtil.generateNonceStr());
         hparam.put("package", "prepay_id=" + prepayid);
         hparam.put("signType", WXPayConstants.MD5);
-        //hparam.put("paySign", WXPayUtil.generateMD5Signature(hparam));
         hparam.put("paySign", WXPayUtil.generateSignature(hparam, Config.instance().getMchKey()));
         Log.info(hparam.toString());
         return hparam;

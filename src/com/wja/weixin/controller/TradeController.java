@@ -58,7 +58,7 @@ public class TradeController
     
     @RequestMapping("docz")
     @ResponseBody
-    public Object doCz(BigDecimal amount, String timeStamp,String nonceStr, HttpServletRequest req)
+    public Object doCz(BigDecimal amount,HttpServletRequest req)
     {
         if (amount == null || amount.compareTo(new BigDecimal(0)) != 1
             || amount.compareTo(new BigDecimal(999999.99)) == 1)
@@ -71,8 +71,8 @@ public class TradeController
             return OpResult.ok().setData(this.tradeService.generateJsPayParam(req.getRemoteAddr(),
                 amount,
                 TradeRecord.BusiType.CZ,
-                AppContext.getSysParam("wx.cz.body"),
-                null,timeStamp,nonceStr));
+                AppContext.getSysParam("cz.pay.body"),
+                null));
         }
         catch (Exception e)
         {
