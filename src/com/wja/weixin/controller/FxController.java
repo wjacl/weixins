@@ -186,7 +186,7 @@ public class FxController
                 this.viewRecordService.saveRecord(new ViewRecord(id,b.getName(),ViewRecord.Otype.BRAND,openId));
             }
             model.addAttribute("b", b);
-            return "weixin/fx/view_brand";
+            return "weixin/fx/brand_view";
         }
         else
         {
