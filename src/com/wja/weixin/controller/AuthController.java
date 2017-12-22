@@ -227,6 +227,7 @@ public class AuthController
                 fi.setCategory(category);
                 fi.setStatus(FollwerInfo.STATUS_CATEGORY_OK);
                 this.follwerInfoService.add(fi);
+                this.tradeService.addAccount(openId);
             }
             else
             {
@@ -374,7 +375,7 @@ public class AuthController
     
     @RequestMapping("audit")
     @ResponseBody
-    public Object queryNeedAuditList(AuditRecord r){
+    public Object doAudit(AuditRecord r){
         if(this.hasAuditPrivilege()){
             String openId = RequestThreadLocal.openId.get();
             r.setAid(openId);

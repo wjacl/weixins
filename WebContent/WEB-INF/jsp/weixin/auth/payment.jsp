@@ -85,7 +85,7 @@
             </div> 
             <div class="weui-cell">
                 <div class="weui-cell__hd">
-                    <label class="weui-label">支付金额：</label>
+                    <label class="weui-label" style="font-weight:700;color:red">支付金额：</label>
                 </div>
                 <div class="weui-cell__bd">
         		<form action="../bzjPay" method="Post" id="xform">

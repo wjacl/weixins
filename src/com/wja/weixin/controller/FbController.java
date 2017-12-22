@@ -114,6 +114,7 @@ public class FbController
     {
         String openId = RequestThreadLocal.openId.get();
         params.put("pubId", openId);
+        params.put("mtype_ne", Message.Mtype.AUDIT);
         return this.messageService.queryMyFb(params, page);
     }
     
@@ -160,11 +161,11 @@ public class FbController
         
         switch(m.getMtype()){
             case Message.Mtype.Product:
-                return "redirect:../prod/view/" + m.getLinkId();
+                return "redirect:../../prod/view/" + m.getLinkId();
             case Message.Mtype.WorkOrder:
-                return "redirect:../pd/view/" + m.getLinkId();
+                return "redirect:../../pd/view/" + m.getLinkId();
             case Message.Mtype.AUDIT:
-                return "redirect:../auth/auditList";
+                return "redirect:../../auth/auditList";
             default:               
                 model.addAttribute("me", m);
                 model.addAttribute("fi", this.follwerInfoService.get(FollwerInfo.class, m.getPubId()));

@@ -95,8 +95,8 @@ function doView(id){
             success: function(data){      	
                 // 拼接HTML
                 var result = '';
-                var arrLen = data.rows.length;
-                if(arrLen > 0){
+                if(data.rows && data.rows.length > 0){
+                    var arrLen = data.rows.length;
                 	var row;
                     for(var i=0; i<arrLen; i++){
                     	row = data.rows[i];

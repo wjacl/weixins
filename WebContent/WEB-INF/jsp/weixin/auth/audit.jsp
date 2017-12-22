@@ -60,7 +60,8 @@
     				</span>
     			</div>
     			<p class="info">地址：${fi.address }</p>
-    			<p class="info">电话：<a href="tel:${fi.mphone }" class="tel">${fi.mphone }</a>  微信：${fi.wechat }</p>
+    			<p class="info">电话：<a href="tel:${fi.mphone }" class="tel">${fi.mphone }</a></p>
+    			<p class="info">微信：${fi.wechat }</p>
     		</div>
     	</div>
     	<c:if test="${fi.category == '1' or fi.category == '2' }">
@@ -112,7 +113,7 @@
 			        </div>
 			    </div>
 	    	</div>
-	    	<c:if test="${fi.brandType == '1' }">
+	    	<c:if test="${fi.brandType == '1' or fi.brandType == '2' }">
 	    	<div class="weui-cell" id="brandUploader">
                 <div class="weui-cell__bd">
                     <div class="weui-uploader">
@@ -182,7 +183,7 @@
 	
 	$(function(){
 		var imgUploader = new ImgUploader('uploader','',false,3,2,'uploadCount','uploaderFiles');
-		if('${fi.brandType}' == '1'){
+		if('${fi.brandType}' == '1' || '${fi.brandType}' == '2'){
 			var brandUploader = new ImgUploader('brandUploader','',false,-1,2,'','brandUploaderFiles');
 		}
 	})

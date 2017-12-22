@@ -47,6 +47,26 @@ public class TradeService
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddhhmmss");
     
     /**
+     * 
+     * 为用户增加账户
+     * @param openId
+     * @see [类、类#方法、类#成员]
+     */
+    public void addAccount(String openId){
+        Account account = this.getAccount(openId);
+        
+        if (account == null)
+        {
+            account = new Account();
+            BigDecimal zore = new BigDecimal(0);
+            account.setBalance(zore);
+            account.setBzj(zore);
+            account.setOpenId(openId);
+            this.accountDao.save(account);
+        }
+    }
+    
+    /**
      * 扣费
      * 
      * @param openId
