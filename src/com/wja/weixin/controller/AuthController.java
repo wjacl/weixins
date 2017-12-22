@@ -165,6 +165,18 @@ public class AuthController
     @ResponseBody
     public Object sendPhoneNumbersAuthCode(String phoneNumbers, HttpSession session)
     {
+        //重复访问的处理：剩余1分钟的重复访问，用已存在的验证码,返回错误，没有错误信息。
+        String phoneAuthNumbers = (String)session.getAttribute("phoneAuthNumbers");
+        if(phoneAuthNumbers != null && phoneAuthNumbers.equals(phoneNumbers)){
+            Long startTime = (Long)session.getAttribute("phoneAuthStartTime");
+            long max = Long.parseLong(this.smsService.getAuthTimeoutMinute()) * 60 * 1000;
+            long pass = System.currentTimeMillis() - startTime;
+            if (max - pass >  60 * 1000)
+            {
+                return OpResult.error(null, null);
+            }
+        }
+        
         String code = this.smsService.sendPhoneNumberAuthSms(phoneNumbers);
         if (code != null)
         {
@@ -203,6 +215,9 @@ public class AuthController
         
         if (phoneAuthNumbers.equals(phoneNumbers) && phoneAuthCode.equals(vcode))
         {
+            session.removeAttribute("phoneAuthNumbers");
+            session.removeAttribute("phoneAuthCode");
+            session.removeAttribute("phoneAuthStartTime");
             return OpResult.ok();
         }
         else

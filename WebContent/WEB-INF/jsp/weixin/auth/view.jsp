@@ -113,7 +113,7 @@
 			        </div>
 			    </div>
 	    	</div>
-	    	<c:if test="${fi.brandType == '1' }">
+	    	<c:if test="${fi.brandType == '1' or fi.brandType == '2'}">
 	    	<div class="weui-cell" id="brandUploader">
                 <div class="weui-cell__bd">
                     <div class="weui-uploader">
@@ -177,7 +177,7 @@
 	
 	$(function(){
 		var imgUploader = new ImgUploader('uploader','',false,3,2,'uploadCount','uploaderFiles');
-		if('${fi.brandType}' == '1'){
+		if('${fi.brandType}' == '1' || '${fi.brandType}' == '2'){
 			var brandUploader = new ImgUploader('brandUploader','',false,-1,2,'','brandUploaderFiles');
 		}
 	})
