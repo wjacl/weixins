@@ -72,10 +72,7 @@
             </div>
 	        <div class="weui-cell">
 	        	<div class="weui-cell__bd">
-	        		<p style="font-weight: 700">保证金说明：</p>
-		        	<div>
-		        		<p>保证金说明：</p><p>保证金说明：</p><p>保证金说明：</p>
-		        	</div>
+	        		<p style="font-weight: 700"><a href="../bzjsm">点击查看：《保证金说明》</a></p>
 	        	</div>
 	        </div>
             <div class="weui-cell">

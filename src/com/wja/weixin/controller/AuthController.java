@@ -60,6 +60,11 @@ public class AuthController
         return "weixin/auth/protocol";
     }
     
+    @RequestMapping("bzjsm")
+    public String bzjsm(){
+        return "weixin/auth/bzjsm";
+    }
+    
     @RequestMapping("auth")
     public String auth(Model model){
         String openId = RequestThreadLocal.openId.get();

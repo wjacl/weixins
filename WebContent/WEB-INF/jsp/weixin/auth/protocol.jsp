@@ -11,7 +11,7 @@
 <body ontouchstart="">
 <div class="page">
     <div class="page__hd" style="margin-top:5px">
-         <h2 style="text-align:center;vertical-align: middle;">人人加联盟公众平台协议写</h2>
+         <h2 style="text-align:center;vertical-align: middle;">人人加联盟公众平台协议</h2>
     </div>	
     <div class="page__bd">
       <form action="../saveInfo" method="post" id="form">
