@@ -75,7 +75,7 @@ var pageQueryData = {
 	};
 
 function doView(id){
-	location.href = "view/" + id;
+	location.href = "../view/" + id;
 }
 
  	function loadPageData(me){
@@ -132,7 +132,7 @@ function doView(id){
     					result += cate + '</span>';	
                    		result += '</div>';
                    		result += '<p class="info">地址：' + row.address + '</p>';
-                   		result += '<p class="info">电话：<a href="tel:' + row.mphone + '" class="tel">' + row[5] + '</a>  微信：' + row.wechat + '</p>';
+                   		result += '<p class="info">电话：<a href="tel:' + row.mphone + '" class="tel">' + row.mphone + '</a></p><p class="info">微信：' + row.wechat + '</p>';
                    		result += '</div>';
                      	result += '</div>';
                     }

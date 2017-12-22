@@ -257,7 +257,7 @@ public class FxController
         
         String category;
         
-        String wechart;
+        String wechat;
         
         String logo;
         
@@ -340,17 +340,17 @@ public class FxController
         {
             this.category = category;
         }
-        
-        public String getWechart()
+            
+        public String getWechat()
         {
-            return wechart;
+            return wechat;
         }
-        
-        public void setWechart(String wechart)
+
+        public void setWechat(String wechat)
         {
-            this.wechart = wechart;
+            this.wechat = wechat;
         }
-        
+
         public String getLogo()
         {
             return logo;
