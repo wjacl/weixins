@@ -55,6 +55,11 @@ public class AuthController
     @Autowired
     private MessageService messageService;
     
+    @RequestMapping("img")
+    public String img(){
+        return "weixin/auth/img";
+    }
+    
     @RequestMapping("protocol")
     public String protocol(){
         return "weixin/auth/protocol";
