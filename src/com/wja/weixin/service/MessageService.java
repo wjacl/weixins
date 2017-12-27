@@ -145,7 +145,9 @@ public class MessageService extends CommService<Message>
                 
                 d = new TemplateMsgData();
                 d.setName("keyword2");
-                d.setValue("");
+
+                FollwerInfo fi = follwerInfoService.get(FollwerInfo.class, m.getPubId());
+                d.setValue(fi.getMphone());
                 data.add(d);
                 
                 d = new TemplateMsgData();
