@@ -27,11 +27,11 @@
                 </div>
             </div>
             <div class="weui-cell">
-                <div class="weui-cell__hd"><label class="weui-label">法人姓名：</label></div>
+                <div class="weui-cell__hd"><label class="weui-label">法人/自然人姓名：</label></div>
                 <div class="weui-cell__bd">
                     <input class="weui-input" type="text" name="fname" maxlength="30" 
-                    	placeholder="请输入公司/商家法人姓名" emptyTips="请输入公司/商家法人姓名" 
-                    	notMatchTips="法人姓名长度不能超过30个字符"  value="${fi.fname }"/>
+                    	placeholder="请输入公司/商家法人/自然人姓名" emptyTips="请输入公司/商家法人/自然人姓名" 
+                    	notMatchTips="法人/自然人姓名长度不能超过30个字符"  value="${fi.fname }"/>
                 </div>
                 <div class="weui-cell__ft">
                     <i class="weui-icon-warn"></i>
@@ -41,7 +41,7 @@
                 <div class="weui-cell__bd">
                     <div class="weui-uploader">
                         <div class="weui-uploader__hd">
-                            <p class="weui-uploader__title">证件：身份证正反面、营业执照图片上传</p>
+                            <p class="weui-uploader__title">营业执照、工厂/店铺图片、法人/自然人照片上传：</p>
                             <div class="weui-uploader__info"><span id="uploadCount"></span></div>
                         </div>
                         <div class="weui-uploader__bd">
@@ -209,7 +209,7 @@
 	
 	var uploadCountDom = document.getElementById("uploadCount");
 
-	var imgUploader = new ImgUploader('uploader',ctx + '/wx/web/upload/auth',false,3,2,'uploadCount','uploaderFiles');
+	var imgUploader = new ImgUploader('uploader',ctx + '/wx/web/upload/auth',false,3,0,'uploadCount','uploaderFiles');
 	
 	function doFormSubmit(){
 		if($("input[name='smsAuthCode']").attr("checkOk") != $("input[name='mphone']").val()){

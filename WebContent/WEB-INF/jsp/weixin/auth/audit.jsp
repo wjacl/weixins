@@ -76,7 +76,7 @@
                 <div class="weui-cell__bd">
                     <div class="weui-uploader">
                         <div class="weui-uploader__hd">
-                            <p class="weui-uploader__title">证件：</p>
+                            <p class="weui-uploader__title">营业执照、工厂/店铺图片，法人/自然人照片：</p>
                             <div class="weui-uploader__info"><span id="uploadCount"></span></div>
                         </div>
                         <div class="weui-uploader__bd">
