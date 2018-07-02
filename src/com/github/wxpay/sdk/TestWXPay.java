@@ -160,7 +160,7 @@ public class TestWXPay {
         String sign = WXPayUtil.generateSignature(data, config.getKey());
         data.put("sign", sign);
         WXPay wxPay = new WXPay(config);
-        String result = wxPay.requestWithoutCert("https://api.mch.weixin.qq.com/sandbox/pay/getsignkey", data, 10000, 10000);
+        String result = wxPay.requestWithoutCert("/sandbox/pay/getsignkey", data, 10000, 10000);
         System.out.println(result);
     }
 
@@ -227,7 +227,7 @@ public class TestWXPay {
     public static void main(String[] args) throws Exception {
         System.out.println("--------------->");
         TestWXPay dodo = new TestWXPay();
-        // dodo.doGetSandboxSignKey();
+        dodo.doGetSandboxSignKey();
 
         // dodo.doUnifiedOrder();
         // dodo.doOrderQuery();
@@ -242,11 +242,11 @@ public class TestWXPay {
         // dodo.test001();
         // dodo.testUnifiedOrderSpeed();
 
-        dodo.doOrderQuery();
+        /*dodo.doOrderQuery();
         dodo.doOrderReverse();
         dodo.doOrderQuery();
         dodo.doOrderReverse();
-        dodo.doOrderQuery();
+        dodo.doOrderQuery();*/
 
 
 

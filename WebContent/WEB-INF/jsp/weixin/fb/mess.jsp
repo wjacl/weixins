@@ -9,6 +9,14 @@
 	<title>发布信息</title>
 	<%@ include file="/WEB-INF/jsp/weixin/comm_css.jsp" %>
 	<%@ include file="/WEB-INF/jsp/weixin/h5_fich_editor_css.jsp" %>
+	<style>
+		.upimg{
+			width:79px;
+			height:79px;
+			display:inline;
+			margin-right:5px;
+		}
+	</style>
 </head>
 <body ontouchstart="">
 <div class="page">	
@@ -43,9 +51,8 @@
 			                        <div class="weui-uploader__bd">
 			                            <ul class="weui-uploader__files" id="uploaderFiles">
 			                            </ul>
-			                            <div class="weui-uploader__input-box">
-			                                <input id="uploaderInput" class="weui-uploader__input" type="file" accept="image/*" capture="camera" multiple/>
-			                            </div>
+			                           <div class="weui-uploader__input-box" id="uploadInput">
+			                           </div>
 			                        </div>
 			                    </div>
 			                </div>
@@ -93,7 +100,7 @@
 							<div class="weui-cell__hd"><label class="weui-label">单价：</label></div>
 			                <div class="weui-cell__bd">
 			                    <input class="weui-input" type="number" name="price" maxlength="10"
-			                    	placeholder="请输入单价（元）" 
+			                    	placeholder="请输入单价(元)" 
 			                    	notMatchTips="单价长度不能超过10位"/>
 			                </div>
 			                <div class="weui-cell__ft"><label class="weui-label">元</label></div>
@@ -116,8 +123,7 @@
 			                        <div class="weui-uploader__bd">
 			                            <ul class="weui-uploader__files" id="productUploaderFiles">
 			                            </ul>
-			                            <div class="weui-uploader__input-box">
-			                                <input id="productUploaderInput" class="weui-uploader__input" type="file" accept="image/*" capture="camera" multiple/>
+			                            <div class="weui-uploader__input-box" id="productUploadInput">
 			                            </div>
 			                        </div>
 			                    </div>
@@ -157,13 +163,14 @@
 </div>
 </body>
 <%@ include file="/WEB-INF/jsp/weixin/comm_js.jsp" %>
+<%@ include file="/WEB-INF/jsp/weixin/js_sdk_config.jsp" %>
 <script type="text/javascript" src="${ctx }/js/jquery.form.min.js"></script>
-<script type="text/javascript" src="${ctx }/js/app/weixin/img_upload.js"></script>
+<script type="text/javascript" src="${ctx }/js/app/weixin/wx_js_sdk_img_upload.js"></script>
 <%@ include file="/WEB-INF/jsp/weixin/h5_fich_editor_js.jsp" %>
 <script>
 
-	var imgUploader = new ImgUploader('uploader',ctx + '/wx/web/upload/comm',false,1,0,'uploadCount','uploaderFiles',{type:'message'});
-	var productImgUploader = new ImgUploader('productUploader',ctx + '/wx/web/upload/comm',false,10,0,'productUploaderCount','productUploaderFiles',{type:'product'});
+	var imgUploader =  new WXImgUploader(1,0,"uploadInput",'uploadCount','uploaderFiles');
+	var productImgUploader = new WXImgUploader(10,0,"productUploadInput",'productUploaderCount','productUploaderFiles');
 	
 	$(function(){
 		$('.weui-navbar__item').on('click', function () {
@@ -188,13 +195,13 @@
             		if(re){
             			var xx = 1;
             			function ccck(){
-            				if(imgUploader.uploadedFileNames.length < imgUploader.uploadList.length && xx < 10){
+            				if(imgUploader.uploadOk.length < imgUploader.localIds.length && xx < 10){
             					xx++;
             					setTimeout(ccck,300);
             				}
             				else{
-            					if(imgUploader.uploadedFileNames.length == imgUploader.uploadCount){
-            						$("input[name='img']").val(imgUploader.getUploadedFileNameStr());
+            					if(imgUploader.uploadOk.length == imgUploader.localIds.length){
+            						$("input[name='img']").val(imgUploader.getUploadedFileServerIdStr());
             						var loading = weui.loading('提交中...');
             						//将文件加入到表单中提交
             						$('#mform').ajaxSubmit({dataType:"json",success:function(data){
@@ -214,7 +221,7 @@
             						}});
             					}
             					else {
-            						weui.alert('请检查一下图片是否都已上传，待都完成上传后，再点击 下一步');
+            						weui.alert('请等待3秒待都完成上传后，再点击 下一步');
             					}
             				}
             			}
@@ -231,13 +238,13 @@
             		if(re){
             			var xx = 1;
             			function ccck(){
-            				if(productImgUploader.uploadedFileNames.length < productImgUploader.uploadList.length && xx < 10){
+            				if(productImgUploader.uploadOk.length < productImgUploader.localIds.length && xx < 10){
             					xx++;
             					setTimeout(ccck,300);
             				}
             				else{
-            					if(productImgUploader.uploadedFileNames.length == productImgUploader.uploadCount){
-            						$("input[dd='prod']").val(productImgUploader.getUploadedFileNameStr());
+            					if(productImgUploader.uploadOk.length == productImgUploader.localIds.length){
+            						$("input[dd='prod']").val(productImgUploader.getUploadedFileServerIdStr());
             						var loading = weui.loading('提交中...');
             						//将文件加入到表单中提交
             						$('#pform').ajaxSubmit({dataType:"json",success:function(data){
@@ -257,7 +264,7 @@
             						}});
             					}
             					else {
-            						weui.alert('请检查一下图片是否都已上传，待都完成上传后，再点击 下一步');
+            						weui.alert('请等待3秒待都完成上传后，再点击 下一步');
             					}
             				}
             			}

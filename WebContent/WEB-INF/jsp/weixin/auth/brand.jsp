@@ -28,6 +28,14 @@
 			margin-top:5px;
 		}
 	</style>
+	<style>
+		.upimg{
+			width:79px;
+			height:79px;
+			display:inline;
+			margin-right:5px;
+		}
+	</style>
 </head>
 <body ontouchstart>
 <div class="page">
@@ -90,11 +98,10 @@
                         <div class="weui-uploader__bd">
                             <ul class="weui-uploader__files" id="uploaderFiles">
                             <c:forTokens items="${fi.brandAuthors }" var="it" delims=";">
-                                <li class="weui-uploader__file" style="background-image:url(${ctx}/wx/web/upload/get/${it })" data-id="${it }"></li>
+                                <img class="upimg" src="${ctx}/wx/web/upload/get/${it }" data-id="${it }" />
                             </c:forTokens>
                             </ul>
-                            <div class="weui-uploader__input-box">
-                                <input id="uploaderInput" class="weui-uploader__input" type="file" accept="image/*" capture="camera" multiple/>
+                            <div class="weui-uploader__input-box" id="uploadInput">
                             </div>
                         </div>
                     </div>
@@ -113,6 +120,7 @@
         </div>
 	    <input type="hidden" name="brands" value="${fi.brands }" />
 	    <input type="hidden" name="brandAuthors" value="${fi.brandAuthors }" />
+	    <input type="hidden" name="newBrandAuthors"/>
     	<input type="hidden" name="openId" value="${openId }">
     	<input type="hidden" name="saveType" >
     </form>
@@ -180,12 +188,8 @@
                         </div>
                         <div class="weui-uploader__bd">
                             <ul class="weui-uploader__files" id="brandLogoUploaderFiles">
-                            <%-- <c:if test="${not empty brand.logo }">
-                                <li class="weui-uploader__file" style="background-image:url(${ctx}/wx/pubget/${brand.logo })" data-id="${brand.logo } }"></li>
-                            </c:if> --%>
                             </ul>
-                            <div class="weui-uploader__input-box">
-                                <input id="uploaderInput" class="weui-uploader__input" type="file" accept="image/*" capture="camera" multiple/>
+                            <div class="weui-uploader__input-box" id="brandLogoUploadInput">
                             </div>
                         </div>
                     </div>
@@ -206,13 +210,15 @@
     </div>
     	<input type="hidden" name="openId" value="${openId }">
     	<input type="hidden" name="logo">
+    	<input type="hidden" name="newLogo">
     </form>
     </div>
 </div>
 
 </body>
 <%@ include file="/WEB-INF/jsp/weixin/comm_js.jsp" %>
-<script type="text/javascript" src="${ctx }/js/app/weixin/img_upload.js"></script>
+<%@ include file="/WEB-INF/jsp/weixin/js_sdk_config.jsp" %>
+<script type="text/javascript" src="${ctx }/js/app/weixin/wx_js_sdk_img_upload.js"></script>
 <script type="text/javascript" src="${ctx }/js/jquery.form.min.js"></script>
 <%@ include file="/WEB-INF/jsp/weixin/h5_fich_editor_js.jsp" %>
 <script>
@@ -271,7 +277,7 @@
 	});
 	
 	
-	var imgUploader = new ImgUploader('uploader',ctx + '/wx/web/upload/auth',false,30,0,'uploadCount','uploaderFiles');
+	var imgUploader = new WXImgUploader(30,0,"uploadInput",'uploadCount','uploaderFiles');
 	
 	function zancun(){
 		$("input[name='saveType']").val("zancun");
@@ -299,18 +305,19 @@
         		if(re){
         			var xx = 1;
         			function ccck(){
-        				if(imgUploader.uploadedFileNames.length < imgUploader.uploadList.length && xx < 10){
+        				if(imgUploader.uploadOk.length < imgUploader.localIds.length && xx < 10){
         					xx++;
         					setTimeout(ccck,300);
         				}
         				else{
-        					if(imgUploader.uploadedFileNames.length == imgUploader.uploadCount){
-        						$("input[name='brandAuthors']").val(imgUploader.getUploadedFileNameStr());
+        					if(imgUploader.uploadOk.length == imgUploader.localIds.length){
+        						$("input[name='brandAuthors']").val(imgUploader.getUploadedFileServerIdStr());
+        						$("input[name='newBrandAuthors']").val(imgUploader.getNewUploadedFileServerIdStr());
         						var loading = weui.loading('提交中...');
         						$('#xxform').submit();
         					}
         					else {
-        						weui.alert('请检查一下图片是否都已上传，待都完成上传后，再点击 下一步');
+        						weui.alert('请等待3秒待都完成上传后，再点击 下一步');
         					}
         				}
         			}
@@ -482,7 +489,7 @@ var lastLetter;
     }
 </script>
 <script>
-    var brandLogoImgUploader = new ImgUploader('brandLogoUploader',ctx + '/wx/web/upload/comm',false,1,0,'brandLogoUploadCount','brandLogoUploaderFiles',{type:"brand"});
+    var brandLogoImgUploader = new WXImgUploader(1,0,"brandLogoUploadInput",'brandLogoUploadCount','brandLogoUploaderFiles');
     var nameOk = false;
     function checkBrandName(){
 		var name = $('input[name="name"]').val();
@@ -510,13 +517,14 @@ var lastLetter;
             		if(re){
             			var xx = 1;
             			function ccck(){
-            				if(brandLogoImgUploader.uploadedFileNames.length < brandLogoImgUploader.uploadList.length && xx < 10){
+            				if(brandLogoImgUploader.uploadOk.length < brandLogoImgUploader.localIds.length && xx < 10){
             					xx++;
             					setTimeout(ccck,300);
             				}
             				else{
-            					if(brandLogoImgUploader.uploadedFileNames.length == brandLogoImgUploader.uploadCount){
-            						$("input[name='logo']").val(brandLogoImgUploader.getUploadedFileNameStr());
+            					if(brandLogoImgUploader.uploadOk.length == brandLogoImgUploader.localIds.length){
+            						$("input[name='logo']").val(brandLogoImgUploader.getUploadedFileServerIdStr());
+            						$("input[name='newLogo']").val(brandLogoImgUploader.getNewUploadedFileServerIdStr());
             						var loading = weui.loading('提交中...');
             						//将文件加入到表单中提交
             						$('#brandForm').ajaxSubmit({dataType:"json",success:function(data){
@@ -541,7 +549,7 @@ var lastLetter;
             						}});
             					}
             					else {
-            						weui.alert('请检查一下图片是否都已上传，待都完成上传后，再点击 下一步');
+            						weui.alert('请等待3秒待都完成上传后，再点击 下一步');
             					}
             				}
             			}

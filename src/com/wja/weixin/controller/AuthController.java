@@ -31,9 +31,11 @@ import com.wja.weixin.entity.Account;
 import com.wja.weixin.entity.AuditRecord;
 import com.wja.weixin.entity.FollwerInfo;
 import com.wja.weixin.entity.Message;
+import com.wja.weixin.entity.NeedDownloadFile;
 import com.wja.weixin.entity.TradeRecord;
 import com.wja.weixin.service.FollwerInfoService;
 import com.wja.weixin.service.MessageService;
+import com.wja.weixin.service.NeedDownloadFileService;
 import com.wja.weixin.service.TradeService;
 
 @Controller
@@ -54,6 +56,9 @@ public class AuthController
     
     @Autowired
     private MessageService messageService;
+    
+    @Autowired
+    private NeedDownloadFileService needDownloadFileService;
     
     @RequestMapping("img")
     public String img(){
@@ -265,23 +270,30 @@ public class AuthController
     }
     
     @RequestMapping("saveInfo")
-    public String saveInfo(FollwerInfo fi)
+    public String saveInfo(FollwerInfo fi,String newCertificates)
     {
         fi.setStatus(FollwerInfo.STATUS_INFO_OK);
         this.doSave(fi);
+        if(StringUtils.isNotBlank(newCertificates)) {
+            //新图片存储、下载
+            this.needDownloadFileService.addNeeddownloadFile(fi.getOpenId(), newCertificates, NeedDownloadFile.Type.AUTH_CRIED);
+        }
         return "redirect:to/intro";
     }
     
     @RequestMapping("saveIntro")
-    public String saveIntro(FollwerInfo fi)
+    public String saveIntro(FollwerInfo fi,String newLogo) throws Exception
     {
         fi.setStatus(FollwerInfo.STATUS_INFO_OK);
+        if(StringUtils.isNotBlank(newLogo)) {
+            fi.setLogo(this.needDownloadFileService.commonDownLoadFile(newLogo, NeedDownloadFile.Type.AUTH_LOGO));
+        }
         this.doSave(fi);
         return "redirect:to/brand";
     }
     
     @RequestMapping("saveBrand")
-    public String saveBrand(FollwerInfo fi, String saveType)
+    public String saveBrand(FollwerInfo fi, String saveType,String newBrandAuthors)
     {
         fi.setStatus(FollwerInfo.STATUS_BRAND_OK);
         if ("zancun".equals(saveType))
@@ -289,6 +301,10 @@ public class AuthController
             fi.setStatus(FollwerInfo.STATUS_INTRO_OK);
         }
         this.doSave(fi);
+        if(StringUtils.isNotBlank(newBrandAuthors)) {
+            //新图片存储、下载
+            this.needDownloadFileService.addNeeddownloadFile(fi.getOpenId(), newBrandAuthors, NeedDownloadFile.Type.BRAND_AUTHOR);
+        }
         return "redirect:auth";
     }
     

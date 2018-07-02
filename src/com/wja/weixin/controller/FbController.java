@@ -19,11 +19,13 @@ import com.wja.weixin.common.WXContants;
 import com.wja.weixin.entity.FollwerInfo;
 import com.wja.weixin.entity.MessReceiveRecord;
 import com.wja.weixin.entity.Message;
+import com.wja.weixin.entity.NeedDownloadFile;
 import com.wja.weixin.entity.Product;
 import com.wja.weixin.entity.ViewRecord;
 import com.wja.weixin.service.FollwerInfoService;
 import com.wja.weixin.service.GzService;
 import com.wja.weixin.service.MessageService;
+import com.wja.weixin.service.NeedDownloadFileService;
 import com.wja.weixin.service.ProductService;
 import com.wja.weixin.service.ViewRecordService;
 
@@ -46,6 +48,9 @@ public class FbController
     @Autowired
     private ViewRecordService viewRecordService;
     
+    @Autowired
+    private NeedDownloadFileService needDownloadFileService;
+    
     @RequestMapping("mess")
     public String fb(Model model)
     {
@@ -55,16 +60,19 @@ public class FbController
     
     @RequestMapping("messfb")
     @ResponseBody
-    public Object messFb(Message m)
+    public Object messFb(Message m) throws Exception
     {
         String openId = RequestThreadLocal.openId.get();
         m.setPubId(openId);
+        if(StringUtils.isNotBlank(m.getImg())) {
+            m.setImg(this.needDownloadFileService.commonDownLoadFile(m.getImg(), NeedDownloadFile.Type.MESSAGE_IMG));
+        }
         return this.messageService.saveMessage(m);
     }
     
     @RequestMapping("prodfb")
     @ResponseBody
-    public Object prodFb(Product p, String trange)
+    public Object prodFb(Product p, String trange) throws Exception
     {
         String openId = RequestThreadLocal.openId.get();
         p.setPubId(openId);
@@ -80,12 +88,17 @@ public class FbController
         m.setTitle(prefix + p.getTitle());
         if (StringUtils.isNotBlank(p.getImg()))
         {
-            m.setImg(p.getImg().split(";")[0]);
+            String firstImg = p.getImg().split(";")[0];
+            if(StringUtils.isNotBlank(firstImg))
+            {
+                m.setImg(this.needDownloadFileService.commonDownLoadFile(firstImg, NeedDownloadFile.Type.MESSAGE_IMG));
+            }
+            //下载产品图片
+            this.needDownloadFileService.addNeeddownloadFile(p.getId(), p.getImg(), NeedDownloadFile.Type.PRODUCT_IMG);
         }
         m.setTrange(trange);
         m.setMtype(Message.Mtype.Product);
         m.setLinkId(p.getId());
-        
         return this.messageService.saveMessage(m);
         
     }

@@ -8,6 +8,14 @@
     <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
 	<title>派单</title>
 	<%@ include file="/WEB-INF/jsp/weixin/comm_css.jsp" %>
+	<style>
+		.upimg{
+			width:79px;
+			height:79px;
+			display:inline;
+			margin-right:5px;
+		}
+	</style>
 </head>
 <body ontouchstart="">
 <div class="page" id="pageMain">	
@@ -32,14 +40,8 @@
 			                        </div>
 			                        <div class="weui-uploader__bd">
 			                            <ul class="weui-uploader__files" id="productUploaderFiles">
-			                            <c:if test="${not empty p.img }">
-				                            <c:forTokens items="${p.img }" var="it" delims=";">
-				                                <li class="weui-uploader__file" style="background-image:url(${publicDownloadUrl}${it })" data-id="${it }"></li>
-				                            </c:forTokens>
-			                            </c:if>
 			                            </ul>
-			                            <div class="weui-uploader__input-box">
-			                                <input id="productUploaderInput" class="weui-uploader__input" type="file" accept="image/*" capture="camera" multiple/>
+			                            <div class="weui-uploader__input-box" id="productUploaderInput">
 			                            </div>
 			                        </div>
 			                    </div>
@@ -102,8 +104,10 @@
 </div>
 </body>
 <%@ include file="/WEB-INF/jsp/weixin/comm_js.jsp" %>
+<%@ include file="/WEB-INF/jsp/weixin/js_sdk_config.jsp" %>
 <script type="text/javascript" src="${ctx }/js/jquery.form.min.js"></script>
 <script type="text/javascript" src="${ctx }/js/app/weixin/img_upload.js"></script>
+<script type="text/javascript" src="${ctx }/js/app/weixin/wx_js_sdk_img_upload.js"></script>
 <script>
 	var mapinited = false;
 	function doChooseWorker(){
@@ -115,7 +119,7 @@
 			mapinited = true;
 		}
 	}
-	var productImgUploader = new ImgUploader('productUploader',ctx + '/wx/web/upload/comm',false,10,0,'productUploaderCount','productUploaderFiles',{type:'worder'});
+	var productImgUploader = new WXImgUploader(10,0,"productUploaderInput",'productUploaderCount','productUploaderFiles');
 	
 	$(function(){
 		
@@ -133,13 +137,13 @@
             		if(re){
             			var xx = 1;
             			function ccck(){
-            				if(productImgUploader.uploadedFileNames.length < productImgUploader.uploadList.length && xx < 10){
+            				if(productImgUploader.uploadOk.length < productImgUploader.localIds.length && xx < 10){
             					xx++;
             					setTimeout(ccck,300);
             				}
             				else{
-            					if(productImgUploader.uploadedFileNames.length == productImgUploader.uploadCount){
-            						$("input[dd='prod']").val(productImgUploader.getUploadedFileNameStr());
+            					if(productImgUploader.uploadOk.length == productImgUploader.localIds.length){
+            						$("input[dd='prod']").val(productImgUploader.getUploadedFileServerIdStr());
             						var loading = weui.loading('提交中...');
             						//将文件加入到表单中提交
             						$('#pform').ajaxSubmit({dataType:"json",success:function(data){
@@ -159,7 +163,7 @@
             						}});
             					}
             					else {
-            						weui.alert('请检查一下图片是否都已上传，待都完成上传后，再点击 下一步');
+            						weui.alert('请等待3秒待都完成上传后，再点击 下一步');
             					}
             				}
             			}
@@ -198,7 +202,6 @@
 		}
 	}
 </script>
-<%@ include file="/WEB-INF/jsp/weixin/js_sdk_config.jsp" %>
 <script charset="utf-8" src="http://map.qq.com/api/js?v=2.exp"></script>
 <script>
 
