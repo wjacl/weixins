@@ -54,7 +54,7 @@
     						<c:when test="${fi.category == '6' }">其他</c:when>
     					</c:choose>
     				</span>
-    				<c:if test="${not empty opendId and fi.openId != openId }">
+    				<c:if test="${not empty openId and fi.openId != openId }">
 	    				<c:choose>
 	    					<c:when test="${not empty gz }">
 	    						<a href="javascript:;" data-op="qx" onclick="dogz('${fi.openId}',this)" class="weui-btn weui-btn_mini weui-btn_warn gz_button">取消关注</a>
@@ -80,7 +80,7 @@
 <script>
 	function dogz(id,obj){
 		var op = $(obj).data("op");
-		$.getJSON("gz",{bgzid:id,op:op},function(data){
+		$.getJSON("../gz",{bgzid:id,op:op},function(data){
 			if(Constants.ResultStatus_Ok == data.status){
 				if(op == "gz"){
 					weui.toast('关注成功', 2000);

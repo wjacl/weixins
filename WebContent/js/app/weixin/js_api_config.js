@@ -25,6 +25,7 @@ var jsApiConfig = {
 			        'previewImage',
 			        'uploadImage',
 			        'downloadImage',
+			        'getLocalImgData',
 			        'getNetworkType',
 			        'openLocation',
 			        'getLocation',

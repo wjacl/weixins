@@ -8,6 +8,14 @@
     <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
 	<title>认证</title>
 	<%@ include file="/WEB-INF/jsp/weixin/comm_css.jsp" %>
+	<style>
+		.upimg{
+			width:79px;
+			height:79px;
+			display:inline;
+			margin-right:5px;
+		}
+	</style>
 </head>
 <body ontouchstart="">
 <div class="page">
@@ -47,17 +55,17 @@
                         <div class="weui-uploader__bd">
                             <ul class="weui-uploader__files" id="uploaderFiles">
                             <c:forTokens items="${fi.certificates }" var="it" delims=";">
-                                <li class="weui-uploader__file" style="background-image:url(${ctx}/wx/web/upload/get/${it })" data-id="${it }"></li>
+                            	<img class="upimg" src="${ctx}/wx/web/upload/get/${it }" data-id="${it }" />
                             </c:forTokens>
                             </ul>
-                            <div class="weui-uploader__input-box">
-                                <input id="uploaderInput" class="weui-uploader__input" type="file" accept="image/*" capture="camera" multiple/>
+                            <div class="weui-uploader__input-box" id="uploadInput">
                             </div>
                         </div>
                     </div>
                 </div>
 			</div>
 			<input type="hidden" name="certificates">
+			<input type="hidden" name="newCertificates">
             <div class="weui-cell">
                 <div class="weui-cell__hd"><label for="" class="weui-label">地址：</label></div>
                 <div class="weui-cell__bd">
@@ -98,7 +106,7 @@
         <div class="weui-cell no-top-line weui-btn-area_inline">
             <a class="weui-btn weui-btn_primary" href="category" id="cc2Pre">上一步</a>
             <!-- <a class="weui-btn weui-btn_primary" href="javascript:" id="toBrand">下一步</a> -->
-            <a class="weui-btn weui-btn_primary" href="javascript:" id="formSubmitBtn">下一步</a>
+            <a class="weui-btn weui-btn_primary" href="javascript:void(0);" id="formSubmitBtn">下一步</a>
         </div>
     </div>
     </form>
@@ -112,7 +120,7 @@
 <%@ include file="/WEB-INF/jsp/weixin/comm_js.jsp" %>
 <%@ include file="/WEB-INF/jsp/weixin/js_sdk_config.jsp" %>
 <script type="text/javascript" src="${ctx }/js/app/weixin/form.js"></script>
-<script type="text/javascript" src="${ctx }/js/app/weixin/img_upload.js"></script>
+<script type="text/javascript" src="${ctx }/js/app/weixin/wx_js_sdk_img_upload.js"></script>
 <script>
 	$("input[name='mphone']").on("change",function(){
 		var phoneNumbers = $(this).val();
@@ -202,14 +210,9 @@
 	
 	$("#getVcode").on("click",phoneAuth);
 	
-	/* $("#toBrand").on("click",function(){
-
-		$('#form').submit();
-	}); */
-	
 	var uploadCountDom = document.getElementById("uploadCount");
 
-	var imgUploader = new ImgUploader('uploader',ctx + '/wx/web/upload/auth',false,3,0,'uploadCount','uploaderFiles');
+	var imgUploader = new WXImgUploader(3,0,"uploadInput",'uploadCount','uploaderFiles');
 	
 	function doFormSubmit(){
 		if($("input[name='smsAuthCode']").attr("checkOk") != $("input[name='mphone']").val()){
@@ -221,19 +224,22 @@
 		if(re){
 			var xx = 1;
 			function ccck(){
-				if(imgUploader.uploadedFileNames.length < imgUploader.uploadList.length && xx < 10){
+				if(imgUploader.uploadOk.length < imgUploader.localIds.length && xx < 10){
 					xx++;
 					setTimeout(ccck,300);
 				}
 				else{
-					if(imgUploader.uploadedFileNames.length == imgUploader.uploadCount){
-						$("input[name='certificates']").val(imgUploader.getUploadedFileNameStr());
+					weui.loading().hide();
+					if(imgUploader.uploadOk.length == imgUploader.localIds.length){
+						$("input[name='certificates']").val(imgUploader.getUploadedFileServerIdStr());
+						$("input[name='newCertificates']").val(imgUploader.getNewUploadedFileServerIdStr());
+						
 						var loading = weui.loading('提交中...');
 						//将文件加入到表单中提交
-						$('#form').submit();
+						$('#form').submit(); 
 					}
 					else {
-						weui.alert('请检查一下图片是否都已上传，待都完成上传后，再点击 下一步');
+						weui.alert('请等待3秒待都完成上传后，再点击 下一步');
 					}
 				}
 			}

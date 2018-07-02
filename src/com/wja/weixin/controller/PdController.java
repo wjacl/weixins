@@ -3,6 +3,7 @@ package com.wja.weixin.controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,11 +17,13 @@ import com.wja.base.web.RequestThreadLocal;
 import com.wja.weixin.common.WXContants;
 import com.wja.weixin.entity.FollwerInfo;
 import com.wja.weixin.entity.Message;
+import com.wja.weixin.entity.NeedDownloadFile;
 import com.wja.weixin.entity.UseWorker;
 import com.wja.weixin.entity.WorkOrder;
 import com.wja.weixin.service.FollwerInfoService;
 import com.wja.weixin.service.GzService;
 import com.wja.weixin.service.MessageService;
+import com.wja.weixin.service.NeedDownloadFileService;
 import com.wja.weixin.service.UseWorkerService;
 import com.wja.weixin.service.WorkOrderService;
 
@@ -42,6 +45,9 @@ public class PdController
     
     @Autowired
     private MessageService messageService;
+    
+    @Autowired
+    private NeedDownloadFileService needDownloadFileService;
     
     @RequestMapping("view/{id}")
     public String view(@PathVariable("id") String id,Model model){
@@ -67,7 +73,7 @@ public class PdController
         Page<UseWorker> page = new Page<>();
         page.setSort("lastModifyTime");
         page.setOrder("desc");
-        Map<String,Object> params = new HashMap<String,Object>();
+        Map<String,Object> params = new HashMap<>();
         params.put("pubId", openId);
         this.useWorkerService.query(params, page);
         model.addAttribute("useWorkers", page.getRows());
@@ -82,6 +88,12 @@ public class PdController
         w.setPubId(openId);
         w = this.workOrderService.addWorkWorder(w);
 
+        if (StringUtils.isNotBlank(w.getImg()))
+        {
+            //下载图片
+            this.needDownloadFileService.addNeeddownloadFile(w.getId(), w.getImg(), NeedDownloadFile.Type.WORK_ORDER_IMG);
+        }
+        
         // 消息推送
         Message m = new Message();
         m.setPubId(w.getPubId());

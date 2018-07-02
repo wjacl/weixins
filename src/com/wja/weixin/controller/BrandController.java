@@ -14,7 +14,9 @@ import com.wja.base.util.BeanUtil;
 import com.wja.base.util.Page;
 import com.wja.base.util.StringUtil;
 import com.wja.weixin.entity.Brand;
+import com.wja.weixin.entity.NeedDownloadFile;
 import com.wja.weixin.service.BrandService;
+import com.wja.weixin.service.NeedDownloadFileService;
 
 @Controller
 @RequestMapping("/wx/web/brand")
@@ -22,6 +24,9 @@ public class BrandController
 {
     @Autowired
     private BrandService brandService;
+    
+    @Autowired
+    private NeedDownloadFileService needDownloadFileService;
     
     @RequestMapping("query")
     @ResponseBody
@@ -33,8 +38,12 @@ public class BrandController
     
     @RequestMapping("save")
     @ResponseBody
-    public Object save(Brand brand)
+    public Object save(Brand brand,String newLogo) throws Exception
     {
+        if(StringUtils.isNotBlank(newLogo)) {
+            brand.setLogo(this.needDownloadFileService.commonDownLoadFile(newLogo, NeedDownloadFile.Type.BRAND_LOGO));
+        }
+        
         if (StringUtils.isBlank(brand.getId()))
         {
             if (this.brandService.getByName(brand.getName()) != null)

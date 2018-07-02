@@ -2,11 +2,8 @@ package com.wja.weixin.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.GenericGenerator;
 
 import com.wja.base.common.CommConstants;
 
@@ -15,9 +12,9 @@ import com.wja.base.common.CommConstants;
 public class UpFile
 {
     @Id
-    @Column(name = "id", length = 32)
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "uuid")
+    @Column(name = "id", length = 200)
+    /*@GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid")*/
     private String id;
     
     @Column(length = 200)
@@ -40,6 +37,13 @@ public class UpFile
     
     public UpFile(String fileName, String type)
     {
+        this.fileName = fileName;
+        this.type = type;
+    }
+    
+    public UpFile(String id,String fileName, String type)
+    {
+        this.id = id;
         this.fileName = fileName;
         this.type = type;
     }

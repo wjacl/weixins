@@ -53,6 +53,11 @@ public class WeixinFilter implements Filter
         HttpServletRequest request = (HttpServletRequest)req;
         HttpServletResponse response = (HttpServletResponse)resp;
         String openId = (String)request.getSession().getAttribute("openId");
+        
+        if(openId == null) {
+            openId = request.getParameter("openId");
+            request.getSession().setAttribute("openId", openId);
+        }
         if (openId != null)
         {
             RequestThreadLocal.openId.set(openId);
