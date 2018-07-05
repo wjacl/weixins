@@ -35,9 +35,9 @@
 					<a href="javascript:void(0)" class="easyui-linkbutton"
 						onclick="submitForm()" style="width: 80px"><s:message
 							code="login.submit" /></a> 
-					<a href="${ctx}/user/regist"
+					<%-- <a href="${ctx}/user/regist"
 						class="easyui-linkbutton"
-						style="width: 80px"><s:message code="login.regist" /></a>
+						style="width: 80px"><s:message code="login.regist" /></a> --%>
 				</div>
 
 				<script>
