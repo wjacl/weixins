@@ -27,7 +27,6 @@ public class FollwerHandler
         return p;
     }
     
-    
     public static List<Fvo> follwerInfoTrans(List<FollwerInfo> list)
     {
         List<Fvo> dlist = new ArrayList<>();
@@ -46,7 +45,6 @@ public class FollwerHandler
         return dlist;
     }
 }
-
 
 /**
  * 数据传递用实体（加强数据安全）
@@ -78,6 +76,8 @@ class Fvo
     
     String logo;
     
+    String intro;
+    
     /**
      * 认证状态：1完成经营类别选择，2、信息填写完成，3、简介完成，4、品牌完成，5、保证金支付完成，6审核通过，7待审核，0审核未通过
      */
@@ -92,7 +92,6 @@ class Fvo
      */
     @Column(length = 8)
     private int bgzs;
-    
     
     public String getId()
     {
@@ -178,12 +177,12 @@ class Fvo
     {
         return wechat;
     }
-
+    
     public void setWechat(String wechat)
     {
         this.wechat = wechat;
     }
-
+    
     public String getLogo()
     {
         return logo;
@@ -193,35 +192,45 @@ class Fvo
     {
         this.logo = logo;
     }
-
+    
     public int getStatus()
     {
         return status;
     }
-
+    
     public void setStatus(int status)
     {
         this.status = status;
     }
-
+    
     public int getBgzs()
     {
         return bgzs;
     }
-
+    
     public void setBgzs(int bgzs)
     {
         this.bgzs = bgzs;
     }
-
+    
     public Date getCreateTime()
     {
         return createTime;
     }
-
+    
     public void setCreateTime(Date createTime)
     {
         this.createTime = createTime;
+    }
+    
+    public String getIntro()
+    {
+        return intro;
+    }
+    
+    public void setIntro(String intro)
+    {
+        this.intro = intro;
     }
     
 }

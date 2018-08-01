@@ -3,11 +3,14 @@ package com.wja.weixin.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Where;
 
 import com.wja.base.common.CommConstants;
 import com.wja.base.common.CommEntity;
+import com.wja.base.system.entity.User;
+import com.wja.base.util.SetValue;
 
 @Entity
 @Table(name = "t_wx_product")
@@ -49,6 +52,14 @@ public class Product extends CommEntity
      */
     @Column(length = 40)
     private String pubId;
+    
+    @Transient
+    @SetValue(clazz = FollwerInfo.class, field = "name", id = "pubId")
+    private String ownName;
+    
+    @Transient
+    @SetValue(clazz = User.class, id = "createUser", field = "name")
+    private String createUserName;
     
     public String getTitle()
     {
@@ -108,6 +119,26 @@ public class Product extends CommEntity
     public void setPubId(String pubId)
     {
         this.pubId = pubId;
+    }
+    
+    public String getOwnName()
+    {
+        return ownName;
+    }
+    
+    public void setOwnName(String ownName)
+    {
+        this.ownName = ownName;
+    }
+    
+    public String getCreateUserName()
+    {
+        return createUserName;
+    }
+    
+    public void setCreateUserName(String createUserName)
+    {
+        this.createUserName = createUserName;
     }
     
 }

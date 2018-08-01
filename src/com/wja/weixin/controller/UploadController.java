@@ -6,7 +6,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -27,7 +29,6 @@ import com.wja.weixin.service.CommBaseService;
 import com.wja.weixin.service.UpFileService;
 
 @Controller
-@RequestMapping("/wx/web/upload")
 public class UploadController
 {
     private static String rootDir = AppContext.getSysParam("wx.upload.save.rootdir");
@@ -42,7 +43,7 @@ public class UploadController
     @Autowired
     private UpFileService upFileService;
     
-    @RequestMapping("auth")
+    @RequestMapping("/wx/web/upload/auth")
     @ResponseBody
     public Object authImageUpload(HttpSession session, @RequestPart("file") MultipartFile myfile)
     {
@@ -111,7 +112,7 @@ public class UploadController
         }
     }
     
-    @RequestMapping("get/{id}")
+    @RequestMapping("/wx/web/upload/get/{id}")
     public void getById(@PathVariable("id") String id, HttpServletResponse response)
     {
         if (StringUtils.isNotBlank(id))
@@ -127,7 +128,54 @@ public class UploadController
         
     }
     
-    @RequestMapping("comm")
+    @RequestMapping(value = {"/admin/upload/comm/multi"})
+    @ResponseBody
+    public Object commMultUpload(HttpSession session, @RequestPart("file") MultipartFile[] files, String type)
+    {
+        List<Result> list = new ArrayList<>();
+        if (files.length > 0)
+        {
+            String ppath = "/" + (StringUtils.isBlank(type) ? "comm" : type);
+            for (MultipartFile myfile : files)
+            {
+                String[] pns = fileNameGer.getDateDirMillisFileName();
+                String path = ppath + "/" + pns[0];
+                File dir = new File(rootDir + path);
+                String oriName = myfile.getOriginalFilename();
+                
+                if (!dir.exists())
+                {
+                    if (!dir.mkdirs())
+                    {
+                        list.add(new Result(oriName, null, "创建存放目录失败！"));
+                        continue;
+                    }
+                }
+                
+                String suffix = "";
+                int index = oriName.lastIndexOf('.');
+                if (index != -1)
+                {
+                    suffix = oriName.substring(index);
+                }
+                String fileName = pns[1] + suffix;
+                try
+                {
+                    myfile.transferTo(new File(dir, fileName));
+                    list.add(new Result(path + "/" + fileName,
+                        AppContext.getSysParam("wx.download.public.url") + path + "/" + fileName, null));
+                }
+                catch (IllegalStateException | IOException e)
+                {
+                    Log.LOGGER.error("上传文件保存失败", e);
+                    list.add(new Result(oriName, null, "上传文件保存失败：" + e));
+                }
+            }
+        }
+        return list;
+    }
+    
+    @RequestMapping(value = {"/wx/web/upload/comm", "/admin/upload/comm"})
     @ResponseBody
     public Object commUpload(HttpSession session, @RequestPart("file") MultipartFile myfile, String type)
     {

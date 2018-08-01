@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.wja.base.common.OpResult;
 import com.wja.base.util.BeanUtil;
 import com.wja.base.util.Page;
+import com.wja.base.util.StringUtil;
 import com.wja.weixin.entity.Brand;
 import com.wja.weixin.entity.HotBrand;
 import com.wja.weixin.service.BrandService;
@@ -19,9 +20,10 @@ import com.wja.weixin.service.HotBrandService;
 
 @Controller
 @RequestMapping("/admin")
-public class AdminBrandController {
-
-    @Autowired 
+public class AdminBrandController
+{
+    
+    @Autowired
     private BrandService brandService;
     
     @Autowired
@@ -37,12 +39,52 @@ public class AdminBrandController {
     }
     
     @RequestMapping("brand/manage")
-    public String manage(){
+    public String manage()
+    {
         return "admin/brand";
     }
     
+    @RequestMapping({"brand/add", "brand/update"})
+    @ResponseBody
+    public OpResult saveBrand(Brand brand)
+    {
+        if (StringUtils.isBlank(brand.getId()))
+        {
+            if (this.brandService.getByName(brand.getName()) != null)
+            {
+                return OpResult.error("该品牌名称已存在！", null);
+            }
+            brand.setPinyin(StringUtil.getPinYinHeadChar(brand.getName()));
+            return OpResult.addOk(this.brandService.addOne(brand));
+        }
+        else
+        {
+            Brand db = this.brandService.get(Brand.class, brand.getId());
+            if (!db.getName().equals(brand.getName()))
+            {
+                if (this.brandService.getByName(brand.getName()) != null)
+                {
+                    return OpResult.error("该品牌名称已存在！", null);
+                }
+                
+                brand.setPinyin(StringUtil.getPinYinHeadChar(brand.getName()));
+            }
+            BeanUtil.copyPropertiesIgnoreNull(brand, db);
+            return OpResult.updateOk(this.brandService.update(db));
+        }
+    }
+    
+    @RequestMapping("brand/delete")
+    @ResponseBody
+    public OpResult deleteBrand(String[] id)
+    {
+        this.brandService.delete(Brand.class, id);
+        return OpResult.deleteOk();
+    }
+    
     @RequestMapping("hotBrand/manage")
-    public String hotManage(){
+    public String hotManage()
+    {
         return "admin/brand_hot";
     }
     

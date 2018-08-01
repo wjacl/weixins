@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.wja.base.common.OpResult;
 import com.wja.base.util.Log;
 import com.wja.base.util.Page;
 import com.wja.base.web.AppContext;
@@ -30,9 +31,10 @@ import com.wja.weixin.service.UpFileService;
 
 @Controller
 @RequestMapping("/admin")
-public class AdminFollwerController {
-
-    @Autowired 
+public class AdminFollwerController
+{
+    
+    @Autowired
     private FollwerInfoService follwerInfoService;
     
     @Autowired
@@ -45,26 +47,53 @@ public class AdminFollwerController {
     @ResponseBody
     public Object query(@RequestParam Map<String, Object> params, Page<FollwerInfo> page)
     {
+        // combogrid查询时传人的参数p需要转为名称、拼音查询
+        String q = (String)params.get("q");
+        if (q != null)
+        {
+            params.put("name_like_string", q);
+            params.remove("q");
+        }
+        
+        // 加入拼音查询
+        if (params.containsKey("name_like_string"))
+        {
+            params.put("or_pinyin_like_string", params.get("name_like_string"));
+        }
+        
         this.follwerInfoService.query(params, page);
         
         return FollwerHandler.follwerInfoTrans(page);
     }
-   
     
+    @RequestMapping("fuser/introUpdate")
+    @ResponseBody
+    public OpResult deleteBrand(String id, String logo, String intro)
+    {
+        FollwerInfo fi = this.follwerInfoService.get(FollwerInfo.class, id);
+        if (fi != null)
+        {
+            fi.setLogo(logo);
+            fi.setIntro(intro);
+            this.follwerInfoService.update(fi);
+        }
+        return OpResult.updateOk();
+    }
     
     @RequestMapping("fuser/manage")
-    public String manage(){
+    public String manage()
+    {
         return "admin/fuser";
     }
     
     @RequestMapping("fuser/view/{id}")
-    public String view(@PathVariable("id") String id,Model model){
+    public String view(@PathVariable("id") String id, Model model)
+    {
         FollwerInfo fi = this.follwerInfoService.get(FollwerInfo.class, id);
         model.addAttribute("fi", fi);
         model.addAttribute("ads", this.follwerInfoService.queryAuditRecord(id));
         return "admin/fuser_view";
     }
-    
     
     private void responseFile(File file, HttpServletResponse response)
     {
@@ -91,7 +120,7 @@ public class AdminFollwerController {
             }
         }
     }
-
+    
     private static String rootDir = AppContext.getSysParam("wx.upload.save.rootdir");
     
     @RequestMapping("fuser/getImg/{id}")
@@ -121,11 +150,10 @@ public class AdminFollwerController {
     
     @RequestMapping("fuser/doTk")
     @ResponseBody
-    public Object doTk(String id){
-        Account a = this.tradeService.getAccount(id);
+    public Object doTk(String id)
+    {
+        this.tradeService.saveTK(id);
         
-        //TODO  退款
-        
-        return null;
+        return OpResult.ok();
     }
 }

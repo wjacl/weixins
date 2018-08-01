@@ -46,13 +46,54 @@ public class TradeService
     
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddhhmmss");
     
+    public synchronized void saveTK(String openId)
+    {
+        Account account = this.getAccount(openId);
+        if (account == null)
+        {
+            return;
+        }
+        
+        BigDecimal zero = new BigDecimal(0);
+        String info = "退款";
+        if (account.getBalance().compareTo(zero) == 1)
+        {
+            TradeRecord tr = new TradeRecord();
+            tr.setBusiType(TradeRecord.BusiType.XF);
+            tr.setIoType(TradeRecord.IOType.OUT);
+            tr.setOpenId(openId);
+            tr.setAmount(account.getBalance());
+            tr.setInfo(info);
+            
+            this.tradeRecordDao.save(tr);
+            account.setBalance(zero);
+        }
+        
+        if (account.getBzj().compareTo(zero) == 1)
+        {
+            TradeRecord tr = new TradeRecord();
+            tr.setBusiType(TradeRecord.BusiType.BZJ);
+            tr.setIoType(TradeRecord.IOType.OUT);
+            tr.setOpenId(openId);
+            tr.setAmount(account.getBzj());
+            tr.setInfo(info);
+            
+            this.tradeRecordDao.save(tr);
+            account.setBzj(zero);
+        }
+        
+        this.accountDao.save(account);
+    }
+    
     /**
      * 
      * 为用户增加账户
+     * 
      * @param openId
      * @see [类、类#方法、类#成员]
      */
-    public void addAccount(String openId){
+    public void addAccount(String openId)
+    {
         Account account = this.getAccount(openId);
         
         if (account == null)
@@ -125,10 +166,11 @@ public class TradeService
     public Map<String, String> getAnUnifiedorderRequest(String userIp, BigDecimal amount, String attach, String body,
         String detail)
     {
-
-        HashMap<String, String> data = new HashMap<String, String>();
+        
+        HashMap<String, String> data = new HashMap<>();
         data.put("body", body);
-        if(detail != null){
+        if (detail != null)
+        {
             data.put("detail", detail);
         }
         data.put("attach", attach);
@@ -140,11 +182,12 @@ public class TradeService
         data.put("trade_type", "JSAPI");
         data.put("openid", RequestThreadLocal.openId.get());
         data.put("time_start", this.sdf.format(new Date()));
-
+        
         return data;
     }
     
-    public  Map<String, String> generateJsPayParam(String userIp, BigDecimal amount, String attach, String body, String detail)
+    public Map<String, String> generateJsPayParam(String userIp, BigDecimal amount, String attach, String body,
+        String detail)
         throws Exception
     {
         // 生成交易数据
@@ -162,7 +205,7 @@ public class TradeService
         wtr.setTotal_fee(Integer.parseInt(request.get("total_fee")));
         wtr.setPrepayId(prepayid);
         this.wxtrDao.save(wtr);
-
+        
         Map<String, String> hparam = new HashMap<>();
         hparam.put("appId", Config.instance().getAppid());
         hparam.put("timeStamp", System.currentTimeMillis() / 1000 + "");

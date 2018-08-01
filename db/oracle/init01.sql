@@ -173,3 +173,39 @@ INSERT INTO t_sys_role_priv(r_id,pr_id) VALUES('admin','busi-fuser');
 INSERT INTO t_sys_role_priv(r_id,pr_id) VALUES('admin','busi-fuser-query');
 INSERT INTO t_sys_role_priv(r_id,pr_id) VALUES('admin','busi-fuser-view');
 INSERT INTO t_sys_role_priv(r_id,pr_id) VALUES('admin','busi-fuser-tk');
+
+
+-- 2018-07-10 加入
+
+INSERT INTO t_sys_privilege(pr_id,pr_name,Path,p_pr_id,pr_type,valid,Order_No)
+VALUES('busi-brand-add','新增','/admin/brand/add','busi-brand','0',1,1113);
+INSERT INTO t_sys_privilege(pr_id,pr_name,Path,p_pr_id,pr_type,valid,Order_No)
+VALUES('busi-brand-update','修改','/admin/brand/update','busi-brand','0',1,1114);
+INSERT INTO t_sys_privilege(pr_id,pr_name,Path,p_pr_id,pr_type,valid,Order_No)
+VALUES('busi-brand-delete','删除','/admin/brand/delete','busi-brand','0',1,1115);
+
+INSERT INTO t_sys_role_priv(r_id,pr_id) VALUES('admin','busi-brand-add');
+INSERT INTO t_sys_role_priv(r_id,pr_id) VALUES('admin','busi-brand-update');
+INSERT INTO t_sys_role_priv(r_id,pr_id) VALUES('admin','busi-brand-delete');
+
+INSERT INTO t_sys_privilege(pr_id,pr_name,Path,p_pr_id,pr_type,valid,Order_No)
+VALUES('busi-fuser-introUpdate','编辑简介','/admin/fuser/introUpdate','busi-fuser','0',1,1145);
+
+INSERT INTO t_sys_role_priv(r_id,pr_id) VALUES('admin','busi-fuser-introUpdate');
+
+INSERT INTO t_sys_privilege(pr_id,pr_name,Path,p_pr_id,pr_type,valid,Order_No)
+VALUES('busi-product','产品管理','/admin/product/manage','busi','1',1,1151);
+INSERT INTO t_sys_privilege(pr_id,pr_name,Path,p_pr_id,pr_type,valid,Order_No)
+VALUES('busi-product-query','查询','/admin/product/query','busi-product','0',1,1152);
+INSERT INTO t_sys_privilege(pr_id,pr_name,Path,p_pr_id,pr_type,valid,Order_No)
+VALUES('busi-product-add','新增','/admin/product/add','busi-product','0',1,1153);
+INSERT INTO t_sys_privilege(pr_id,pr_name,Path,p_pr_id,pr_type,valid,Order_No)
+VALUES('busi-product-update','修改','/admin/product/update','busi-product','0',1,1154);
+INSERT INTO t_sys_privilege(pr_id,pr_name,Path,p_pr_id,pr_type,valid,Order_No)
+VALUES('busi-product-delete','删除','/admin/product/delete','busi-product','0',1,1155);
+
+INSERT INTO t_sys_role_priv(r_id,pr_id) VALUES('admin','busi-product');
+INSERT INTO t_sys_role_priv(r_id,pr_id) VALUES('admin','busi-product-query');
+INSERT INTO t_sys_role_priv(r_id,pr_id) VALUES('admin','busi-product-add');
+INSERT INTO t_sys_role_priv(r_id,pr_id) VALUES('admin','busi-product-update');
+INSERT INTO t_sys_role_priv(r_id,pr_id) VALUES('admin','busi-product-delete');

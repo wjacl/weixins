@@ -8,6 +8,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <%@ include file="/WEB-INF/jsp/frame/comm_css_js.jsp"%>
+<%@ include file="/WEB-INF/jsp/weixin/h5_fich_editor_css.jsp" %>
 </head>
 <body>
 	<%@ include file="/WEB-INF/jsp/frame/header.jsp"%>
@@ -17,12 +18,16 @@
 	
 	<div id="fuser_tb" style="padding: 5px; height: auto">
 		<div style="margin-bottom: 5px">
+			<app:author path="/admin/fuser/introUpdate">
+				<a href="#" onclick="$.ad.toUpdate('fuser_grid','user_w','简介','user_add','${ctx }/admin/fuser/introUpdate');initIntroUpdate();" class="easyui-linkbutton"
+					iconCls="icon-edit" plain="true">编辑简介</a> 
+			</app:author>
 			<app:author path="/admin/fuser/view">
 				<a href="#" onclick="javascript:doView()" class="easyui-linkbutton"
 					iconCls="icon-search" plain="true">查看</a> 
 			</app:author>
 			<app:author path="/admin/fuser/tk">
-				<a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="javascript:showtk()">退款</a>
+				<a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="showtk()">退款</a>
 			</app:author>
 		</div>
 		<div>
@@ -176,6 +181,7 @@
 					var bzj = 0;
 					var balance = 0;
 					if(data.openId != tkid){
+						$.sm.alert("该用户没有款需要退！");
 						return;
 					}
 					if(data.bzj){
@@ -206,6 +212,24 @@
 				});
 			});
 		}
+		
+		
+		// 2018-07-10 增加的编辑简介信息
+		function initIntroUpdate(){
+			var rows = $("#fuser_grid").datagrid("getChecked");
+
+			$("#blogo").attr("src","");
+			
+			if(rows[0].logo){
+				$("#blogo").attr("src",'${publicDownloadUrl}' + rows[0].logo);
+			}
+			
+			//先清空
+			$('#myIntro').froalaEditor('html.set', "");
+			if(rows[0].intro){
+				$('#myIntro').froalaEditor('html.set', rows[0].intro);
+			}	
+		}
 	</script>
 	
 	<div id="dd" class="easyui-dialog" title="退款" style="width:440px;height:230px;"
@@ -229,6 +253,61 @@
 		
 
 	</script>
+	<div id="user_w" class="easyui-window" title='<s:message code="user.add" />'
+		data-options="modal:true,closed:true,minimizable:false,maximizable:false,collapsible:false"
+		style="width: 600px; height: 500px; padding: 10px;">
+		<div class="content">
+				<form id="user_add" method="post" action="${ctx }/admin/fuser/introUpdate">
+					<div style="margin-bottom: 10px">
+						<input class="easyui-textbox" name="name" style="width: 100%"
+							data-options="label:'名称：',disabled:true">
+					</div>						
+					<div style="margin-bottom: 10px">
+						<label>头像/logo：&nbsp;&nbsp;&nbsp;</label>
+						<a href="#" onclick="$('#myfile').click();" class="easyui-linkbutton" data-options="iconCls:'icon-add'">选择文件</a>						
+					</div>	
+					<div style="margin-bottom: 10px">	
+						<img id="blogo" src="" width="100" height="100"/>
+					</div>
+					<div style="margin-bottom: 10px">
+						简介：
+					</div>
+					<div >
+                    <textarea name="intro" id="myIntro"></textarea>
+                    </div>
+                    <input type="hidden" name="id" id="introId"/>
+                    <input type="hidden" name="logo" id="logo"/>
+				</form>
+				<div style="text-align: center; padding: 5px 0">
+					<a href="javascript:void(0)" class="easyui-linkbutton"
+						onclick="$.ad.submitForm('user_add','fuser_grid','user_w')" style="width: 80px">
+						<s:message code="comm.submit" /></a> 
+					<a href="javascript:void(0)"
+						class="easyui-linkbutton" onclick="$.ad.clearForm('user_add')"
+						style="width: 80px"><s:message code="comm.clear" /></a>
+				</div>
+		</div>
+	</div>
 	<%@ include file="/WEB-INF/jsp/frame/footer.jsp"%>
+	
+	<div style="display:none">
+		<form id="liveData_import" method="post" action="${ctx }/admin/upload/comm" enctype="multipart/form-data">		
+			<input type="file" id="myfile" name="file"  accept="image/*" />
+			<input type="hidden" name="type" value="brandLogo" />
+		</form>
+	</div>
 </body>
 </html>
+<%@ include file="/WEB-INF/jsp/weixin/h5_fich_editor_js.jsp" %>
+<script type="text/javascript">
+$(function(){
+	h5FichEditorInit("myIntro",ctx + "/admin/upload/comm",{type:"brand"});
+	$("#myfile").change(function(){
+		$("#liveData_import").form('submit',{success:function(data){
+			data = eval('(' + data + ')');
+			$("#blogo").attr("src",data.link);
+			$("#logo").val(data.fileName);
+		}});
+	});
+});
+</script>
