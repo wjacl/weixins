@@ -56,7 +56,14 @@
 			                        </div>
 			                    </div>
 			                </div>
-						</div>
+						</div>					
+						<div class="weui-cell">
+							<div class="weui-cell__hd">
+								<a href="javascript:;" id="luyin" class="weui-btn weui-btn_mini weui-btn_primary">长按录音</a>
+							</div>
+			                <div class="weui-cell__bd" id="messVoice"> 
+			                </div>
+						</div> 
 			            <div class="weui-cell">
 			                <div class="weui-cell__bd">
 			                	<p>内容：</p>
@@ -80,6 +87,7 @@
 			        <div class="weui-cell no-top-line weui-btn-area_inline">
 						<input type="hidden" name="pubid" value="${openId }">
 						<input type="hidden" name="img" >
+						<input type="hidden" name="voices" >
 			            <a class="weui-btn weui-btn_primary" href="javascript:;" id="mformSubmitBtn">发布</a>
 			        </div>
 			    </div>
@@ -202,6 +210,8 @@
             				else{
             					if(imgUploader.uploadOk.length == imgUploader.localIds.length){
             						$("input[name='img']").val(imgUploader.getUploadedFileServerIdStr());
+            						$("input[name='voices']").val(getVoices("messVoice"));
+            					
             						var loading = weui.loading('提交中...');
             						//将文件加入到表单中提交
             						$('#mform').ajaxSubmit({dataType:"json",success:function(data){
@@ -274,5 +284,94 @@
             });
         });
 	});
+</script>
+
+<script type="text/javascript">
+//假设全局变量已经在外部定义
+var START = 0,END = 0;
+var voice={};
+//按下开始录音
+$('#luyin').on('touchstart', function(event){
+  event.preventDefault();
+  START = new Date().getTime();
+
+  recordTimer = setTimeout(function(){
+      wx.startRecord({
+          success: function(){
+              localStorage.rainAllowRecord = 'true';
+          },
+          cancel: function () {
+              alert('用户拒绝授权录音');
+          }
+      });
+  },300);
+});
+//松手结束录音
+$('#luyin').on('touchend', function(event){
+  event.preventDefault();
+  END = new Date().getTime();
+  
+  if((END - START) < 300){
+      END = 0;
+      START = 0;
+      //小于300ms，不录音
+      clearTimeout(recordTimer);
+  }else{
+      wx.stopRecord({
+        success: function (res) {
+          voice.localId = res.localId;
+          uploadVoice();
+        },
+        fail: function (res) {
+          alert(JSON.stringify(res));
+        }
+      });
+  }
+});
+
+//上传录音
+function uploadVoice(){
+  //调用微信的上传录音接口把本地录音先上传到微信的服务器
+  //不过，微信只保留3天，而我们需要长期保存，我们需要把资源从微信服务器下载到自己的服务器
+  wx.uploadVoice({
+      localId: voice.localId, // 需要上传的音频的本地ID，由stopRecord接口获得
+      isShowProgressTips: 1, // 默认为1，显示进度提示
+      success: function (res) {
+          
+          var times = parseInt((END - START + 999) / 1000);
+          
+          $("#messVoice").append("<div class='voice'><div><div class='miao'>" + times + 
+        		  "’</div><div class='delicon' onclick='deleteVoice(this)''>X</div></div>" + 
+        		  "<img src='${ctx}/images/voice.png' onclick='playVoice(this)' localId='" + voice.localId + 
+        		  "' serverId='" + res.serverId + "' times='" + times + "' /></div>");
+      }
+  });
+}
+
+function playVoice(obj){
+	wx.playVoice({
+		localId: $(obj).attr("localId") // 需要播放的音频的本地ID，由stopRecord接口获得
+		});
+}
+
+function deleteVoice(obj){
+	weui.confirm("您要删除该段语音吗？",function(){$(obj).parent().parent().remove()});
+}
+
+function getVoices(containerId){
+	var voices = [];
+	$("#" + containerId).find("img").each(function(){
+		voices.push("sid=" + $(this).attr("serverId") + "||" + $(this).attr("times"));
+	});
+	
+	return voices.join(";");
+}
+
+//注册微信播放录音结束事件【一定要放在wx.ready函数内】
+wx.onVoicePlayEnd({
+  success: function (res) {
+      stopWave();
+  }
+});
 </script>
 </html>

@@ -32,5 +32,6 @@
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/aliyun-java-sdk-dysmsapi-1.0.0.jar" sourcepath="E:/项目/微信公众号项目/dysms_java/java/api_sdk"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/pinyin4j-2.5.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.eclipse.jst.server.tomcat.runtimeTarget/Apache Tomcat v8.5"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/jave-ffmpegjave-1.0.2.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

@@ -38,3 +38,29 @@ html, body {
 			display:inline;
 			margin-right:5px;
 		}
+		
+.voice {
+	float:left;
+	width: 40px;
+	margin-left: 15px;
+}
+
+.voice .miao {
+	width: 20px;
+	line-height:12px;
+	font-size: 10px;
+	float:left;
+}
+
+.voice .delicon {
+	text-align: right;
+	width: 20px;
+	line-height:12px;
+	color:red;
+	font-size: 12px;
+	font-weight: 900;
+	float:left;
+}
+.voice img {
+	width:40px;
+}

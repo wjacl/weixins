@@ -56,6 +56,12 @@ public class Message extends CommEntity
     private String img;
     
     /**
+     * 语音
+     */
+    @Column(length = 4000)
+    private String voices;
+    
+    /**
      * 内容
      */
     @Column(length = 4000)
@@ -131,12 +137,12 @@ public class Message extends CommEntity
     {
         return trange;
     }
-
+    
     public void setTrange(String trange)
     {
         this.trange = trange;
     }
-
+    
     public String getFee()
     {
         return fee;
@@ -176,15 +182,25 @@ public class Message extends CommEntity
     {
         this.linkId = linkId;
     }
-
+    
     public String getToIds()
     {
         return toIds;
     }
-
+    
     public void setToIds(String toIds)
     {
         this.toIds = toIds;
+    }
+    
+    public String getVoices()
+    {
+        return voices;
+    }
+    
+    public void setVoices(String voices)
+    {
+        this.voices = voices;
     }
     
 }

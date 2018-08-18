@@ -12,7 +12,7 @@
 	<link href="${ctx }/js/froala-editor/css/froala_style.min.css" rel="stylesheet" type="text/css" />
 	<link rel="stylesheet" href="${ctx }/css/weui.list.css"/>
 </head>
-<body ontouchstart>
+<body style="background-color: white;" ontouchstart>
 <div class="page">
     <div class="page__hd" style="margin-top:5px">
          <h2 style="text-align:center;vertical-align: middle;">${me.title }</h2>
@@ -25,12 +25,36 @@
     				<img src="${publicDownloadUrl}${me.img}" width="300px" style="margin:1px auto;display:block;"/>
     			</div>
     		</c:if>
-    			
+    		
+    		<c:if test="${not empty voices }">
+    			<div>
+    				<p><b>语音：</b></p>
+    				<div>
+    					<c:forEach items="${voices }" var="v" varStatus="vs">
+    						<div class="voice">
+    							<div>
+    								<div class="miao">${v.times }&apos;</div>
+    							</div>
+    							<c:choose>
+    								<c:when test="${\"true\" eq v.sid }">
+    									<img src='${ctx}/images/voice.png' onclick='playWxVoice(this)' serverId="${v.path}"/>
+    								</c:when>
+    								<c:otherwise>
+	    								<img src='${ctx}/images/voice.png' onclick='playVoice("vio${vs.index}")'/>
+		    							<audio src="${publicDownloadUrl}${v.path}" id="vio${vs.index}"></audio>
+    								</c:otherwise>
+    							</c:choose>
+    						</div>
+    					</c:forEach>
+    				</div>
+    			</div>
+    		</c:if>
+
 		    	<div class="fr-view">
 			      ${me.content }
 			    </div>
 			    
-    			<div>
+    			<div style="clear:both">
     				<p class="title">发布者：${fi.name }</p>
     				<span class="categ">
     					<c:choose>
@@ -56,9 +80,39 @@
 </div>
 </body>
 <%@ include file="/WEB-INF/jsp/weixin/comm_js.jsp" %>
+<%@ include file="/WEB-INF/jsp/weixin/js_sdk_config.jsp" %>
 <script>
 	function viewFollwer(id){
 		location.href= ctx + "/wx/web/fx/view/" + id;
+	}
+	
+	function playWxVoice(obj){
+		if($(obj).attr("localId")){
+			wx.playVoice({
+				localId: $(obj).attr("localId") // 需要播放的音频的本地ID，由stopRecord接口获得
+				});
+		}
+		else {
+			wx.downloadVoice({
+				serverId: $(obj).attr("serverId"), // 需要下载的音频的服务器端ID，由uploadVoice接口获得
+				isShowProgressTips: 1, // 默认为1，显示进度提示
+				success: function (res) {
+					var localId = res.localId; // 返回音频的本地ID
+					$(obj).attr("localId",localId);
+					wx.playVoice({
+						localId: localId // 需要播放的音频的本地ID，由stopRecord接口获得
+					});
+				},
+				fail: function (res) {
+					weui.alert("下载语音失败：" + JSON.stringify(res));
+			      }
+				});
+		}
+	}
+	
+	function playVoice(id){
+		var aud = document.getElementById(id);
+		aud.play();
 	}
 </script>
 </html>

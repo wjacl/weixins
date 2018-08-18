@@ -33,6 +33,12 @@ public class WorkOrder extends CommEntity
     private String img;
     
     /**
+     * 语音
+     */
+    @Column(length = 4000)
+    private String voices;
+    
+    /**
      * 工单说明
      */
     @Column(length = 2000)
@@ -43,55 +49,65 @@ public class WorkOrder extends CommEntity
      */
     @Column(length = 40)
     private String pubId;
-
+    
     public String getWno()
     {
         return wno;
     }
-
+    
     public void setWno(String wno)
     {
         this.wno = wno;
     }
-
+    
     public String getWorker()
     {
         return worker;
     }
-
+    
     public void setWorker(String worker)
     {
         this.worker = worker;
     }
-
+    
     public String getImg()
     {
         return img;
     }
-
+    
     public void setImg(String img)
     {
         this.img = img;
     }
-
+    
     public String getContent()
     {
         return content;
     }
-
+    
     public void setContent(String content)
     {
         this.content = content;
     }
-
+    
     public String getPubId()
     {
         return pubId;
     }
-
+    
     public void setPubId(String pubId)
     {
         this.pubId = pubId;
+    }
+    
+    public String getVoices()
+    {
+        return voices;
+    }
+    
+    public void setVoices(String voices)
+    {
+        this.voices = voices;
     }
     
 }
