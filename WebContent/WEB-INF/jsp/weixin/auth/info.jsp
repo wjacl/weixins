@@ -67,14 +67,17 @@
 			<input type="hidden" name="certificates">
 			<input type="hidden" name="newCertificates">
             <div class="weui-cell">
-                <div class="weui-cell__hd"><label for="" class="weui-label">地址：</label></div>
-                <div class="weui-cell__bd">
-                    <input class="weui-input" name="address" type="text" readOnly required value="${fi.address }" emptyTips="请地图选择地址" />
-                </div>
+                <div class="weui-cell__hd"><label for="" class="weui-label">定位：</label></div>
                 <div class="weui-cell__ft">
                 	<input name="lat" type="hidden" value="${fi.lat }"/>
                 	<input name="lng" type="hidden" value="${fi.lng }"/>
                     <a class="weui-vcode-btn" id="location-btn" href="javascript:;">地图选址</a>
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__hd"><label for="" class="weui-label">地址：</label></div>
+                <div class="weui-cell__bd">
+                	<textarea class="weui-textarea"  name="address" placeholder="请输入地址" rows="3"  required emptyTips="请输入地址" >${fi.address }</textarea>
                 </div>
             </div>
             <div class="weui-cell">
@@ -219,6 +222,10 @@
 			weui.alert("请获取验证码，验证手机号！");
 			return;
 		}
+		if($("input[name='lat']").val() == ""){
+			weui.alert("请完成定位，否则无法在地图上显示！");
+			return;
+		}
 		
 		var re = imgUploader.upload();
 		if(re){
@@ -259,7 +266,9 @@
         var loc = event.data;
         if (loc && loc.module == 'locationPicker') {//防止其他应用也会向该页面post信息，需判断module是否为'locationPicker'
           console.log('location', loc); 
-			$("input[name='address']").val(loc.poiaddress + "-" + loc.poiname);
+        	var addr = loc.poiaddress + "-" + loc.poiname;
+        	addr = addr.replace("-我的位置","");
+			$("textarea[name='address']").val(addr);
 			$("input[name='lat']").val(loc.latlng.lat);
 			$("input[name='lng']").val(loc.latlng.lng);
           	$("#mapPage").hide();
